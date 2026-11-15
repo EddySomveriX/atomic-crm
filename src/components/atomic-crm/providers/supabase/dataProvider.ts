@@ -27,6 +27,7 @@ import {
 } from "./authProvider";
 import { searchDealCategories } from "./searchDealCategories";
 import { businessMethods } from "./businessMethods";
+import { analyticsMethods } from "./analyticsMethods";
 import { channelMethods } from "./channelMethods";
 import { counterpartyMethods } from "./counterpartyMethods";
 import { stockMethods } from "./stockMethods";
@@ -400,6 +401,7 @@ const getDataProviderWithCustomMethods = () => {
     ...counterpartyMethods,
     ...stockMethods,
     ...channelMethods,
+    ...analyticsMethods,
   } satisfies DataProvider;
 };
 

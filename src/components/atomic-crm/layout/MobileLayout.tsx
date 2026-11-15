@@ -7,12 +7,14 @@ import { ScrollRestoration } from "react-router";
 
 import { DataImportProvider } from "../dataImport/DataImportProvider";
 import { RequireBusiness } from "../business/RequireBusiness";
+import { useApplyAppearance } from "../appearance/useAppearance";
 import { useConfigurationLoader } from "../root/useConfigurationLoader";
 import { MobileNavigation } from "./MobileNavigation";
 import { PullToRefresh } from "./PullToRefresh";
 
 export const MobileLayout = ({ children }: { children: ReactNode }) => {
   useConfigurationLoader();
+  useApplyAppearance();
   return (
     <DataImportProvider>
       <ScrollRestoration />

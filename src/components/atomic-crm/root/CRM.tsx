@@ -22,6 +22,8 @@ import products from "../products";
 import { stockLevels, stockMoves, warehouses } from "../stock";
 import { CalendarPage, WorkingHoursPage } from "../booking";
 import { ChatsPage } from "../channels/ChatsPage";
+import { TasksPage } from "../tasks/TasksPage";
+import { AnalyticsPage } from "../analytics/AnalyticsPage";
 import { InventoryPage } from "../stock/InventoryPage";
 import { Layout } from "../layout/Layout";
 import { SetupPage } from "../business/SetupPage";
@@ -278,13 +280,14 @@ const DesktopAdmin = (
         <Route path={CalendarPage.path} element={<CalendarPage />} />
         <Route path={WorkingHoursPage.path} element={<WorkingHoursPage />} />
         <Route path={ChatsPage.path} element={<ChatsPage />} />
+        <Route path={AnalyticsPage.path} element={<AnalyticsPage />} />
       </CustomRoutes>
       <Resource name="deals" {...deals} />
       <Resource name="contacts" {...contacts} />
       <Resource name="companies" {...companies} />
       <Resource name="contact_notes" />
       <Resource name="deal_notes" />
-      <Resource name="tasks" />
+      <Resource name="tasks" list={TasksPage} />
       <Resource name="sales" {...sales} />
       <Resource name="tags" />
       <Resource name="products" {...products} />
@@ -374,6 +377,7 @@ const MobileAdmin = (
           <Route path={CalendarPage.path} element={<CalendarPage />} />
           <Route path={WorkingHoursPage.path} element={<WorkingHoursPage />} />
           <Route path={ChatsPage.path} element={<ChatsPage />} />
+          <Route path={AnalyticsPage.path} element={<AnalyticsPage />} />
         </CustomRoutes>
         <Resource
           name="contacts"

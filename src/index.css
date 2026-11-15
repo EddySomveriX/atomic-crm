@@ -6,7 +6,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
+  /* The business picks the font (appearance/useAppearance.ts sets --app-font) */
+  --font-sans: var(--app-font);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -47,6 +48,18 @@
 /* Palette: neutral surfaces and one accent, an evergreen for the main
    action (contrast with white about 6:1, WCAG AA). */
 :root {
+  --app-font: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
+  /* Charts of the analytics page: three categorical series and a green
+     ramp for the busy hours, checked for color blindness and contrast with
+     the dataviz validator (light surface). */
+  --series-1: #008300;
+  --series-2: #2a78d6;
+  --series-3: #eb6834;
+  --seq-1: #d7ecd7;
+  --seq-2: #a6d4a6;
+  --seq-3: #6cb86c;
+  --seq-4: #2f952f;
+  --seq-5: #006b00;
   --radius: 0.625rem;
   --background: #f6f7f8;
   --foreground: #16191d;
@@ -71,14 +84,16 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* The menu on the left: the deep green of the brand, light text; the
+     active section is marked with the mint of --sidebar-primary. */
+  --sidebar: #143528;
+  --sidebar-foreground: #e6efe9;
+  --sidebar-primary: #7fd9ae;
+  --sidebar-primary-foreground: #0c2219;
+  --sidebar-accent: #1f4a39;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgb(255 255 255 / 10%);
+  --sidebar-ring: #7fd9ae;
   --avatar-0: oklch(0.85 0.08 240);
   --avatar-1: oklch(0.88 0.1 340);
   --avatar-2: oklch(0.85 0.07 180);
@@ -92,6 +107,14 @@
 }
 
 .dark {
+  --series-1: #0ca30c;
+  --series-2: #3987e5;
+  --series-3: #d95926;
+  --seq-1: #183a1b;
+  --seq-2: #1f5524;
+  --seq-3: #26742c;
+  --seq-4: #2f9636;
+  --seq-5: #4fc157;
   --background: #121614;
   --foreground: #eceeed;
   --card: #191e1b;
@@ -115,14 +138,14 @@
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar: #0c110e;
+  --sidebar-foreground: #dfe7e2;
+  --sidebar-primary: #5fc79a;
+  --sidebar-primary-foreground: #0c2219;
+  --sidebar-accent: #18241e;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgb(255 255 255 / 8%);
+  --sidebar-ring: #5fc79a;
   --avatar-0: oklch(0.35 0.12 240);
   --avatar-1: oklch(0.38 0.14 340);
   --avatar-2: oklch(0.35 0.11 180);
@@ -187,7 +210,7 @@ input[type="time"] {
 }
 
 body {
-  font-family: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--app-font);
 }
 
 /* The mobile pull-to-refresh (see layout/PullToRefresh.tsx) owns the overscroll

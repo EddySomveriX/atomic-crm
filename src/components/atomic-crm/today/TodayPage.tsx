@@ -17,6 +17,7 @@ import type { CrmDataProvider } from "../providers/types";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { TodayBookings } from "../booking/TodayBookings";
 import { TodayMessages } from "../channels/TodayMessages";
+import { useModules } from "../modules/useModules";
 import { AddTask } from "../tasks/AddTask";
 import type { Contact, Deal, Task } from "../types";
 import { formatBusinessDate, getBusinessDay } from "./businessDay";
@@ -30,6 +31,7 @@ const CLOSED_STAGES = ["won", "lost"];
  */
 export const TodayPage = () => {
   const translate = useTranslate();
+  const { isOn } = useModules();
   const [uiLocale = "uk"] = useLocaleState();
   const dataProvider = useDataProvider<CrmDataProvider>();
   const { identity } = useGetIdentity();
@@ -88,11 +90,23 @@ export const TodayPage = () => {
         </h1>
       </header>
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+      <div
+        className={
+          isOn("sales")
+            ? "grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"
+            : "grid max-w-3xl grid-cols-[minmax(0,1fr)] gap-10"
+        }
+      >
         <div className="flex min-w-0 flex-col gap-10">
-          <TodayMessages />
-          <TodayBookings start={day.start} end={day.end} timeZone={timeZone} />
-          {overdue.length > 0 ? (
+          {isOn("chats") ? <TodayMessages /> : null}
+          {isOn("booking") ? (
+            <TodayBookings
+              start={day.start}
+              end={day.end}
+              timeZone={timeZone}
+            />
+          ) : null}
+          {isOn("tasks") && overdue.length > 0 ? (
             <TaskSection
               title={translate("crm.today.decide")}
               tasks={overdue}
@@ -101,24 +115,26 @@ export const TodayPage = () => {
               timeZone={timeZone}
             />
           ) : null}
-          <TaskSection
-            title={translate("crm.today.plan")}
-            tasks={planned}
-            empty={
-              plannedPending || overduePending
-                ? null
-                : overdue.length === 0
-                  ? translate("crm.today.plan_empty") +
-                    " " +
-                    translate("crm.today.decide_empty")
-                  : translate("crm.today.plan_empty")
-            }
-            uiLocale={uiLocale}
-            timeZone={timeZone}
-            action={<AddTask selectContact display="chip" />}
-          />
+          {isOn("tasks") ? (
+            <TaskSection
+              title={translate("crm.today.plan")}
+              tasks={planned}
+              empty={
+                plannedPending || overduePending
+                  ? null
+                  : overdue.length === 0
+                    ? translate("crm.today.plan_empty") +
+                      " " +
+                      translate("crm.today.decide_empty")
+                    : translate("crm.today.plan_empty")
+              }
+              uiLocale={uiLocale}
+              timeZone={timeZone}
+              action={<AddTask selectContact display="chip" />}
+            />
+          ) : null}
         </div>
-        <OpenDeals />
+        {isOn("sales") ? <OpenDeals /> : null}
       </div>
     </div>
   );

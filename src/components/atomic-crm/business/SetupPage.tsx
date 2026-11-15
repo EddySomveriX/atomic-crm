@@ -16,6 +16,8 @@ import { Notification } from "@/components/admin/notification";
 import { reloadApp } from "./reloadApp";
 import type { CrmDataProvider } from "../providers/types";
 import { CONFIGURATION_STORE_KEY } from "../root/ConfigurationContext";
+import { defaultModules, type ModuleKey } from "../modules/modules";
+import { ModulesPicker } from "../modules/ModulesPicker";
 import { RequisiteFields } from "./RequisiteFields";
 import {
   compactRequisites,
@@ -52,6 +54,7 @@ export const SetupPage = () => {
   const [name, setName] = useState("");
   const [countryCode, setCountryCode] = useState("UA");
   const [businessType, setBusinessType] = useState<BusinessType | null>(null);
+  const [modules, setModules] = useState<ModuleKey[]>(defaultModules(null));
   const [requisites, setRequisites] = useState<Requisites>({});
 
   const { data: packs = [] } = useQuery({
@@ -83,6 +86,7 @@ export const SetupPage = () => {
         country_code: countryCode,
         business_type: businessType!,
         requisites: compactRequisites(requisites),
+        modules,
       }),
     onSuccess: () => {
       store.removeItem(CONFIGURATION_STORE_KEY);
@@ -100,7 +104,7 @@ export const SetupPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="mx-auto flex max-w-xl flex-col gap-10 px-4 py-10 sm:py-16">
+      <main className="mx-auto flex max-w-2xl flex-col gap-10 px-4 py-10 sm:py-16">
         <header className="flex flex-col gap-3">
           <h1 className="text-3xl font-semibold tracking-tight">
             {current
@@ -173,7 +177,10 @@ export const SetupPage = () => {
                 <ChoiceButton
                   key={type}
                   selected={type === businessType}
-                  onSelect={() => setBusinessType(type)}
+                  onSelect={() => {
+                    setBusinessType(type);
+                    setModules(defaultModules(type));
+                  }}
                   title={translate(`crm.business_types.${type}`, {
                     _: BUSINESS_TYPE_LABELS[type],
                   })}
@@ -184,6 +191,18 @@ export const SetupPage = () => {
               ))}
             </div>
           </fieldset>
+
+          {businessType ? (
+            <fieldset className="flex flex-col gap-3">
+              <legend className="mb-1 text-base font-medium">
+                {translate("crm.modules.setup_title")}
+              </legend>
+              <p className="mb-2 text-sm text-muted-foreground">
+                {translate("crm.modules.setup_hint")}
+              </p>
+              <ModulesPicker value={modules} onChange={setModules} />
+            </fieldset>
+          ) : null}
 
           <fieldset className="flex flex-col gap-3">
             <legend className="mb-3 text-base font-medium">

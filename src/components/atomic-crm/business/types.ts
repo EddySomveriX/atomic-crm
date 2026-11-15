@@ -1,3 +1,5 @@
+import type { ModuleKey } from "../modules/modules";
+
 import type { RequisiteValidator } from "../requisites/validators";
 
 export const BUSINESS_TYPES = [
@@ -47,6 +49,8 @@ export interface Business {
   currency: string;
   timezone: string;
   is_demo: boolean;
+  /** Sections turned on for this business (modules/modules.ts) */
+  modules: ModuleKey[];
   /** Language of the country pack (uk, pl), null without a country */
   language: string | null;
 }
@@ -67,4 +71,6 @@ export interface NewBusiness {
   country_code: string;
   business_type: BusinessType;
   requisites: Requisites;
+  /** Chosen in the wizard; the kind of business decides when empty */
+  modules?: ModuleKey[];
 }

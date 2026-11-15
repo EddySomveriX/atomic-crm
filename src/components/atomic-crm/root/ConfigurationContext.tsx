@@ -1,3 +1,4 @@
+import type { Appearance } from "../appearance/appearance";
 import { useMemo } from "react";
 import { useLocaleState, useStore } from "ra-core";
 
@@ -23,6 +24,8 @@ export interface ConfigurationContextValue {
   title: string;
   darkModeLogo: string;
   lightModeLogo: string;
+  /** Menu color and style, font: appearance/appearance.ts */
+  appearance?: Partial<Appearance>;
 }
 
 export const useConfigurationContext = () => {

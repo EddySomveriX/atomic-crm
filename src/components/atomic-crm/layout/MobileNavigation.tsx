@@ -7,45 +7,73 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import {
-  Home,
+  Ellipsis,
   ListTodo,
-  MessageCircle,
   Plus,
   Settings,
   StickyNote,
   UserPlus,
-  Users,
 } from "lucide-react";
 import { useTranslate } from "ra-core";
 import { Link, matchPath, useLocation, useMatch } from "react-router";
 import { ContactCreateSheet } from "../contacts/ContactCreateSheet";
+import {
+  sectionOfPath,
+  visibleSections,
+  type NavSection,
+} from "../modules/modules";
+import { useModules } from "../modules/useModules";
 import { useState } from "react";
 import { NoteCreateSheet } from "../notes/NoteCreateSheet";
 import { TaskCreateSheet } from "../tasks/TaskCreateSheet";
 
+/**
+ * Pages of each section that exist on a phone; sections without one (sales)
+ * stay on the computer.
+ */
+const MOBILE_PATHS: Record<string, string> = {
+  today: "/",
+  chats: "/chats",
+  booking: "/calendar",
+  counterparties: "/contacts",
+  stock: "/products",
+  tasks: "/tasks",
+  analytics: "/analytics",
+};
+
+/**
+ * The bottom bar of a phone: Today, the first two sections of the modules the
+ * business uses, the "+" in the middle, and "More" with the other sections
+ * and the settings.
+ */
 export const MobileNavigation = () => {
   const location = useLocation();
   const translate = useTranslate();
+  const { modules } = useModules();
 
-  let currentPath: string | boolean = "/";
-  if (matchPath("/", location.pathname)) {
-    currentPath = "/";
-  } else if (matchPath("/contacts/*", location.pathname)) {
-    currentPath = "/contacts";
-  } else if (matchPath("/companies/*", location.pathname)) {
-    currentPath = "/companies";
-  } else if (matchPath("/chats/*", location.pathname)) {
-    currentPath = "/chats";
-  } else if (matchPath("/deals/*", location.pathname)) {
-    currentPath = "/deals";
-  } else {
-    currentPath = false;
-  }
+  const sections = visibleSections(modules).filter(
+    (section) => MOBILE_PATHS[section.key] != null,
+  );
+  const [today, ...others] = sections;
+  const pinned = others.slice(0, 2);
+  const more = others.slice(2);
+  const current = sectionOfPath(location.pathname);
+  const isSettings = matchPath("/settings/*", location.pathname) != null;
 
   // Check if the app is running as a PWA (standalone mode)
   const isPwa = window.matchMedia("(display-mode: standalone)").matches;
   // Check if it's iOS on the web
   const isWebiOS = /iPad|iPod|iPhone/.test(window.navigator.userAgent);
+
+  const button = (section: NavSection) => (
+    <NavigationButton
+      key={section.key}
+      href={MOBILE_PATHS[section.key]}
+      Icon={section.icon}
+      label={translate(section.labelKey)}
+      isActive={current?.key === section.key}
+    />
+  );
 
   return (
     <nav
@@ -62,32 +90,68 @@ export const MobileNavigation = () => {
       }}
     >
       <div className="flex justify-center">
-        <>
-          <NavigationButton
-            href="/"
-            Icon={Home}
-            label={translate("crm.nav.today")}
-            isActive={currentPath === "/"}
-          />
-          <NavigationButton
-            href="/contacts"
-            Icon={Users}
-            label={translate("resources.contacts.name", {
-              smart_count: 2,
-            })}
-            isActive={currentPath === "/contacts"}
-          />
-          <CreateButton />
-          <NavigationButton
-            href="/chats"
-            Icon={MessageCircle}
-            label={translate("crm.nav.chats")}
-            isActive={currentPath === "/chats"}
-          />
-          <SettingsButton />
-        </>
+        {today ? button(today) : null}
+        {pinned[0] ? button(pinned[0]) : null}
+        <CreateButton />
+        {pinned[1] ? button(pinned[1]) : null}
+        <MoreButton
+          sections={more}
+          isActive={
+            isSettings || more.some((section) => section.key === current?.key)
+          }
+        />
       </div>
     </nav>
+  );
+};
+
+/** "More": the other sections and the settings. */
+const MoreButton = ({
+  sections,
+  isActive,
+}: {
+  sections: NavSection[];
+  isActive: boolean;
+}) => {
+  const translate = useTranslate();
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            variant="ghost"
+            className={cn(
+              "flex-col gap-1 h-auto py-2 px-1 rounded-md w-16",
+              isActive ? null : "text-muted-foreground",
+            )}
+          />
+        }
+      >
+        <Ellipsis className="size-6" />
+        <span className="text-[0.6rem] font-medium">
+          {translate("crm.nav.more")}
+        </span>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-56">
+        {sections.map((section) => (
+          <DropdownMenuItem
+            key={section.key}
+            className="h-12 gap-3 px-4 text-base"
+            render={<Link to={MOBILE_PATHS[section.key]} />}
+          >
+            <section.icon className="size-5" />
+            {translate(section.labelKey)}
+          </DropdownMenuItem>
+        ))}
+        <DropdownMenuItem
+          className="h-12 gap-3 px-4 text-base"
+          render={<Link to="/settings" />}
+        >
+          <Settings className="size-5" />
+          {translate("crm.settings.title")}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 
@@ -117,6 +181,7 @@ const NavigationButton = ({
 
 const CreateButton = () => {
   const translate = useTranslate();
+  const { isOn } = useModules();
   const contact_id = useMatch("/contacts/:id/*")?.params.id;
   const [contactCreateOpen, setContactCreateOpen] = useState(false);
   const [noteCreateOpen, setNoteCreateOpen] = useState(false);
@@ -170,32 +235,19 @@ const CreateButton = () => {
             <StickyNote className="size-5" />
             {translate("resources.notes.forcedCaseName")}
           </DropdownMenuItem>
-          <DropdownMenuItem
-            className="h-12 gap-3 px-4 text-base"
-            onClick={() => {
-              setTaskCreateOpen(true);
-            }}
-          >
-            <ListTodo className="size-5" />
-            {translate("resources.tasks.forcedCaseName")}
-          </DropdownMenuItem>
+          {isOn("tasks") ? (
+            <DropdownMenuItem
+              className="h-12 gap-3 px-4 text-base"
+              onClick={() => {
+                setTaskCreateOpen(true);
+              }}
+            >
+              <ListTodo className="size-5" />
+              {translate("resources.tasks.forcedCaseName")}
+            </DropdownMenuItem>
+          ) : null}
         </DropdownMenuContent>
       </DropdownMenu>
     </>
-  );
-};
-
-const SettingsButton = () => {
-  const translate = useTranslate();
-  const location = useLocation();
-  const isActive = !!matchPath("/settings", location.pathname);
-
-  return (
-    <NavigationButton
-      href="/settings"
-      Icon={Settings}
-      label={translate("crm.settings.title")}
-      isActive={isActive}
-    />
   );
 };

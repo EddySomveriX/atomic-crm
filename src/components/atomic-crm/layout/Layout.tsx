@@ -4,23 +4,31 @@ import { Notification } from "@/components/admin/notification";
 import { Error } from "@/components/admin/error";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { useApplyAppearance } from "../appearance/useAppearance";
 import { DataImportProvider } from "../dataImport/DataImportProvider";
 import { RequireBusiness } from "../business/RequireBusiness";
 import { useConfigurationLoader } from "../root/useConfigurationLoader";
-import Header from "./Header";
+import { Sidebar } from "./Sidebar";
 
 export const Layout = ({ children }: { children: ReactNode }) => {
   useConfigurationLoader();
+  useApplyAppearance();
   return (
     <DataImportProvider>
-      <Header />
-      <main className="max-w-screen-xl mx-auto p-4" id="main-content">
-        <ErrorBoundary FallbackComponent={Error}>
-          <Suspense fallback={<Skeleton className="h-12 w-12 rounded-full" />}>
-            <RequireBusiness>{children}</RequireBusiness>
-          </Suspense>
-        </ErrorBoundary>
-      </main>
+      <div className="flex min-h-dvh">
+        <Sidebar />
+        <main className="min-w-0 flex-1" id="main-content">
+          <div className="mx-auto max-w-screen-xl p-4 md:px-6">
+            <ErrorBoundary FallbackComponent={Error}>
+              <Suspense
+                fallback={<Skeleton className="h-12 w-12 rounded-full" />}
+              >
+                <RequireBusiness>{children}</RequireBusiness>
+              </Suspense>
+            </ErrorBoundary>
+          </div>
+        </main>
+      </div>
       <Notification />
     </DataImportProvider>
   );

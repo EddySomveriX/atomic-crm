@@ -75,8 +75,11 @@ const SHORTCUT_LABEL =
  */
 export const GlobalSearchButton = ({
   variant = "labelled",
+  className,
 }: {
   variant?: "labelled" | "icon";
+  /** Replaces the size and colors of the labelled trigger */
+  className?: string;
 }) => {
   const translate = useTranslate();
   const [open, setOpen] = useState(false);
@@ -113,7 +116,7 @@ export const GlobalSearchButton = ({
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full"
+          className={className ?? "rounded-full"}
           onClick={openDialog}
           aria-label={translate("crm.search.title")}
         >
@@ -127,13 +130,22 @@ export const GlobalSearchButton = ({
           onClick={openDialog}
           aria-label={translate("crm.search.title")}
           aria-keyshortcuts="Control+K Meta+K"
-          className="mr-2 w-40 justify-start bg-background px-3 font-normal text-muted-foreground xl:w-64"
+          className={
+            className ??
+            "mr-2 w-40 justify-start bg-background px-3 font-normal text-muted-foreground xl:w-64"
+          }
         >
           <Search />
           <span className="flex-1 text-left">
             {translate("crm.search.title")}
           </span>
-          <kbd className="pointer-events-none hidden rounded border bg-muted px-1.5 font-sans text-[10px] font-medium xl:inline">
+          <kbd
+            className={
+              className
+                ? "pointer-events-none hidden rounded border border-current/30 px-1.5 font-sans text-[10px] font-medium opacity-70 xl:inline"
+                : "pointer-events-none hidden rounded border bg-muted px-1.5 font-sans text-[10px] font-medium xl:inline"
+            }
+          >
             {SHORTCUT_LABEL}
           </kbd>
         </Button>

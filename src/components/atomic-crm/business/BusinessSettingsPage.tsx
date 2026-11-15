@@ -12,6 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
 import { ChannelsSettings } from "../channels/ChannelsSettings";
+import { ModulesSettings } from "../modules/ModulesSettings";
+import { AppearanceSettings } from "../appearance/AppearanceSettings";
 import { reloadApp } from "./reloadApp";
 import type { CrmDataProvider } from "../providers/types";
 import { CONFIGURATION_STORE_KEY } from "../root/ConfigurationContext";
@@ -50,11 +52,13 @@ export const BusinessSettingsPage = () => {
   if (!business) return null;
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-12 py-6">
+    <div className="mx-auto flex max-w-3xl flex-col gap-12 py-6">
       <h1 className="text-3xl font-semibold tracking-tight">
         {translate("crm.business_settings.title", { _: "Business" })}
       </h1>
       <BusinessDetails business={business} />
+      <ModulesSettings business={business} />
+      <AppearanceSettings />
       <ChannelsSettings />
       <BusinessMembers business={business} />
       <DeleteBusiness business={business} />

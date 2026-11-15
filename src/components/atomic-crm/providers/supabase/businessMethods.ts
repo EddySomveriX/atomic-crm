@@ -61,6 +61,13 @@ export const businessMethods = {
       p_requisites: business.requisites,
     });
     if (error) fail("Failed to create the business", error);
+    if (business.modules) {
+      const { error: modulesError } = await getSupabaseClient()
+        .from("businesses")
+        .update({ modules: business.modules })
+        .eq("id", data as string);
+      if (modulesError) fail("Failed to save the modules", modulesError);
+    }
     clearCache();
     return data as string;
   },
@@ -76,7 +83,7 @@ export const businessMethods = {
     const { data, error } = await getSupabaseClient()
       .from("businesses")
       .select(
-        "id, name, country_code, business_type, requisites, currency, timezone, is_demo, country_packs(language)",
+        "id, name, country_code, business_type, requisites, currency, timezone, is_demo, modules, country_packs(language)",
       )
       .eq("id", businessId)
       .maybeSingle();
@@ -91,7 +98,9 @@ export const businessMethods = {
 
   async updateBusiness(
     id: string,
-    changes: Partial<Pick<Business, "name" | "business_type" | "requisites">>,
+    changes: Partial<
+      Pick<Business, "name" | "business_type" | "requisites" | "modules">
+    >,
   ): Promise<void> {
     const { error } = await getSupabaseClient()
       .from("businesses")
