@@ -15,6 +15,7 @@ import { Link } from "react-router";
 import { formatMoney } from "../money/money";
 import type { CrmDataProvider } from "../providers/types";
 import { useConfigurationContext } from "../root/ConfigurationContext";
+import { TodayBookings } from "../booking/TodayBookings";
 import { AddTask } from "../tasks/AddTask";
 import type { Contact, Deal, Task } from "../types";
 import { formatBusinessDate, getBusinessDay } from "./businessDay";
@@ -88,6 +89,7 @@ export const TodayPage = () => {
 
       <div className="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <div className="flex min-w-0 flex-col gap-10">
+          <TodayBookings start={day.start} end={day.end} timeZone={timeZone} />
           {overdue.length > 0 ? (
             <TaskSection
               title={translate("crm.today.decide")}

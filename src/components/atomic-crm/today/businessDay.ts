@@ -4,13 +4,13 @@
  * 23:30 local time is already on the next day.
  */
 
-interface DateParts {
+export interface DateParts {
   year: number;
   month: number;
   day: number;
 }
 
-const datePartsIn = (date: Date, timeZone: string): DateParts => {
+export const datePartsIn = (date: Date, timeZone: string): DateParts => {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone,
     year: "numeric",
@@ -23,7 +23,7 @@ const datePartsIn = (date: Date, timeZone: string): DateParts => {
 };
 
 /** Offset of a time zone at a moment, in minutes east of UTC (Kyiv: 120 or 180). */
-const offsetMinutes = (date: Date, timeZone: string): number => {
+export const offsetMinutes = (date: Date, timeZone: string): number => {
   const name =
     new Intl.DateTimeFormat("en-US", {
       timeZone,
@@ -38,7 +38,7 @@ const offsetMinutes = (date: Date, timeZone: string): number => {
 };
 
 /** The moment a calendar day starts in a time zone. */
-const startOfDay = (
+export const startOfDay = (
   { year, month, day }: DateParts,
   timeZone: string,
 ): Date => {

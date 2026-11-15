@@ -18,6 +18,8 @@ export const ukrainianCrmMessages = {
         archived: "В архіві",
         quantity: "Залишок",
         average_cost: "Середня собівартість",
+        duration_minutes: "Тривалість, хв",
+        buffer_minutes: "Перерва після, хв",
       },
       action: { new: "Новий товар" },
       empty: {
@@ -59,6 +61,26 @@ export const ukrainianCrmMessages = {
         title: "На складі порожньо",
         description: "Оформіть прихід, щоб товар зʼявився на складі.",
       },
+    },
+    bookings: {
+      name: "Запис |||| Записи |||| Записів",
+      forcedCaseName: "Запис",
+      fields: {
+        product_id: "Послуга",
+        sales_id: "Майстер",
+        client_id: "Клієнт",
+        day: "Дата",
+        time: "Час",
+        status: "Статус",
+        note: "Примітка",
+      },
+    },
+    working_hours: {
+      name: "Робочі години |||| Робочі години |||| Робочих годин",
+      fields: { starts_at: "Початок", ends_at: "Кінець" },
+    },
+    specialists: {
+      name: "Майстер |||| Майстри |||| Майстрів",
     },
     warehouses: {
       name: "Склад |||| Склади |||| Складів",
@@ -515,6 +537,40 @@ export const ukrainianCrmMessages = {
       service_no_stock: "Послуга не зберігається на складі",
       move_failed: "Не вдалося провести рух",
     },
+    booking: {
+      calendar: "Календар",
+      today: "Сьогодні",
+      previous_day: "Попередній день",
+      next_day: "Наступний день",
+      new: "Новий запис",
+      edit: "Запис",
+      schedule: "Графік роботи",
+      schedule_hint:
+        "Бот і сайт пропонують клієнтам лише вільний час у межах цих годин. Час — за часовим поясом бізнесу.",
+      set_schedule: "Налаштувати графік роботи",
+      no_hours:
+        "На цей день немає робочих годин і записів. Додайте графік роботи майстрів, щоб записувати клієнтів.",
+      no_client: "Без клієнта",
+      minutes: "%{count} хв",
+      duration_hint:
+        "Заповніть, щоб на послугу можна було записатися. Перерва — час після послуги до наступного клієнта.",
+      time_taken:
+        "Цей час у майстра вже зайнятий (разом із перервою після послуги). Оберіть інший.",
+      save_failed: "Не вдалося зберегти запис",
+      saved: "Запис збережено",
+      day_off: "Вихідний",
+      add_hours: "Додати години",
+      workweek_preset: "Пн–Пт, 9:00–18:00",
+      hours_overlap: "Ці години перетинаються з уже доданими",
+      hours_failed: "Не вдалося зберегти: графік змінюють власник або менеджер",
+      statuses: {
+        booked: "Записаний",
+        completed: "Виконано",
+        no_show: "Не прийшов",
+        cancelled: "Скасовано",
+      },
+      sources: { crm: "CRM", telegram: "Telegram", widget: "Сайт" },
+    },
     inventory: {
       title: "Інвентаризація",
       find: "Штрихкод, артикул або назва",
@@ -861,6 +917,8 @@ export const ukrainianCrmMessages = {
       more: "Ще",
     },
     today: {
+      bookings: "Записи на сьогодні",
+      bookings_empty: "На сьогодні записів немає.",
       title: "Сьогодні",
       plan: "Заплановано на сьогодні",
       plan_empty: "На сьогодні нічого не заплановано.",

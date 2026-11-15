@@ -20,6 +20,7 @@ import contacts from "../contacts";
 import deals from "../deals";
 import products from "../products";
 import { stockLevels, stockMoves, warehouses } from "../stock";
+import { CalendarPage, WorkingHoursPage } from "../booking";
 import { InventoryPage } from "../stock/InventoryPage";
 import { Layout } from "../layout/Layout";
 import { SetupPage } from "../business/SetupPage";
@@ -273,6 +274,8 @@ const DesktopAdmin = (
         <Route path={ImportPage.path} element={<ImportPage />} />
         <Route path={ChangelogPage.path} element={<ChangelogPage />} />
         <Route path={InventoryPage.path} element={<InventoryPage />} />
+        <Route path={CalendarPage.path} element={<CalendarPage />} />
+        <Route path={WorkingHoursPage.path} element={<WorkingHoursPage />} />
       </CustomRoutes>
       <Resource name="deals" {...deals} />
       <Resource name="contacts" {...contacts} />
@@ -287,6 +290,9 @@ const DesktopAdmin = (
       <Resource name="stock_levels" {...stockLevels} />
       <Resource name="warehouses" {...warehouses} />
       <Resource name="supplier_skus" />
+      <Resource name="bookings" />
+      <Resource name="working_hours" />
+      <Resource name="specialists" />
     </Admin>
   );
 };
@@ -359,6 +365,8 @@ const MobileAdmin = (
             element={<BusinessSettingsPage />}
           />
           <Route path={InventoryPage.path} element={<InventoryPage />} />
+          <Route path={CalendarPage.path} element={<CalendarPage />} />
+          <Route path={WorkingHoursPage.path} element={<WorkingHoursPage />} />
         </CustomRoutes>
         <Resource
           name="contacts"
@@ -376,6 +384,9 @@ const MobileAdmin = (
           show={products.show}
           recordRepresentation={products.recordRepresentation}
         />
+        <Resource name="bookings" />
+        <Resource name="working_hours" />
+        <Resource name="specialists" />
       </Admin>
     </PersistQueryClientProvider>
   );

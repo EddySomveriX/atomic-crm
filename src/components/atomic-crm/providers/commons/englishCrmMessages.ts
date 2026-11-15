@@ -15,6 +15,8 @@ export const englishCrmMessages = {
         archived: "Archived",
         quantity: "In stock",
         average_cost: "Average cost",
+        duration_minutes: "Duration, min",
+        buffer_minutes: "Pause after, min",
       },
       action: { new: "New product" },
       empty: {
@@ -56,6 +58,26 @@ export const englishCrmMessages = {
         title: "Nothing in stock",
         description: "Post a receipt to put goods in a warehouse.",
       },
+    },
+    bookings: {
+      name: "Booking |||| Bookings",
+      forcedCaseName: "Booking",
+      fields: {
+        product_id: "Service",
+        sales_id: "Specialist",
+        client_id: "Client",
+        day: "Date",
+        time: "Time",
+        status: "Status",
+        note: "Note",
+      },
+    },
+    working_hours: {
+      name: "Working hours |||| Working hours",
+      fields: { starts_at: "From", ends_at: "To" },
+    },
+    specialists: {
+      name: "Specialist |||| Specialists",
     },
     warehouses: {
       name: "Warehouse |||| Warehouses",
@@ -513,6 +535,41 @@ export const englishCrmMessages = {
       service_no_stock: "A service is not kept in stock",
       move_failed: "Could not post the move",
     },
+    booking: {
+      calendar: "Calendar",
+      today: "Today",
+      previous_day: "Previous day",
+      next_day: "Next day",
+      new: "New booking",
+      edit: "Booking",
+      schedule: "Working hours",
+      schedule_hint:
+        "The bot and the website offer clients only free times within these hours, in the business time zone.",
+      set_schedule: "Set the working hours",
+      no_hours:
+        "No working hours or bookings on this day. Add the working hours of your specialists to book clients.",
+      no_client: "No client",
+      minutes: "%{count} min",
+      duration_hint:
+        "Fill it in to make the service bookable. The pause is the time after the service before the next client.",
+      time_taken:
+        "The specialist is already busy at this time (with the pause after the service). Choose another one.",
+      save_failed: "The booking could not be saved",
+      saved: "Booking saved",
+      day_off: "Day off",
+      add_hours: "Add hours",
+      workweek_preset: "Mon–Fri, 9:00–18:00",
+      hours_overlap: "These hours overlap the ones already added",
+      hours_failed:
+        "Could not save: the owner or a manager sets the working hours",
+      statuses: {
+        booked: "Booked",
+        completed: "Done",
+        no_show: "No-show",
+        cancelled: "Cancelled",
+      },
+      sources: { crm: "CRM", telegram: "Telegram", widget: "Website" },
+    },
     inventory: {
       title: "Inventory",
       find: "Barcode, article or name",
@@ -864,6 +921,8 @@ export const englishCrmMessages = {
       more: "More",
     },
     today: {
+      bookings: "Today's bookings",
+      bookings_empty: "No bookings today.",
       title: "Today",
       plan: "Planned for today",
       plan_empty: "Nothing planned for today.",
