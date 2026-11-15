@@ -1,7 +1,10 @@
+import { useMutation } from "@tanstack/react-query";
+import { BellRing } from "lucide-react";
 import {
   Form,
   required,
   useCreate,
+  useDataProvider,
   useNotify,
   useTranslate,
   useUpdate,
@@ -20,6 +23,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+import type { CrmDataProvider } from "../providers/types";
 import { dayIn, timeIn, zonedDateTime } from "./bookingTime";
 import {
   BOOKING_STATUSES,
@@ -196,7 +200,10 @@ export const BookingDialog = ({
             ) : null}
             <TextInput source="note" multiline helperText={false} />
           </div>
-          <DialogFooter className="mt-6">
+          <DialogFooter className="mt-6 flex-wrap gap-2">
+            {booking && booking.status === "booked" && !readOnly ? (
+              <RemindButton booking={booking} />
+            ) : null}
             <Button type="button" variant="ghost" onClick={onClose}>
               {translate("ra.action.cancel")}
             </Button>
@@ -209,5 +216,32 @@ export const BookingDialog = ({
         </Form>
       </DialogContent>
     </Dialog>
+  );
+};
+
+/** Sends the client a reminder of this booking in Telegram now. */
+const RemindButton = ({ booking }: { booking: Booking }) => {
+  const translate = useTranslate();
+  const notify = useNotify();
+  const dataProvider = useDataProvider<CrmDataProvider>();
+  const remind = useMutation({
+    mutationFn: () => dataProvider.sendBookingReminder(booking.id),
+    onSuccess: (result) =>
+      notify(`crm.booking.reminder_${result}`, {
+        type: result === "sent" ? "success" : "warning",
+      }),
+    onError: () => notify("crm.booking.reminder_failed", { type: "error" }),
+  });
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      className="sm:mr-auto"
+      onClick={() => remind.mutate()}
+      disabled={remind.isPending}
+    >
+      <BellRing />
+      {translate("crm.booking.remind_now")}
+    </Button>
   );
 };

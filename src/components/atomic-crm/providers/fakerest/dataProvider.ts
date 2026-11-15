@@ -338,6 +338,14 @@ export const createDataProvider = ({
       status: "unavailable",
       vatId: `${countryCode}${vatNumber}`,
     }),
+    connectTelegram: async (_token: string) =>
+      Promise.reject(new Error("Channels are not available in the demo")),
+    disconnectTelegram: async (): Promise<void> => {},
+    sendChatMessage: async (_conversationId: Identifier, _text: string) => ({
+      status: "failed" as const,
+      error: "Channels are not available in the demo",
+    }),
+    sendBookingReminder: async (_bookingId: Identifier) => "no_chat" as const,
     isInitialized: async (): Promise<boolean> => {
       const sales = await dataProvider.getList<Sale>("sales", {
         filter: {},

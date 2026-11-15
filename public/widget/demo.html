@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Test website with the CRM widget</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        background: #faf7f2;
+        color: #2b2118;
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 64px 24px;
+      }
+      h1 {
+        font-size: 44px;
+        margin: 0 0 12px;
+      }
+      p {
+        font-size: 18px;
+        line-height: 1.6;
+      }
+      .hint {
+        font-family: system-ui, sans-serif;
+        font-size: 14px;
+        color: #6b5a4a;
+        border-top: 1px solid #e5dccf;
+        padding-top: 16px;
+        margin-top: 48px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Test website</h1>
+      <p>
+        This page shows how the widget of the CRM looks on the website of a
+        business. Press the button in the bottom right corner to book a
+        service or to write a message: it arrives in the chat center of the
+        CRM.
+      </p>
+      <p class="hint">
+        The page reads the widget key and the API address from its own address
+        (?key=…&amp;api=…), the way a real site has them in the pasted code.
+      </p>
+    </main>
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var script = document.createElement("script");
+        script.src = "/widget/widget.js";
+        script.setAttribute("data-key", params.get("key") || "");
+        script.setAttribute("data-api", params.get("api") || "");
+        document.body.appendChild(script);
+      })();
+    </script>
+  </body>
+</html>

@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
+import { ChannelsSettings } from "../channels/ChannelsSettings";
 import { reloadApp } from "./reloadApp";
 import type { CrmDataProvider } from "../providers/types";
 import { CONFIGURATION_STORE_KEY } from "../root/ConfigurationContext";
@@ -54,6 +55,7 @@ export const BusinessSettingsPage = () => {
         {translate("crm.business_settings.title", { _: "Business" })}
       </h1>
       <BusinessDetails business={business} />
+      <ChannelsSettings />
       <BusinessMembers business={business} />
       <DeleteBusiness business={business} />
     </div>

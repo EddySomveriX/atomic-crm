@@ -21,6 +21,7 @@ import deals from "../deals";
 import products from "../products";
 import { stockLevels, stockMoves, warehouses } from "../stock";
 import { CalendarPage, WorkingHoursPage } from "../booking";
+import { ChatsPage } from "../channels/ChatsPage";
 import { InventoryPage } from "../stock/InventoryPage";
 import { Layout } from "../layout/Layout";
 import { SetupPage } from "../business/SetupPage";
@@ -276,6 +277,7 @@ const DesktopAdmin = (
         <Route path={InventoryPage.path} element={<InventoryPage />} />
         <Route path={CalendarPage.path} element={<CalendarPage />} />
         <Route path={WorkingHoursPage.path} element={<WorkingHoursPage />} />
+        <Route path={ChatsPage.path} element={<ChatsPage />} />
       </CustomRoutes>
       <Resource name="deals" {...deals} />
       <Resource name="contacts" {...contacts} />
@@ -293,6 +295,10 @@ const DesktopAdmin = (
       <Resource name="bookings" />
       <Resource name="working_hours" />
       <Resource name="specialists" />
+      <Resource name="channels" />
+      <Resource name="conversations" />
+      <Resource name="messages" />
+      <Resource name="reply_templates" />
     </Admin>
   );
 };
@@ -367,6 +373,7 @@ const MobileAdmin = (
           <Route path={InventoryPage.path} element={<InventoryPage />} />
           <Route path={CalendarPage.path} element={<CalendarPage />} />
           <Route path={WorkingHoursPage.path} element={<WorkingHoursPage />} />
+          <Route path={ChatsPage.path} element={<ChatsPage />} />
         </CustomRoutes>
         <Resource
           name="contacts"
@@ -387,6 +394,10 @@ const MobileAdmin = (
         <Resource name="bookings" />
         <Resource name="working_hours" />
         <Resource name="specialists" />
+        <Resource name="channels" />
+        <Resource name="conversations" />
+        <Resource name="messages" />
+        <Resource name="reply_templates" />
       </Admin>
     </PersistQueryClientProvider>
   );

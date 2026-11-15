@@ -16,6 +16,7 @@ import { formatMoney } from "../money/money";
 import type { CrmDataProvider } from "../providers/types";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { TodayBookings } from "../booking/TodayBookings";
+import { TodayMessages } from "../channels/TodayMessages";
 import { AddTask } from "../tasks/AddTask";
 import type { Contact, Deal, Task } from "../types";
 import { formatBusinessDate, getBusinessDay } from "./businessDay";
@@ -25,7 +26,7 @@ const CLOSED_STAGES = ["won", "lost"];
 /**
  * The start screen (TZ section 4.1): what is planned for today, what waits
  * for a decision, and the deals in progress. Days follow the business time
- * zone. Messages join when the chat center exists.
+ * zone. Clients waiting for an answer come first.
  */
 export const TodayPage = () => {
   const translate = useTranslate();
@@ -89,6 +90,7 @@ export const TodayPage = () => {
 
       <div className="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <div className="flex min-w-0 flex-col gap-10">
+          <TodayMessages />
           <TodayBookings start={day.start} end={day.end} timeZone={timeZone} />
           {overdue.length > 0 ? (
             <TaskSection

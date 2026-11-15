@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import {
   Home,
   ListTodo,
+  MessageCircle,
   Plus,
   Settings,
   StickyNote,
@@ -33,8 +34,8 @@ export const MobileNavigation = () => {
     currentPath = "/contacts";
   } else if (matchPath("/companies/*", location.pathname)) {
     currentPath = "/companies";
-  } else if (matchPath("/tasks/*", location.pathname)) {
-    currentPath = "/tasks";
+  } else if (matchPath("/chats/*", location.pathname)) {
+    currentPath = "/chats";
   } else if (matchPath("/deals/*", location.pathname)) {
     currentPath = "/deals";
   } else {
@@ -78,10 +79,10 @@ export const MobileNavigation = () => {
           />
           <CreateButton />
           <NavigationButton
-            href="/tasks"
-            Icon={ListTodo}
-            label={translate("resources.tasks.name", { smart_count: 2 })}
-            isActive={currentPath === "/tasks"}
+            href="/chats"
+            Icon={MessageCircle}
+            label={translate("crm.nav.chats")}
+            isActive={currentPath === "/chats"}
           />
           <SettingsButton />
         </>

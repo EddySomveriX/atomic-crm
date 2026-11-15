@@ -27,6 +27,7 @@ import {
 } from "./authProvider";
 import { searchDealCategories } from "./searchDealCategories";
 import { businessMethods } from "./businessMethods";
+import { channelMethods } from "./channelMethods";
 import { counterpartyMethods } from "./counterpartyMethods";
 import { stockMethods } from "./stockMethods";
 import { getSupabaseClient } from "./supabase";
@@ -398,6 +399,7 @@ const getDataProviderWithCustomMethods = () => {
     ...businessMethods,
     ...counterpartyMethods,
     ...stockMethods,
+    ...channelMethods,
   } satisfies DataProvider;
 };
 

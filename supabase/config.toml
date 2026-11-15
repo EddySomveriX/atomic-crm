@@ -174,3 +174,15 @@ verify_jwt = false
 verify_jwt = false
 [functions.vies_check]
 verify_jwt = false
+[functions.telegram_webhook]
+verify_jwt = false
+[functions.channels_poll]
+verify_jwt = false
+[functions.telegram_connect]
+verify_jwt = false
+[functions.chat_send]
+verify_jwt = false
+[functions.booking_reminders]
+verify_jwt = false
+[functions.widget_api]
+verify_jwt = false

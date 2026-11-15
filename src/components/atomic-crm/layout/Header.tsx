@@ -16,9 +16,11 @@ import { QuickCreateButton } from "./QuickCreateButton";
 /**
  * The menu of TZ section 4.1, at most 5 items: Today plus one tab per enabled
  * module. A tab covers several pages, shown as sub-tabs when there are more
- * than one; chats, purchases and money join with their modules.
+ * than one; the booking calendar opens from Today. Purchases and money join
+ * with their modules.
  */
 const SECTIONS = [
+  { key: "chats", paths: ["/chats"] },
   { key: "sales", paths: ["/deals"] },
   { key: "counterparties", paths: ["/companies", "/contacts"] },
   {
@@ -61,7 +63,9 @@ const Header = () => {
           >
             <img className="[.light_&]:hidden h-6" src={darkModeLogo} alt="" />
             <img className="[.dark_&]:hidden h-6" src={lightModeLogo} alt="" />
-            <span className="text-lg font-semibold">{title}</span>
+            <span className="hidden text-lg font-semibold xl:inline">
+              {title}
+            </span>
           </Link>
           <div className="flex h-full items-stretch gap-1">
             <NavigationTab

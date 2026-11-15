@@ -82,6 +82,10 @@ export const ukrainianCrmMessages = {
     specialists: {
       name: "Майстер |||| Майстри |||| Майстрів",
     },
+    channels: { name: "Канал |||| Канали |||| Каналів" },
+    conversations: { name: "Діалог |||| Діалоги |||| Діалогів" },
+    messages: { name: "Повідомлення |||| Повідомлення |||| Повідомлень" },
+    reply_templates: { name: "Шаблон |||| Шаблони |||| Шаблонів" },
     warehouses: {
       name: "Склад |||| Склади |||| Складів",
       forcedCaseName: "Склад",
@@ -570,6 +574,69 @@ export const ukrainianCrmMessages = {
         cancelled: "Скасовано",
       },
       sources: { crm: "CRM", telegram: "Telegram", widget: "Сайт" },
+      remind_now: "Надіслати нагадування",
+      reminder_sent: "Нагадування надіслано клієнту в Telegram",
+      reminder_no_chat:
+        "У клієнта немає чату з ботом: нагадування не надіслано",
+      reminder_failed: "Не вдалося надіслати нагадування",
+    },
+    chats: {
+      title: "Чати",
+      filters: { all: "Усі", waiting: "Чекають відповіді", mine: "Мої" },
+      empty: "Повідомлень поки немає.",
+      no_channels:
+        "Канали не підключені. Підключіть Telegram-бота або віджет сайту в налаштуваннях бізнесу.",
+      choose: "Оберіть діалог зліва.",
+      unknown_client: "Клієнт",
+      closed: "Закритий",
+      waited_minutes: "%{count} хв",
+      waited_hours: "%{count} год",
+      waited_days: "%{count} дн",
+      assigned_to: "Відповідальний",
+      unassigned: "Без відповідального",
+      close: "Закрити",
+      reopen: "Відкрити знову",
+      client_card: "Картка клієнта",
+      link_client: "Прив'язати до контрагента",
+      new_client: "Створити нового",
+      answer_placeholder: "Відповідь клієнту… (Ctrl+Enter — надіслати)",
+      send: "Надіслати",
+      send_failed:
+        "Не вдалося надіслати. Перевірте, що бот підключений, і спробуйте ще раз.",
+      bot: "бот",
+      not_delivered: "не доставлено",
+      templates: "Шаблони відповідей",
+      no_templates: "Шаблонів поки немає.",
+      add_template: "Додати шаблон",
+      template_title: "Назва, напр. «Години роботи»",
+      template_body: "Текст відповіді",
+      template_failed: "Не вдалося зберегти шаблон",
+      channels: { telegram: "Telegram", widget: "Сайт" },
+    },
+    channels: {
+      title: "Канали",
+      hint: "Звідки клієнти пишуть і записуються. Повідомлення з усіх каналів приходять у «Чати».",
+      step_botfather: "Відкрийте в Telegram бота @BotFather.",
+      step_newbot:
+        "Надішліть йому /newbot і придумайте ім'я та адресу бота (закінчується на bot).",
+      step_token:
+        "Скопіюйте ключ, який надішле BotFather, і вставте його нижче.",
+      token: "Ключ бота від BotFather",
+      connect: "Підключити бота",
+      disconnect: "Відключити",
+      telegram_on: "Бот @%{username} підключено",
+      telegram_connected: "Бот @%{username} підключено",
+      token_refused:
+        "Telegram не прийняв цей ключ. Скопіюйте його з BotFather ще раз повністю.",
+      telegram_failed: "Не вдалося підключити бота. Спробуйте ще раз.",
+      widget: "Віджет сайту",
+      widget_hint:
+        "Кнопка «Написати / Записатися» на вашому сайті. Вставте цей код перед </body> на сторінках сайту.",
+      widget_enable: "Увімкнути віджет",
+      widget_failed: "Не вдалося увімкнути віджет",
+      widget_demo: "Відкрити тестову сторінку з віджетом",
+      copy: "Скопіювати код",
+      copied: "Скопійовано",
     },
     inventory: {
       title: "Інвентаризація",
@@ -909,6 +976,7 @@ export const ukrainianCrmMessages = {
     },
     signup_link: "Ще немає акаунта? Створіть його",
     nav: {
+      chats: "Чати",
       today: "Сьогодні",
       sales: "Продажі",
       counterparties: "Контрагенти",
@@ -917,6 +985,8 @@ export const ukrainianCrmMessages = {
       more: "Ще",
     },
     today: {
+      messages:
+        "Чекає відповіді: %{smart_count} клієнт |||| Чекають відповіді: %{smart_count} клієнти |||| Чекають відповіді: %{smart_count} клієнтів",
       bookings: "Записи на сьогодні",
       bookings_empty: "На сьогодні записів немає.",
       title: "Сьогодні",
