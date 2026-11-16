@@ -38,6 +38,11 @@ export const canAccess = <
     return false;
   }
 
+  // Only an owner moves documents to the trash and back
+  if (params.resource === "documents" && params.action === "delete") {
+    return false;
+  }
+
   if (role === "accountant") {
     return READ_ONLY_ACTIONS.includes(params.action);
   }

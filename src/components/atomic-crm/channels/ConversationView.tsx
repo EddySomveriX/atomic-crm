@@ -26,6 +26,8 @@ import { ClientReliabilityBadge } from "../reliability/ReliabilityBadge";
 import { ClientLink } from "./ClientLink";
 import { TemplatesMenu } from "./TemplatesMenu";
 import type { Channel, Conversation, Message } from "./types";
+import { ChatAttachment } from "../documents/ChatAttachment";
+import { messageCaption } from "../documents/chatFiles";
 
 const REFRESH_MS = 5_000;
 const UNASSIGNED = "none";
@@ -232,7 +234,16 @@ const MessageBubble = ({ message }: { message: Message }) => {
           fromBot && "border bg-background text-muted-foreground",
         )}
       >
-        {message.body}
+        {message.attachment != null || message.document_id != null ? (
+          <>
+            <ChatAttachment message={message} />
+            {messageCaption(message) ? (
+              <span className="mt-1 block">{messageCaption(message)}</span>
+            ) : null}
+          </>
+        ) : (
+          message.body
+        )}
       </div>
       <span className="px-1 text-xs text-muted-foreground">
         {[

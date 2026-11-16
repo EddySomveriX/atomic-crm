@@ -40,6 +40,7 @@ const MOBILE_PATHS: Record<string, string> = {
   tasks: "/tasks",
   analytics: "/analytics",
   pricing: "/prices",
+  documents: "/documents",
 };
 
 /**

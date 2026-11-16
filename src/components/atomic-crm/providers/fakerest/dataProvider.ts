@@ -1,4 +1,10 @@
 import type {
+  CrmDocument,
+  DocumentUploadInput,
+  SaveAttachmentResult,
+  SendDocumentResult,
+} from "../../documents/types";
+import type {
   Business,
   BusinessMember,
   BusinessRole,
@@ -348,6 +354,21 @@ export const createDataProvider = ({
     sendBookingReminder: async (_bookingId: Identifier) => "no_chat" as const,
     changePrices: async (_ids: Identifier[], _percent: number) => 0,
     quotePrice: async () => null,
+    uploadDocument: async (_input: DocumentUploadInput): Promise<CrmDocument> =>
+      Promise.reject(new Error("Documents are not available in the demo")),
+    sendDocument: async (_id: Identifier): Promise<SendDocumentResult> => ({
+      status: "no_chat",
+    }),
+    saveChatAttachment: async (
+      _id: Identifier,
+    ): Promise<SaveAttachmentResult> =>
+      Promise.reject(new Error("Documents are not available in the demo")),
+    documentLink: async (
+      _filePath: string,
+      _seconds?: number,
+      _download?: string,
+    ): Promise<string> =>
+      Promise.reject(new Error("Documents are not available in the demo")),
     getAnalytics: async (_from: Date, _to: Date) =>
       Promise.reject(new Error("Analytics are not available in the demo")),
     isInitialized: async (): Promise<boolean> => {

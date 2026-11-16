@@ -11,6 +11,7 @@ import { ContactStatusSelector } from "./ContactInputs";
 import { ContactPersonalInfo } from "./ContactPersonalInfo";
 import { ContactBackgroundInfo } from "./ContactBackgroundInfo";
 import { AsideSection } from "../misc/AsideSection";
+import { DocumentsPanel } from "../documents/DocumentsPanel";
 import type { Contact } from "../types";
 import { ContactMergeButton } from "./ContactMergeButton";
 import { ExportVCardButton } from "./ExportVCardButton";
@@ -66,6 +67,10 @@ export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
         </ReferenceManyField>
         <AddTask />
       </AsideSection>
+
+      <div className="mb-6">
+        <DocumentsPanel links={{ contact_id: record.id }} />
+      </div>
 
       {link !== "edit" && (
         <>

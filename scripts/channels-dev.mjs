@@ -6,9 +6,11 @@
  *   - every few seconds, fetches new messages of the connected bots
  *     (edge function channels_poll);
  *   - every minute, sends the booking reminders that are due
- *     (edge function booking_reminders).
+ *     (edge function booking_reminders);
+ *   - every hour, removes documents kept in the trash over 30 days
+ *     (edge function documents_purge).
  * In production a webhook replaces the polling, and a scheduled job
- * (Supabase Cron) calls booking_reminders.
+ * (Supabase Cron) calls booking_reminders and documents_purge.
  *
  * Needs the local stack (make start) and the functions
  * (npx supabase functions serve). Run: node scripts/channels-dev.mjs
@@ -17,6 +19,7 @@ import { execSync } from "node:child_process";
 
 const POLL_EVERY_MS = 3_000;
 const REMINDERS_EVERY_MS = 60_000;
+const PURGE_EVERY_MS = 60 * 60_000;
 
 const readStatus = () => {
   const output = execSync("npx supabase status -o env", {
@@ -78,9 +81,24 @@ const remind = async () => {
   }
 };
 
+const purge = async () => {
+  try {
+    const { removed, orphans } = await call("documents_purge");
+    if (removed || orphans) {
+      console.log(
+        `${stamp()} documents: ${removed} removed from the trash, ${orphans} stray files removed`,
+      );
+    }
+  } catch (error) {
+    console.error(`${stamp()} ${error.message}`);
+  }
+};
+
 console.log(
   "Channels runner: polling bots and sending reminders. Ctrl+C stops it.",
 );
 poll();
 remind();
 setInterval(remind, REMINDERS_EVERY_MS);
+purge();
+setInterval(purge, PURGE_EVERY_MS);

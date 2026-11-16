@@ -26,6 +26,7 @@ import {
 
 import type { CrmDataProvider } from "../providers/types";
 import { ClientReliabilityBadge } from "../reliability/ReliabilityBadge";
+import { DocumentsPanel } from "../documents/DocumentsPanel";
 import { BookingPrice } from "./BookingPrice";
 import { dayIn, timeIn, zonedDateTime } from "./bookingTime";
 import {
@@ -207,6 +208,9 @@ export const BookingDialog = ({
             ) : null}
             {booking ? (
               <BookingFacts booking={booking} timeZone={timeZone} />
+            ) : null}
+            {booking ? (
+              <DocumentsPanel links={{ booking_id: booking.id }} />
             ) : null}
             {booking ? (
               <BookingPrice booking={booking} readOnly={readOnly} />

@@ -20,7 +20,7 @@ const reasonOf = async (error: unknown): Promise<string> => {
   return error instanceof Error ? error.message : "failed";
 };
 
-const invoke = async <T>(
+export const invoke = async <T>(
   name: string,
   method: "POST" | "DELETE",
   body?: Record<string, unknown>,

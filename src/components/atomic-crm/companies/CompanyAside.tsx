@@ -21,6 +21,7 @@ import { sizes } from "./sizes";
 import { useGetSalesName } from "../sales/useGetSalesName";
 import { ClientPricingCard } from "../pricing/ClientPricingCard";
 import { ReliabilityCard } from "../reliability/ReliabilityCard";
+import { DocumentsPanel } from "../documents/DocumentsPanel";
 import { CounterpartyInfo } from "../counterparties/CounterpartyInfo";
 
 interface CompanyAsideProps {
@@ -50,6 +51,8 @@ export const CompanyAside = ({ link = "edit" }: CompanyAsideProps) => {
           <ClientPricingCard client={record} />
         </>
       ) : null}
+
+      <DocumentsPanel links={{ company_id: record.id }} />
 
       <CompanyInfo record={record} />
 

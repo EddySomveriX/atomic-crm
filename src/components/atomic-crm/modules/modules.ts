@@ -1,6 +1,7 @@
 import {
   CalendarDays,
   ChartColumn,
+  FileText,
   Handshake,
   Home,
   ListTodo,
@@ -26,6 +27,7 @@ export const MODULE_KEYS = [
   "tasks",
   "analytics",
   "pricing",
+  "documents",
 ] as const;
 export type ModuleKey = (typeof MODULE_KEYS)[number];
 
@@ -37,18 +39,18 @@ export const defaultModules = (
     case "services":
       return ["chats", "booking", "pricing", "tasks", "analytics"];
     case "retail":
-      return ["chats", "sales", "stock", "pricing", "analytics"];
+      return ["chats", "sales", "stock", "pricing", "documents", "analytics"];
     case "production":
-      return ["sales", "stock", "tasks", "analytics"];
+      return ["sales", "stock", "documents", "tasks", "analytics"];
     case "b2b":
-      return ["chats", "sales", "tasks", "analytics"];
+      return ["chats", "sales", "documents", "tasks", "analytics"];
     default:
       return [...MODULE_KEYS];
   }
 };
 
 /** Modules that will join later; shown as "coming" in the module picker. */
-export const COMING_MODULES = ["purchases", "money", "documents"] as const;
+export const COMING_MODULES = ["purchases", "money"] as const;
 
 export interface NavPage {
   path: string;
@@ -147,6 +149,13 @@ export const NAV_SECTIONS: NavSection[] = [
       },
       { path: "/inventory", labelKey: "crm.nav.inventory" },
     ],
+  },
+  {
+    key: "documents",
+    module: "documents",
+    icon: FileText,
+    labelKey: "crm.nav.documents",
+    pages: [{ path: "/documents", labelKey: "crm.nav.documents" }],
   },
   {
     key: "tasks",

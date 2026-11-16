@@ -7,7 +7,7 @@ import { fetchWithTimeout, type ConnectorContext } from "../types.ts";
  *
  * Only the calls the CRM needs: check a token, receive updates (webhook or,
  * on a developer machine without a public address, polling), send messages
- * with buttons.
+ * with buttons, send a file and download a file a client sent.
  */
 
 export const TELEGRAM_API_URL = "https://api.telegram.org";
@@ -33,8 +33,21 @@ export interface TelegramMessage {
   from?: TelegramUser;
   text?: string;
   contact?: { phone_number: string; first_name: string; user_id?: number };
+  caption?: string;
+  document?: TelegramFileRef & { file_name?: string; mime_type?: string };
+  /** Sizes of one photo, the largest last */
+  photo?: (TelegramFileRef & { width: number; height: number })[];
   reply_markup?: { inline_keyboard?: InlineButton[][] };
 }
+
+export interface TelegramFileRef {
+  file_id: string;
+  file_unique_id?: string;
+  file_size?: number;
+}
+
+/** The largest file a bot downloads (Bot API limit). */
+export const MAX_DOWNLOAD_BYTES = 20 * 1024 * 1024;
 
 export interface TelegramUpdate {
   update_id: number;
@@ -72,25 +85,32 @@ export class TelegramError extends Error {
 export const isBotToken = (value: unknown): value is string =>
   typeof value === "string" && /^\d{5,15}:[A-Za-z0-9_-]{30,64}$/.test(value);
 
-export async function callTelegram<T>(
-  method: string,
-  params: Record<string, unknown>,
-  context: ConnectorContext,
-): Promise<T> {
+const tokenOf = (method: string, context: ConnectorContext): string => {
   const token = context.settings?.botToken;
   if (!isBotToken(token)) {
     throw new TelegramError(method, 0, "no valid bot token");
   }
+  return token;
+};
+
+export async function callTelegram<T>(
+  method: string,
+  params: Record<string, unknown> | FormData,
+  context: ConnectorContext,
+): Promise<T> {
+  const token = tokenOf(method, context);
   let response: Response;
   try {
     response = await fetchWithTimeout(
       context,
       `${TELEGRAM_API_URL}/bot${token}/${method}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(params),
-      },
+      params instanceof FormData
+        ? { method: "POST", body: params }
+        : {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(params),
+          },
     );
   } catch (error) {
     throw new TelegramError(
@@ -133,6 +153,60 @@ export const sendMessage = (
     },
     context,
   );
+
+/** Sends a file with a caption (up to 50 MB, Bot API limit). */
+export const sendDocument = (
+  chatId: string | number,
+  file: Blob,
+  fileName: string,
+  caption: string | undefined,
+  context: ConnectorContext,
+) => {
+  const form = new FormData();
+  form.append("chat_id", String(chatId));
+  form.append("document", file, fileName);
+  if (caption) form.append("caption", caption.slice(0, 1024));
+  return callTelegram<TelegramMessage>("sendDocument", form, context);
+};
+
+/**
+ * Downloads a file a client sent: asks Telegram where it lies, then fetches
+ * it. Files over 20 MB cannot be downloaded by a bot.
+ */
+export const downloadFile = async (
+  fileId: string,
+  context: ConnectorContext,
+): Promise<Blob> => {
+  const file = await callTelegram<{ file_path?: string; file_size?: number }>(
+    "getFile",
+    { file_id: fileId },
+    context,
+  );
+  if (!file.file_path) {
+    throw new TelegramError("getFile", 0, "the file is not available");
+  }
+  if ((file.file_size ?? 0) > MAX_DOWNLOAD_BYTES) {
+    throw new TelegramError("getFile", 0, "the file is over 20 MB");
+  }
+  const token = tokenOf("getFile", context);
+  let response: Response;
+  try {
+    response = await fetchWithTimeout(
+      context,
+      `${TELEGRAM_API_URL}/file/bot${token}/${file.file_path}`,
+    );
+  } catch (error) {
+    throw new TelegramError(
+      "getFile",
+      0,
+      error instanceof Error ? error.name : "network error",
+    );
+  }
+  if (!response.ok) {
+    throw new TelegramError("getFile", response.status, "download failed");
+  }
+  return await response.blob();
+};
 
 export const answerCallbackQuery = (id: string, context: ConnectorContext) =>
   callTelegram<boolean>(

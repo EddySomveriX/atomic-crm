@@ -78,6 +78,8 @@ export const insertMessage = async (message: {
   external_id?: string | null;
   status: "received" | "pending" | "sent" | "failed";
   error?: string | null;
+  attachment?: Record<string, unknown> | null;
+  document_id?: number | null;
 }): Promise<number | null> => {
   const { data, error } = await supabaseAdmin
     .from("messages")

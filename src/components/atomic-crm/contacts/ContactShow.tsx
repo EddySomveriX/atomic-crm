@@ -33,6 +33,7 @@ import { Avatar } from "./Avatar";
 import { ContactAside } from "./ContactAside";
 import { useTrackRecentContact } from "./useRecentContacts";
 import { MobileBackButton } from "../misc/MobileBackButton";
+import { DocumentsPanel } from "../documents/DocumentsPanel";
 
 export const ContactShow = (props: ShowBaseProps = {}) => {
   const isMobile = useIsMobile();
@@ -219,6 +220,7 @@ const ContactShowContentMobile = () => {
 
           <TabsContent value="details" className="mt-4">
             <div className="space-y-6">
+              <DocumentsPanel links={{ contact_id: record.id }} />
               <div>
                 <h3 className="text-lg font-semibold">
                   {translate("resources.notes.fields.status")}

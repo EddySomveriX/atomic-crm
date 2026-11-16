@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   TelegramError,
+  downloadFile,
   getMe,
+  sendDocument,
   isBotToken,
   sendMessage,
   type TelegramUser,
@@ -87,5 +89,70 @@ describe("telegram connector", () => {
       "no valid bot token",
     );
     expect(calls).toHaveLength(0);
+  });
+
+  it("sends a file as a form with its name and caption", async () => {
+    const calls: { url: string; body: unknown }[] = [];
+    const fetch = (async (url: string, init?: RequestInit) => {
+      calls.push({ url, body: init?.body });
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          result: { message_id: 7, date: 0, chat: { id: 5, type: "private" } },
+        }),
+      );
+    }) as typeof globalThis.fetch;
+
+    const sent = await sendDocument(
+      5,
+      new Blob(["pdf"], { type: "application/pdf" }),
+      "act.pdf",
+      "Act of work",
+      { fetch, settings: { botToken: TOKEN } },
+    );
+
+    expect(sent.message_id).toBe(7);
+    expect(calls[0].url).toContain("/sendDocument");
+    const form = calls[0].body as FormData;
+    expect(form.get("chat_id")).toBe("5");
+    expect(form.get("caption")).toBe("Act of work");
+    expect((form.get("document") as File).name).toBe("act.pdf");
+  });
+
+  it("downloads a file a client sent", async () => {
+    const urls: string[] = [];
+    const fetch = (async (url: string) => {
+      urls.push(url);
+      if (url.endsWith("/getFile")) {
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            result: { file_path: "documents/file_1.pdf", file_size: 3 },
+          }),
+        );
+      }
+      return new Response("pdf");
+    }) as typeof globalThis.fetch;
+
+    const file = await downloadFile("abc", {
+      fetch,
+      settings: { botToken: TOKEN },
+    });
+
+    expect(await file.text()).toBe("pdf");
+    expect(urls[1]).toBe(
+      `https://api.telegram.org/file/bot${TOKEN}/documents/file_1.pdf`,
+    );
+  });
+
+  it("refuses to download a file over 20 MB", async () => {
+    const { fetch } = fakeFetch({
+      ok: true,
+      result: { file_path: "big.pdf", file_size: 30 * 1024 * 1024 },
+    });
+
+    await expect(
+      downloadFile("abc", { fetch, settings: { botToken: TOKEN } }),
+    ).rejects.toThrow("over 20 MB");
   });
 });

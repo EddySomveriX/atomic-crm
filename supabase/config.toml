@@ -186,3 +186,9 @@ verify_jwt = false
 verify_jwt = false
 [functions.widget_api]
 verify_jwt = false
+[functions.document_send]
+verify_jwt = false
+[functions.chat_attachment_save]
+verify_jwt = false
+[functions.documents_purge]
+verify_jwt = false

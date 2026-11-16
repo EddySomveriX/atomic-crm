@@ -3,7 +3,7 @@ import {
   useGetMany,
   useLocaleState,
   useNotify,
-  usePermissions,
+  useCanAccess,
   useTranslate,
   useUpdate,
 } from "ra-core";
@@ -22,7 +22,10 @@ export const ClientPricingCard = ({ client }: { client: Company }) => {
   const translate = useTranslate();
   const notify = useNotify();
   const [uiLocale = "uk"] = useLocaleState();
-  const { permissions } = usePermissions();
+  const { canAccess: canEdit } = useCanAccess({
+    resource: "companies",
+    action: "edit",
+  });
   const [update] = useUpdate();
   const [discount, setDiscount] = useState(
     client.personal_discount ? String(client.personal_discount) : "",
@@ -72,7 +75,7 @@ export const ClientPricingCard = ({ client }: { client: Company }) => {
           onBlur={saveDiscount}
           inputMode="numeric"
           placeholder="—"
-          disabled={permissions === "accountant"}
+          disabled={!canEdit}
           className="h-8 w-20 text-right"
         />
       </label>

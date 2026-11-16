@@ -27,7 +27,7 @@ select pg_temp.act_as('abababab-0000-4000-8000-000000000002');
 select public.create_business('Other Shop', 'PL', 'retail');
 insert into public.deals (name, stage, amount, expected_closing_date) values ('Huge', 'won', 99999900, '2030-01-15');
 select is((select modules from public.businesses where name = 'Other Shop'),
-  '{chats,sales,stock,pricing,analytics}'::text[], 'a shop starts with chats, sales, stock, prices and analytics');
+  '{chats,sales,stock,pricing,documents,analytics}'::text[], 'a shop starts with chats, sales, stock, prices, documents and analytics');
 
 select pg_temp.act_as('abababab-0000-4000-8000-000000000001');
 select public.create_business('Stats Salon', 'UA', 'services');

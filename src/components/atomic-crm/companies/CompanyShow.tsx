@@ -44,6 +44,7 @@ import {
 } from "./CompanyAside";
 import { CompanyAvatar } from "./CompanyAvatar";
 import { CompanyContactsMobile } from "./CompanyContactsMobile";
+import { DocumentsPanel } from "../documents/DocumentsPanel";
 import { formatMoney } from "../money/money";
 
 export const CompanyShow = (props: ShowBaseProps = {}) => {
@@ -84,6 +85,9 @@ const CompanyShowContentMobile = () => {
           </div>
         </div>
         <CompanyInfo record={record} />
+        <div className="mb-6">
+          <DocumentsPanel links={{ company_id: record.id }} />
+        </div>
         <CompanyContactsMobile record={record} />
         <AddressInfo record={record} />
         <ContextInfo record={record} />

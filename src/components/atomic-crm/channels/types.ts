@@ -33,6 +33,15 @@ export interface Message extends RaRecord {
   handled_by_bot: boolean;
   status: "received" | "pending" | "sent" | "failed";
   error: string | null;
+  /** A file or photo the client sent in Telegram */
+  attachment: {
+    kind: "document" | "photo";
+    file_name: string;
+    mime_type: string;
+    size: number | null;
+  } | null;
+  /** The document saved from this message, or sent with it */
+  document_id: Identifier | null;
 }
 
 export interface ReplyTemplate extends RaRecord {

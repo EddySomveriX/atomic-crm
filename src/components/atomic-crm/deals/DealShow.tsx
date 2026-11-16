@@ -23,6 +23,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { CompanyAvatar } from "../companies/CompanyAvatar";
 import { NoteCreate } from "../notes/NoteCreate";
+import { DocumentsPanel } from "../documents/DocumentsPanel";
 import { NotesIterator } from "../notes/NotesIterator";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { Deal } from "../types";
@@ -170,6 +171,10 @@ const DealShowContent = () => {
               <p className="text-sm leading-6">{record.description}</p>
             </div>
           )}
+
+          <div className="m-4">
+            <DocumentsPanel links={{ deal_id: record.id }} />
+          </div>
 
           <div className="m-4">
             <Separator className="mb-4" />

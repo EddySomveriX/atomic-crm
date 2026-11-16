@@ -1,6 +1,7 @@
 import { supabaseAdmin } from "../supabaseAdmin.ts";
 import {
   answerCallbackQuery,
+  type TelegramMessage,
   type TelegramUpdate,
   type TelegramUser,
 } from "../../../../connectors/telegram/index.ts";
@@ -35,7 +36,41 @@ interface ParsedUpdate {
   body: string;
   externalId: string;
   callbackId?: string;
+  /** A file or photo the client sent, kept until a member saves it */
+  attachment?: ChatAttachment;
 }
+
+/** A file of a Telegram message, as messages.attachment keeps it. */
+export interface ChatAttachment {
+  kind: "document" | "photo";
+  file_id: string;
+  file_name: string;
+  mime_type: string;
+  size: number | null;
+}
+
+const attachmentOf = (message: TelegramMessage): ChatAttachment | null => {
+  if (message.document) {
+    return {
+      kind: "document",
+      file_id: message.document.file_id,
+      file_name: (message.document.file_name ?? "file").slice(0, 255),
+      mime_type: message.document.mime_type ?? "application/octet-stream",
+      size: message.document.file_size ?? null,
+    };
+  }
+  const photo = message.photo?.at(-1);
+  if (photo) {
+    return {
+      kind: "photo",
+      file_id: photo.file_id,
+      file_name: `photo-${message.message_id}.jpg`,
+      mime_type: "image/jpeg",
+      size: photo.file_size ?? null,
+    };
+  }
+  return null;
+};
 
 /** The client's input in an update, or null for updates the CRM ignores. */
 export const parseUpdate = (update: TelegramUpdate): ParsedUpdate | null => {
@@ -83,7 +118,25 @@ export const parseUpdate = (update: TelegramUpdate): ParsedUpdate | null => {
       body: message.text,
     };
   }
-  // Photos, files and stickers reach a person (files to recognition: stage 5)
+  // Files and photos reach a person, who may save them to the documents
+  // (recognition of their fields comes with stage 5); stickers just reach a person
+  const attachment = attachmentOf(message);
+  if (attachment) {
+    const caption = message.caption?.trim() ?? "";
+    const label =
+      attachment.kind === "photo"
+        ? "[photo]"
+        : `[file] ${attachment.file_name}`;
+    return {
+      ...base,
+      input: { kind: "text", text: caption },
+      body: caption
+        ? `${label}
+${caption}`
+        : label,
+      attachment,
+    };
+  }
   return { ...base, input: { kind: "text", text: "" }, body: "[attachment]" };
 };
 
@@ -187,6 +240,7 @@ const answerUpdate = async (
     handled_by_bot: result.handledByBot,
     external_id: parsed.externalId,
     status: "received",
+    attachment: parsed.attachment ?? null,
   });
 
   const { error: updateError } = await supabaseAdmin
