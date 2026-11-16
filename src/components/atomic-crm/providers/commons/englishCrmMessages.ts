@@ -571,6 +571,7 @@ export const englishCrmMessages = {
         completed: "Done",
         no_show: "No-show",
         cancelled: "Cancelled",
+        cancelled_by_client: "Cancelled by the client",
       },
       sources: { crm: "CRM", telegram: "Telegram", widget: "Website" },
       remind_now: "Send a reminder",
@@ -783,6 +784,56 @@ export const englishCrmMessages = {
         },
         stock: { title: "Stock", hint: "Stock right now." },
       },
+    },
+    reliability: {
+      title: "Client reliability",
+      levels: {
+        reliable: "Reliable",
+        regular: "Regular",
+        watch: "To watch",
+        unreliable: "Unreliable",
+      },
+      counts: {
+        visits: "%{smart_count} visit |||| %{smart_count} visits",
+        no_shows: "%{smart_count} no-show |||| %{smart_count} no-shows",
+        late_cancels:
+          "%{smart_count} late cancellation |||| %{smart_count} late cancellations",
+        late_reschedules:
+          "%{smart_count} last-minute move |||| %{smart_count} last-minute moves",
+        late_arrivals:
+          "%{smart_count} late arrival |||| %{smart_count} late arrivals",
+      },
+      over_year: "Over the year: %{list}.",
+      no_history: "No history this year yet.",
+      set_by_hand: "The level was set by hand.",
+      override_label: "How to rate reliability",
+      override: {
+        auto: "Automatically, from the history",
+        reliable: "Trusted (always reliable)",
+        unreliable: "Only through the administrator",
+      },
+      failed: "The client reliability could not be saved",
+      late_hint:
+        "Fill in if the client came late: from 15 min it counts in their reliability.",
+      confirmed_short: "Confirmed by the client",
+      facts: {
+        confirmed: "The client confirmed the visit on %{when}",
+        cancelled_by_client: "Cancelled by the client in time",
+        cancelled_by_business: "Cancelled by the business",
+        late_cancel: "Late cancellation by the client",
+        moved: "Moved %{smart_count} time |||| Moved %{smart_count} times",
+      },
+      rules_title: "Booking rules",
+      rules_hint:
+        "How clients cancel and move bookings in the bot, and who may book by themselves.",
+      free_cancel_hours: "Free cancellation, hours before the visit",
+      free_cancel_hint:
+        "Later cancellations and moves count as late and lower the client's reliability.",
+      block_unreliable:
+        "Unreliable clients book only through the administrator",
+      block_unreliable_hint:
+        "The bot will not book them itself; it passes the request to Chats.",
+      rules_failed: "The booking rules could not be saved",
     },
     inventory: {
       title: "Inventory",

@@ -43,6 +43,25 @@ const uk = {
   expired: "Ця кнопка вже неактуальна. Почнімо спочатку.",
   ack: "Дякуємо за повідомлення! Адміністратор відповість найближчим часом.",
   minutes: "%{count} хв",
+  my_bookings_button: "Мої записи",
+  my_bookings: "Ваші записи:",
+  no_bookings: "У вас немає майбутніх записів.",
+  booking_line: "%{when}\n%{service}, майстер %{specialist}",
+  reschedule_button: "Перенести",
+  cancel_booking_button: "Скасувати",
+  confirm_visit_button: "Підтверджую",
+  cancel_confirm: "Скасувати запис %{when}?",
+  cancel_confirm_late:
+    "До візиту менше %{hours} год, тому це пізня відміна. Все одно скасувати запис %{when}?",
+  cancel_yes: "Так, скасувати",
+  cancel_no: "Ні, залишити",
+  booking_cancelled: "Запис скасовано. Будемо раді бачити вас знову!",
+  booking_gone: "Цей запис уже змінено або скасовано.",
+  visit_confirmed: "Дякуємо, що підтвердили! Чекаємо на вас %{when}.",
+  booking_moved:
+    "Готово, запис перенесено:\n%{service}\n%{when}\nМайстер: %{specialist}",
+  book_via_admin:
+    "Щоб записатися, напишіть, будь ласка, сюди повідомлення — адміністратор підбере для вас час.",
   reminder_24h:
     "Нагадуємо: завтра у вас запис.\n%{service}\n%{when}\nМайстер: %{specialist}\n\nЯкщо плани змінилися, напишіть нам у відповідь.",
   reminder_2h:
@@ -88,6 +107,25 @@ const en: Record<BotTextKey, string> = {
   expired: "This button is out of date. Let's start again.",
   ack: "Thank you for your message! We will answer soon.",
   minutes: "%{count} min",
+  my_bookings_button: "My bookings",
+  my_bookings: "Your bookings:",
+  no_bookings: "You have no bookings ahead.",
+  booking_line: "%{when}\n%{service}, specialist %{specialist}",
+  reschedule_button: "Move",
+  cancel_booking_button: "Cancel",
+  confirm_visit_button: "I'll come",
+  cancel_confirm: "Cancel the booking on %{when}?",
+  cancel_confirm_late:
+    "It is less than %{hours} h before the visit, so this is a late cancellation. Cancel the booking on %{when} anyway?",
+  cancel_yes: "Yes, cancel",
+  cancel_no: "No, keep it",
+  booking_cancelled: "The booking is cancelled. We hope to see you again!",
+  booking_gone: "This booking was already changed or cancelled.",
+  visit_confirmed: "Thank you for confirming! See you on %{when}.",
+  booking_moved:
+    "Done, the booking is moved:\n%{service}\n%{when}\nSpecialist: %{specialist}",
+  book_via_admin:
+    "To book, please write a message here and our administrator will find a time for you.",
   reminder_24h:
     "Reminder: you have a booking tomorrow.\n%{service}\n%{when}\nSpecialist: %{specialist}\n\nIf your plans changed, just reply to this message.",
   reminder_2h:

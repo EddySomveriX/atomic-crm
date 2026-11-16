@@ -13,6 +13,7 @@ import {
 import { AutocompleteInput } from "@/components/admin/autocomplete-input";
 import { ReferenceInput } from "@/components/admin/reference-input";
 import { SelectInput } from "@/components/admin/select-input";
+import { NumberInput } from "@/components/admin/number-input";
 import { TextInput } from "@/components/admin/text-input";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +25,7 @@ import {
 } from "@/components/ui/dialog";
 
 import type { CrmDataProvider } from "../providers/types";
+import { ClientReliabilityBadge } from "../reliability/ReliabilityBadge";
 import { dayIn, timeIn, zonedDateTime } from "./bookingTime";
 import {
   BOOKING_STATUSES,
@@ -46,8 +48,10 @@ interface BookingFormValues {
   client_id: Identifier | null;
   day: string;
   time: string;
-  status: BookingStatus;
+  /** The statuses, plus "cancelled_by_client" for a call to cancel */
+  status: BookingStatus | "cancelled_by_client";
   note: string | null;
+  late_minutes: number | null;
 }
 
 /**
@@ -81,8 +85,12 @@ export const BookingDialog = ({
         client_id: booking.client_id,
         day: dayIn(new Date(booking.starts_at), timeZone),
         time: timeIn(new Date(booking.starts_at), timeZone),
-        status: booking.status,
+        status:
+          booking.status === "cancelled" && booking.cancelled_by === "client"
+            ? "cancelled_by_client"
+            : booking.status,
         note: booking.note,
+        late_minutes: booking.late_minutes ?? null,
       }
     : {
         sales_id: draft?.sales_id,
@@ -101,8 +109,11 @@ export const BookingDialog = ({
       sales_id: values.sales_id,
       client_id: values.client_id ?? null,
       starts_at: startsAt.toISOString(),
-      status: values.status ?? "booked",
+      ...(values.status === "cancelled_by_client"
+        ? { status: "cancelled" as const, cancelled_by: "client" as const }
+        : { status: (values.status ?? "booked") as BookingStatus }),
       note: values.note || null,
+      ...(booking ? { late_minutes: values.late_minutes || null } : {}),
     };
     const options = {
       onSuccess: () => {
@@ -187,15 +198,36 @@ export const BookingDialog = ({
                 helperText={false}
               />
             </div>
+            {booking?.client_id != null ? (
+              <ClientReliabilityBadge clientId={booking.client_id} />
+            ) : null}
+            {booking ? (
+              <BookingFacts booking={booking} timeZone={timeZone} />
+            ) : null}
             {booking ? (
               <SelectInput
                 source="status"
-                choices={BOOKING_STATUSES.map((status) => ({
-                  id: status,
-                  name: translate(`crm.booking.statuses.${status}`),
-                }))}
+                choices={[
+                  ...BOOKING_STATUSES.map((status) => ({
+                    id: status,
+                    name: translate(`crm.booking.statuses.${status}`),
+                  })),
+                  {
+                    id: "cancelled_by_client",
+                    name: translate("crm.booking.statuses.cancelled_by_client"),
+                  },
+                ]}
                 validate={required()}
                 helperText={false}
+              />
+            ) : null}
+            {booking ? (
+              <NumberInput
+                source="late_minutes"
+                min={0}
+                max={600}
+                step={5}
+                helperText={translate("crm.reliability.late_hint")}
               />
             ) : null}
             <TextInput source="note" multiline helperText={false} />
@@ -243,5 +275,43 @@ const RemindButton = ({ booking }: { booking: Booking }) => {
       <BellRing />
       {translate("crm.booking.remind_now")}
     </Button>
+  );
+};
+
+/** What happened to a booking: confirmed by the client, cancelled, moved. */
+const BookingFacts = ({
+  booking,
+  timeZone,
+}: {
+  booking: Booking;
+  timeZone: string;
+}) => {
+  const translate = useTranslate();
+  const facts = [
+    booking.confirmed_at
+      ? translate("crm.reliability.facts.confirmed", {
+          when: `${dayIn(new Date(booking.confirmed_at), timeZone)} ${timeIn(new Date(booking.confirmed_at), timeZone)}`,
+        })
+      : null,
+    booking.status === "cancelled" && booking.cancelled_by
+      ? translate(
+          booking.late_cancel
+            ? "crm.reliability.facts.late_cancel"
+            : `crm.reliability.facts.cancelled_by_${booking.cancelled_by}`,
+        )
+      : null,
+    booking.reschedule_count
+      ? translate("crm.reliability.facts.moved", {
+          smart_count: booking.reschedule_count,
+        })
+      : null,
+  ].filter(Boolean);
+  if (facts.length === 0) return null;
+  return (
+    <ul className="flex flex-col gap-0.5 rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground">
+      {facts.map((fact) => (
+        <li key={fact}>{fact}</li>
+      ))}
+    </ul>
   );
 };

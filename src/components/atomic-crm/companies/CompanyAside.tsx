@@ -19,6 +19,7 @@ import type { Company } from "../types";
 import { getTranslatedCompanySizeLabel } from "./getTranslatedCompanySizeLabel";
 import { sizes } from "./sizes";
 import { useGetSalesName } from "../sales/useGetSalesName";
+import { ReliabilityCard } from "../reliability/ReliabilityCard";
 import { CounterpartyInfo } from "../counterparties/CounterpartyInfo";
 
 interface CompanyAsideProps {
@@ -41,6 +42,10 @@ export const CompanyAside = ({ link = "edit" }: CompanyAsideProps) => {
       </div>
 
       <CounterpartyInfo record={record} />
+
+      {record.roles?.includes("client") ? (
+        <ReliabilityCard clientId={record.id} />
+      ) : null}
 
       <CompanyInfo record={record} />
 

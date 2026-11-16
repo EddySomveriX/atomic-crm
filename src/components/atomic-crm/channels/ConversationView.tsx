@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { specialistName } from "../booking/types";
 import { useSpecialists } from "../booking/useBookingData";
 import type { CrmDataProvider } from "../providers/types";
+import { ClientReliabilityBadge } from "../reliability/ReliabilityBadge";
 import { ClientLink } from "./ClientLink";
 import { TemplatesMenu } from "./TemplatesMenu";
 import type { Channel, Conversation, Message } from "./types";
@@ -106,7 +107,10 @@ export const ConversationView = ({
           <ArrowLeft />
         </Button>
         <div className="min-w-0 flex-1">
-          <h2 className="truncate font-semibold">{name}</h2>
+          <h2 className="flex items-center gap-2 font-semibold">
+            <span className="truncate">{name}</span>
+            <ClientReliabilityBadge clientId={conversation.client_id} />
+          </h2>
           <p className="truncate text-xs text-muted-foreground">
             {[
               channelKind

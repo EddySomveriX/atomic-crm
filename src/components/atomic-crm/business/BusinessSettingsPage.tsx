@@ -14,6 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import { ChannelsSettings } from "../channels/ChannelsSettings";
 import { ModulesSettings } from "../modules/ModulesSettings";
 import { AppearanceSettings } from "../appearance/AppearanceSettings";
+import { BookingRules } from "../reliability/BookingRules";
 import { reloadApp } from "./reloadApp";
 import type { CrmDataProvider } from "../providers/types";
 import { CONFIGURATION_STORE_KEY } from "../root/ConfigurationContext";
@@ -58,6 +59,9 @@ export const BusinessSettingsPage = () => {
       </h1>
       <BusinessDetails business={business} />
       <ModulesSettings business={business} />
+      {business.modules.includes("booking") ? (
+        <BookingRules business={business} />
+      ) : null}
       <AppearanceSettings />
       <ChannelsSettings />
       <BusinessMembers business={business} />

@@ -572,6 +572,7 @@ export const ukrainianCrmMessages = {
         completed: "Виконано",
         no_show: "Не прийшов",
         cancelled: "Скасовано",
+        cancelled_by_client: "Скасував клієнт",
       },
       sources: { crm: "CRM", telegram: "Telegram", widget: "Сайт" },
       remind_now: "Надіслати нагадування",
@@ -789,6 +790,59 @@ export const ukrainianCrmMessages = {
         },
         stock: { title: "Склад", hint: "Залишки зараз." },
       },
+    },
+    reliability: {
+      title: "Надійність клієнта",
+      levels: {
+        reliable: "Надійний",
+        regular: "Звичайний",
+        watch: "Під наглядом",
+        unreliable: "Ненадійний",
+      },
+      counts: {
+        visits:
+          "%{smart_count} візит |||| %{smart_count} візити |||| %{smart_count} візитів",
+        no_shows:
+          "%{smart_count} неявка |||| %{smart_count} неявки |||| %{smart_count} неявок",
+        late_cancels:
+          "%{smart_count} пізня відміна |||| %{smart_count} пізні відміни |||| %{smart_count} пізніх відмін",
+        late_reschedules:
+          "%{smart_count} перенесення в останню мить |||| %{smart_count} перенесення в останню мить |||| %{smart_count} перенесень в останню мить",
+        late_arrivals:
+          "%{smart_count} запізнення |||| %{smart_count} запізнення |||| %{smart_count} запізнень",
+      },
+      over_year: "За рік: %{list}.",
+      no_history: "Історії за рік ще немає.",
+      set_by_hand: "Рівень задано вручну.",
+      override_label: "Як рахувати надійність",
+      override: {
+        auto: "Автоматично за історією",
+        reliable: "Довіряю (завжди надійний)",
+        unreliable: "Лише через адміністратора",
+      },
+      failed: "Не вдалося зберегти надійність клієнта",
+      late_hint:
+        "Заповніть, якщо клієнт запізнився: від 15 хв це враховується в надійності.",
+      confirmed_short: "Клієнт підтвердив",
+      facts: {
+        confirmed: "Клієнт підтвердив візит %{when}",
+        cancelled_by_client: "Скасував клієнт вчасно",
+        cancelled_by_business: "Скасовано бізнесом",
+        late_cancel: "Пізня відміна клієнтом",
+        moved:
+          "Перенесено %{smart_count} раз |||| Перенесено %{smart_count} рази |||| Перенесено %{smart_count} разів",
+      },
+      rules_title: "Правила запису",
+      rules_hint:
+        "Як клієнти скасовують і переносять записи в боті і хто може записуватися сам.",
+      free_cancel_hours: "Безкоштовна відміна, годин до візиту",
+      free_cancel_hint:
+        "Пізніше відміна і перенесення вважаються пізніми і знижують надійність клієнта.",
+      block_unreliable:
+        "Ненадійні клієнти записуються лише через адміністратора",
+      block_unreliable_hint:
+        "Бот не запише їх сам, а передасть запит у «Чати».",
+      rules_failed: "Не вдалося зберегти правила запису",
     },
     inventory: {
       title: "Інвентаризація",

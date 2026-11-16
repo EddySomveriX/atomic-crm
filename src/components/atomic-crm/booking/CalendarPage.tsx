@@ -8,12 +8,19 @@ import {
 } from "ra-core";
 import { useMemo, useState, type MouseEvent } from "react";
 import { Link, useSearchParams } from "react-router";
-import { ChevronLeft, ChevronRight, Clock, Plus } from "lucide-react";
+import {
+  CheckCheck,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Plus,
+} from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import type { Product } from "../products/types";
 import { formatBusinessDate } from "../today/businessDay";
+import type { ClientReliability } from "../reliability/types";
 import type { Company } from "../types";
 import { BookingDialog, type BookingDraft } from "./BookingDialog";
 import {
@@ -105,8 +112,19 @@ export const CalendarPage = () => {
   );
   const productName = (id: Identifier) =>
     products.find((item) => item.id === id)?.name ?? "";
-  const clientName = (id: Identifier | null) =>
-    clients.find((item) => item.id === id)?.name ?? null;
+  const { data: reliabilities = [] } = useGetMany<ClientReliability>(
+    "client_reliability",
+    { ids: clientIds },
+    { enabled: clientIds.length > 0 },
+  );
+  // A client to watch shows its level next to the name
+  const clientName = (id: Identifier | null) => {
+    const name = clients.find((item) => item.id === id)?.name ?? null;
+    const level = reliabilities.find((item) => item.id === id)?.level;
+    return name && (level === "watch" || level === "unreliable")
+      ? `${name} · ${translate(`crm.reliability.levels.${level}`)}`
+      : name;
+  };
 
   const range = useMemo(
     () => dayRange(hours, bookings, timeZone),
@@ -362,8 +380,16 @@ const SpecialistColumn = ({
               )}
               style={{ top: `${place.top}%`, height: `${place.height}%` }}
             >
-              <span className="font-semibold">
-                {timeOfMinutes(start)} {productName(booking.product_id)}
+              <span className="flex items-center gap-1 font-semibold">
+                {booking.confirmed_at ? (
+                  <CheckCheck
+                    className="size-3.5 shrink-0"
+                    aria-label={translate("crm.reliability.confirmed_short")}
+                  />
+                ) : null}
+                <span className="truncate">
+                  {timeOfMinutes(start)} {productName(booking.product_id)}
+                </span>
               </span>
               <span className="block truncate">
                 {client ?? translate("crm.booking.no_client")}

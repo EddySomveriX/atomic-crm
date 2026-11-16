@@ -302,6 +302,7 @@ const DesktopAdmin = (
       <Resource name="conversations" />
       <Resource name="messages" />
       <Resource name="reply_templates" />
+      <Resource name="client_reliability" />
     </Admin>
   );
 };
@@ -402,6 +403,7 @@ const MobileAdmin = (
         <Resource name="conversations" />
         <Resource name="messages" />
         <Resource name="reply_templates" />
+        <Resource name="client_reliability" />
       </Admin>
     </PersistQueryClientProvider>
   );

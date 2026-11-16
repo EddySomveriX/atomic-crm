@@ -83,7 +83,7 @@ export const businessMethods = {
     const { data, error } = await getSupabaseClient()
       .from("businesses")
       .select(
-        "id, name, country_code, business_type, requisites, currency, timezone, is_demo, modules, country_packs(language)",
+        "id, name, country_code, business_type, requisites, currency, timezone, is_demo, modules, free_cancel_hours, block_unreliable, country_packs(language)",
       )
       .eq("id", businessId)
       .maybeSingle();
@@ -99,7 +99,15 @@ export const businessMethods = {
   async updateBusiness(
     id: string,
     changes: Partial<
-      Pick<Business, "name" | "business_type" | "requisites" | "modules">
+      Pick<
+        Business,
+        | "name"
+        | "business_type"
+        | "requisites"
+        | "modules"
+        | "free_cancel_hours"
+        | "block_unreliable"
+      >
     >,
   ): Promise<void> {
     const { error } = await getSupabaseClient()

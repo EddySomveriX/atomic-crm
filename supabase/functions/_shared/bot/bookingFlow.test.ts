@@ -15,9 +15,11 @@ const NOW = new Date("2030-01-07T06:00:00Z");
 
 const makeDeps = (overrides: Partial<BotDeps> = {}) => {
   const booked: BookingRequest[] = [];
+  const actions: string[] = [];
   const deps: BotDeps = {
     businessName: "Kvitka",
     timeZone: "Europe/Kyiv",
+    policy: { freeCancelHours: 24, blockUnreliable: true },
     now: () => NOW,
     services: async () => [{ id: 1, name: "Haircut", duration_minutes: 60 }],
     specialists: async () => [
@@ -37,9 +39,33 @@ const makeDeps = (overrides: Partial<BotDeps> = {}) => {
       return "booked";
     },
     findOrCreateClient: async () => 77,
+    upcoming: async () => [
+      {
+        id: 501,
+        serviceId: 1,
+        serviceName: "Haircut",
+        salesId: 11,
+        specialistName: "Iryna",
+        // In 23 hours: inside the 24-hour free window
+        startsAt: "2030-01-08T05:00:00.000Z",
+      },
+    ],
+    cancel: async (id) => {
+      actions.push(`cancel ${id}`);
+      return "cancelled";
+    },
+    confirm: async (id) => {
+      actions.push(`confirm ${id}`);
+      return "confirmed";
+    },
+    reschedule: async (id, _client, slot) => {
+      actions.push(`move ${id} ${slot.starts_at}`);
+      return "moved";
+    },
+    reliability: async () => "regular",
     ...overrides,
   };
-  return { deps, booked };
+  return { deps, booked, actions };
 };
 
 const conversation = (
@@ -200,5 +226,76 @@ describe("booking dialog of the bot", () => {
     });
 
     expect(result.replies[0].buttons?.[0][0].text).toBe("Book");
+  });
+
+  it("lists the bookings ahead with buttons to move or cancel them", async () => {
+    const { deps } = makeDeps();
+
+    const [result] = await talk([{ kind: "button", data: "mine" }], deps, {
+      clientId: 77,
+    });
+
+    expect(result.replies[1].text).toContain("Haircut");
+    expect(buttonData(result)).toEqual(["rsc:501", "cnl:501"]);
+  });
+
+  it("warns about a late cancellation before cancelling", async () => {
+    const { deps, actions } = makeDeps();
+
+    const [ask, cancel] = await talk(
+      [
+        { kind: "button", data: "cnl:501" },
+        { kind: "button", data: "cnl!:501" },
+      ],
+      deps,
+      { clientId: 77 },
+    );
+
+    expect(ask.replies[0].text).toContain("пізня відміна");
+    expect(buttonData(ask)).toEqual(["cnl!:501", "mine"]);
+    expect(cancel.replies[0].text).toContain("скасовано");
+    expect(actions).toEqual(["cancel 501"]);
+  });
+
+  it("confirms a visit from the reminder", async () => {
+    const { deps, actions } = makeDeps();
+
+    const [result] = await talk([{ kind: "button", data: "cnf:501" }], deps, {
+      clientId: 77,
+    });
+
+    expect(result.replies[0].text).toContain("підтвердили");
+    expect(actions).toEqual(["confirm 501"]);
+  });
+
+  it("moves a booking to another offered time", async () => {
+    const { deps, actions, booked } = makeDeps();
+
+    const results = await talk(
+      [
+        { kind: "button", data: "rsc:501" },
+        { kind: "button", data: "day:2030-01-08" },
+        { kind: "button", data: "slot:11:1894093200" },
+      ],
+      deps,
+      { clientId: 77 },
+    );
+
+    expect(results[0].state).toMatchObject({ step: "day", rescheduleId: 501 });
+    expect(results[1].state.rescheduleId).toBe(501);
+    expect(results[2].replies[0].text).toContain("перенесено");
+    expect(actions).toEqual(["move 501 2030-01-08T09:00:00.000Z"]);
+    expect(booked).toEqual([]);
+  });
+
+  it("sends an unreliable client to a person instead of booking", async () => {
+    const { deps } = makeDeps({ reliability: async () => "unreliable" });
+
+    const [result] = await talk([{ kind: "button", data: "book" }], deps, {
+      clientId: 77,
+    });
+
+    expect(result.handledByBot).toBe(false);
+    expect(result.replies[0].text).toContain("адміністратор");
   });
 });

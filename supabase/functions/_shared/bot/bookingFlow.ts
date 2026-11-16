@@ -1,10 +1,27 @@
+import { botText, formatDay, formatTime, formatWhen } from "./botTexts.ts";
 import {
-  botText,
-  formatDay,
-  formatTime,
-  formatWhen,
-  type BotLanguage,
-} from "./botTexts.ts";
+  DAYS_AHEAD,
+  DAYS_SHOWN,
+  TIMES_PER_ROW,
+  TIMES_SHOWN,
+  addDays,
+  dayIn,
+  firstPerTime,
+  noonOf,
+  parseSlot,
+  rows,
+  slotData,
+  type BotConversation,
+  type BotDeps,
+  type BotInput,
+  type BotReply,
+  type BotResult,
+  type BotState,
+  type FreeSlot,
+} from "./flowShared.ts";
+import { handleMyBookings } from "./myBookings.ts";
+
+export * from "./flowShared.ts";
 
 /**
  * The booking dialog of the bot (TZ sections 5.2 and 5.3), without any
@@ -12,154 +29,9 @@ import {
  * the database is behind BotDeps, and the answer is a list of replies plus
  * the new state of the conversation. Buttons carry short codes:
  *   consent, book, svc:<service>, spc:<specialist|any>, day:<YYYY-MM-DD>,
- *   slot:<specialist>:<unix seconds>, confirm, cancel
+ *   slot:<specialist>:<unix seconds>, confirm, cancel; moving a booking:
+ *   rsc:<booking>; the other buttons of "my bookings" are in myBookings.ts
  */
-
-/** Days ahead the bot looks for free time */
-export const DAYS_AHEAD = 14;
-/** Days with free time shown as buttons */
-const DAYS_SHOWN = 7;
-/** Free times shown for a day */
-const TIMES_SHOWN = 24;
-const TIMES_PER_ROW = 4;
-
-export interface BotService {
-  id: number;
-  name: string;
-  duration_minutes: number;
-}
-
-export interface BotSpecialist {
-  id: number;
-  name: string;
-}
-
-export interface FreeSlot {
-  sales_id: number;
-  starts_at: string;
-}
-
-export interface BookingRequest {
-  serviceId: number;
-  salesId: number;
-  startsAt: string;
-  clientId: number;
-}
-
-export interface BotDeps {
-  businessName: string;
-  timeZone: string;
-  now: () => Date;
-  services: () => Promise<BotService[]>;
-  /** Specialists who work and can do the service */
-  specialists: (serviceId: number) => Promise<BotSpecialist[]>;
-  freeSlots: (
-    serviceId: number,
-    day: string,
-    salesId: number | null,
-  ) => Promise<FreeSlot[]>;
-  /** "taken" when the time was booked by someone else meanwhile */
-  book: (request: BookingRequest) => Promise<"booked" | "taken">;
-  findOrCreateClient: (name: string, phone: string) => Promise<number>;
-}
-
-export interface BotState {
-  step?: "service" | "specialist" | "day" | "time" | "phone" | "confirm";
-  serviceId?: number;
-  salesId?: number | "any";
-  day?: string;
-  slot?: FreeSlot;
-}
-
-export interface BotConversation {
-  language: BotLanguage;
-  hasConsent: boolean;
-  clientId: number | null;
-  phone: string | null;
-  title: string | null;
-  isWaiting: boolean;
-  state: BotState;
-}
-
-export type BotInput =
-  | { kind: "start" }
-  | { kind: "text"; text: string }
-  | { kind: "button"; data: string }
-  | { kind: "contact"; phone: string; name: string };
-
-export interface BotButton {
-  text: string;
-  data: string;
-}
-
-export interface BotReply {
-  text: string;
-  buttons?: BotButton[][];
-  /** Show the "send my phone number" keyboard */
-  askPhone?: boolean;
-}
-
-export interface BotResult {
-  replies: BotReply[];
-  state: BotState;
-  /** The bot answered by itself: the client does not wait for a person */
-  handledByBot: boolean;
-  consentGiven?: boolean;
-  phone?: string;
-  clientId?: number;
-  bookedAt?: string;
-}
-
-const pad = (value: number) => String(value).padStart(2, "0");
-
-/** The calendar day of a moment in a time zone: "2030-01-07". */
-export const dayIn = (date: Date, timeZone: string): string => {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(date);
-  return parts;
-};
-
-export const addDays = (day: string, days: number): string => {
-  const [year, month, date] = day.split("-").map(Number);
-  const moved = new Date(Date.UTC(year, month - 1, date + days));
-  return `${moved.getUTCFullYear()}-${pad(moved.getUTCMonth() + 1)}-${pad(moved.getUTCDate())}`;
-};
-
-/** Noon of a day: a safe moment to name the day in any time zone. */
-const noonOf = (day: string) => new Date(`${day}T12:00:00Z`);
-
-const rows = <T>(items: T[], size: number): T[][] =>
-  Array.from({ length: Math.ceil(items.length / size) }, (_, index) =>
-    items.slice(index * size, index * size + size),
-  );
-
-/** One free time per moment: the first specialist free then. */
-export const firstPerTime = (slots: FreeSlot[]): FreeSlot[] => {
-  const seen = new Set<string>();
-  return slots.filter((slot) => {
-    const key = new Date(slot.starts_at).toISOString();
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-};
-
-const slotData = (slot: FreeSlot) =>
-  `slot:${slot.sales_id}:${Math.floor(Date.parse(slot.starts_at) / 1000)}`;
-
-const parseSlot = (data: string): FreeSlot | null => {
-  const match = /^slot:(\d+):(\d+)$/.exec(data);
-  return match
-    ? {
-        sales_id: Number(match[1]),
-        starts_at: new Date(Number(match[2]) * 1000).toISOString(),
-      }
-    : null;
-};
 
 /**
  * Answers one input of the client. Never throws for a wrong or outdated
@@ -175,9 +47,18 @@ export async function runBookingFlow(
     botText(lang, key, values);
   const state = conversation.state;
 
+  let rescheduleId = state.rescheduleId;
+  const keep = () => (rescheduleId ? { rescheduleId } : {});
   const menu = (text: string): BotReply => ({
     text,
-    buttons: [[{ text: t("book_button"), data: "book" }]],
+    buttons: [
+      conversation.clientId != null
+        ? [
+            { text: t("book_button"), data: "book" },
+            { text: t("my_bookings_button"), data: "mine" },
+          ]
+        : [{ text: t("book_button"), data: "book" }],
+    ],
   });
   const done = (
     replies: BotReply[],
@@ -248,7 +129,7 @@ export async function runBookingFlow(
           ),
         },
       ],
-      { step: "day", serviceId, salesId },
+      { step: "day", serviceId, salesId, ...keep() },
     );
   };
 
@@ -301,7 +182,7 @@ export async function runBookingFlow(
           ),
         },
       ],
-      { step: "time", serviceId, salesId, day },
+      { step: "time", serviceId, salesId, day, ...keep() },
     );
   };
 
@@ -380,7 +261,35 @@ export async function runBookingFlow(
 
   const data = input.data;
   if (data === "consent") return done([menu(t("menu"))], {});
-  if (data === "book") return askService();
+  if (data === "book") {
+    rescheduleId = undefined;
+    if (
+      deps.policy.blockUnreliable &&
+      conversation.clientId != null &&
+      (await deps.reliability(conversation.clientId)) === "unreliable"
+    ) {
+      // Booked by a person: the request waits in the chat center
+      return {
+        replies: [{ text: t("book_via_admin") }],
+        state: {},
+        handledByBot: false,
+      };
+    }
+    return askService();
+  }
+
+  const mine = await handleMyBookings(data, conversation, deps);
+  if (mine) return mine;
+
+  const move = /^rsc:(\d+)$/.exec(data);
+  if (move && conversation.clientId != null) {
+    const booking = (await deps.upcoming(conversation.clientId)).find(
+      (item) => item.id === Number(move[1]),
+    );
+    if (!booking) return done([menu(t("booking_gone"))], {});
+    rescheduleId = booking.id;
+    return askDay(booking.serviceId, booking.salesId);
+  }
   if (data === "cancel") return done([menu(t("cancelled"))], {});
 
   const service = /^svc:(\d+)$/.exec(data);
@@ -405,6 +314,26 @@ export async function runBookingFlow(
   }
 
   const slot = parseSlot(data);
+  if (slot && state.serviceId && rescheduleId && conversation.clientId) {
+    const outcome = await deps.reschedule(
+      rescheduleId,
+      conversation.clientId,
+      slot,
+    );
+    if (outcome === "taken") {
+      return askTime(
+        state.serviceId,
+        state.salesId ?? "any",
+        state.day ?? dayIn(new Date(slot.starts_at), deps.timeZone),
+        t("taken"),
+      );
+    }
+    if (outcome === "not_found") return done([menu(t("booking_gone"))], {});
+    return done(
+      [{ text: t("booking_moved", await describe(slot, state.serviceId)) }],
+      {},
+    );
+  }
   if (slot && state.serviceId) {
     const next: BotState = { ...state, slot };
     if (conversation.clientId == null && !conversation.phone) {

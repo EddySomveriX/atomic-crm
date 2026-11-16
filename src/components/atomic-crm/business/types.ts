@@ -51,6 +51,10 @@ export interface Business {
   is_demo: boolean;
   /** Sections turned on for this business (modules/modules.ts) */
   modules: ModuleKey[];
+  /** Hours before a visit when cancelling or moving stops being free */
+  free_cancel_hours: number;
+  /** Unreliable clients book through a person, not online */
+  block_unreliable: boolean;
   /** Language of the country pack (uk, pl), null without a country */
   language: string | null;
 }

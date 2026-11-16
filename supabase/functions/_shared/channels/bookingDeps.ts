@@ -7,11 +7,14 @@ import {
   type BotSpecialist,
   type FreeSlot,
 } from "../bot/bookingFlow.ts";
+import { makeClientBookingDeps } from "./clientBookings.ts";
 
 export interface BusinessInfo {
   id: string;
   name: string;
   timezone: string;
+  free_cancel_hours: number;
+  block_unreliable: boolean;
 }
 
 export const loadBusiness = async (
@@ -19,7 +22,7 @@ export const loadBusiness = async (
 ): Promise<BusinessInfo> => {
   const { data, error } = await supabaseAdmin
     .from("businesses")
-    .select("id, name, timezone")
+    .select("id, name, timezone, free_cancel_hours, block_unreliable")
     .eq("id", businessId)
     .single();
   if (error) throw error;
@@ -42,7 +45,12 @@ export const makeBookingDeps = (
   return {
     businessName: business.name,
     timeZone: business.timezone,
+    policy: {
+      freeCancelHours: business.free_cancel_hours,
+      blockUnreliable: business.block_unreliable,
+    },
     now: () => new Date(),
+    ...makeClientBookingDeps(business.id),
 
     async services() {
       if (servicesCache) return servicesCache;

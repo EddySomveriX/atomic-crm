@@ -24,6 +24,15 @@ export interface Booking extends RaRecord {
   source: BookingSource;
   note: string | null;
   conversation_id?: Identifier | null;
+  cancelled_at?: string | null;
+  cancelled_by?: "client" | "business" | null;
+  late_cancel?: boolean;
+  reschedule_count?: number;
+  late_reschedules?: number;
+  /** Minutes the client came late, marked by the specialist */
+  late_minutes?: number | null;
+  /** The client confirmed the visit from the reminder */
+  confirmed_at?: string | null;
 }
 
 export interface WorkingHours extends RaRecord {

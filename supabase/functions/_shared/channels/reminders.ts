@@ -64,6 +64,30 @@ export const sendBookingReminder = async (
     specialist:
       `${specialist?.first_name ?? ""} ${specialist?.last_name ?? ""}`.trim(),
   });
-  const result = await deliverText(row, channel, text);
+  // The day-before reminder asks for an answer: come, move or cancel
+  const replyMarkup =
+    kind === "2h"
+      ? undefined
+      : {
+          inline_keyboard: [
+            [
+              {
+                text: botText(row.language, "confirm_visit_button"),
+                callback_data: `cnf:${bookingId}`,
+              },
+            ],
+            [
+              {
+                text: botText(row.language, "reschedule_button"),
+                callback_data: `rsc:${bookingId}`,
+              },
+              {
+                text: botText(row.language, "cancel_booking_button"),
+                callback_data: `cnl:${bookingId}`,
+              },
+            ],
+          ],
+        };
+  const result = await deliverText(row, channel, text, { replyMarkup });
   return result.status === "sent" ? "sent" : "failed";
 };
