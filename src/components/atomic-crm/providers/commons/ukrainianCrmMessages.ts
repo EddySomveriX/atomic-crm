@@ -561,6 +561,7 @@ export const ukrainianCrmMessages = {
       time_taken:
         "Цей час у майстра вже зайнятий (разом із перервою після послуги). Оберіть інший.",
       save_failed: "Не вдалося зберегти запис",
+      free_from: "вільно з %{time}",
       saved: "Запис збережено",
       day_off: "Вихідний",
       add_hours: "Додати години",
@@ -1197,6 +1198,17 @@ export const ukrainianCrmMessages = {
       more: "Ще",
     },
     today: {
+      greeting_morning: "Доброго ранку",
+      greeting_day: "Доброго дня",
+      greeting_evening: "Доброго вечора",
+      free_for: "вільно %{time}",
+      hours_short: "%{count} год",
+      figures: {
+        bookings: "запис сьогодні |||| записи сьогодні |||| записів сьогодні",
+        waiting: "чекають відповіді",
+        tasks: "справа |||| справи |||| справ",
+        booked: "за записами",
+      },
       messages:
         "Чекає відповіді: %{smart_count} клієнт |||| Чекають відповіді: %{smart_count} клієнти |||| Чекають відповіді: %{smart_count} клієнтів",
       bookings: "Записи на сьогодні",

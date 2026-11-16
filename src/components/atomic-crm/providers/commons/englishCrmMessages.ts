@@ -559,6 +559,7 @@ export const englishCrmMessages = {
       time_taken:
         "The specialist is already busy at this time (with the pause after the service). Choose another one.",
       save_failed: "The booking could not be saved",
+      free_from: "free from %{time}",
       saved: "Booking saved",
       day_off: "Day off",
       add_hours: "Add hours",
@@ -1193,6 +1194,17 @@ export const englishCrmMessages = {
       more: "More",
     },
     today: {
+      greeting_morning: "Good morning",
+      greeting_day: "Good afternoon",
+      greeting_evening: "Good evening",
+      free_for: "free %{time}",
+      hours_short: "%{count} h",
+      figures: {
+        bookings: "booking today |||| bookings today",
+        waiting: "waiting for an answer",
+        tasks: "task |||| tasks",
+        booked: "booked",
+      },
       messages:
         "%{smart_count} client waiting for an answer |||| %{smart_count} clients waiting for an answer",
       bookings: "Today's bookings",

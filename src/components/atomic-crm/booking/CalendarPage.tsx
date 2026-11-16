@@ -35,6 +35,7 @@ import {
 import {
   columnsOfDay,
   dayRange,
+  freeGaps,
   placeSpan,
   type DayRange,
 } from "./calendarLayout";
@@ -65,6 +66,7 @@ export const CalendarPage = () => {
   const timeZone = useBusinessTimeZone();
   const [searchParams, setSearchParams] = useSearchParams();
   const today = dayIn(new Date(), timeZone);
+  const nowMinutes = minutesIn(new Date(), timeZone);
   const day = /^\d{4}-\d{2}-\d{2}$/.test(searchParams.get("day") ?? "")
     ? searchParams.get("day")!
     : today;
@@ -233,6 +235,7 @@ export const CalendarPage = () => {
                 range={range}
                 timeZone={timeZone}
                 hiddenOnMobile={id !== shownColumn}
+                nowMinutes={day === today ? nowMinutes : null}
                 productName={productName}
                 clientName={clientName}
                 onFreeClick={(minutes) =>
@@ -287,6 +290,8 @@ interface SpecialistColumnProps {
   range: DayRange;
   timeZone: string;
   hiddenOnMobile: boolean;
+  /** Minutes since midnight now, when the day shown is today */
+  nowMinutes: number | null;
   productName: (id: Identifier) => string;
   clientName: (id: Identifier | null) => string | null;
   onFreeClick: (minutes: number) => void;
@@ -300,6 +305,7 @@ const SpecialistColumn = ({
   range,
   timeZone,
   hiddenOnMobile,
+  nowMinutes,
   productName,
   clientName,
   onFreeClick,
@@ -307,6 +313,23 @@ const SpecialistColumn = ({
 }: SpecialistColumnProps) => {
   const translate = useTranslate();
   const height = ((range.end - range.start) / 60) * HOUR_HEIGHT;
+  // Free stretches of an hour or more, still ahead: dashed, and a click books
+  const gaps = freeGaps(
+    hours.map((item) => ({
+      start: minutesOf(item.starts_at),
+      end: minutesOf(item.ends_at),
+    })),
+    bookings.map((item) => {
+      const start = minutesIn(new Date(item.starts_at), timeZone);
+      return {
+        start,
+        end:
+          start +
+          (Date.parse(item.blocked_until) - Date.parse(item.starts_at)) /
+            60_000,
+      };
+    }),
+  ).filter((gap) => nowMinutes == null || gap.end > nowMinutes);
 
   const handleClick = (event: MouseEvent<HTMLDivElement>) => {
     const box = event.currentTarget.getBoundingClientRect();
@@ -346,6 +369,39 @@ const SpecialistColumn = ({
             />
           );
         })}
+        {gaps.map((gap) => {
+          const from =
+            nowMinutes == null
+              ? gap.start
+              : Math.max(
+                  gap.start,
+                  Math.ceil(nowMinutes / SNAP_MINUTES) * SNAP_MINUTES,
+                );
+          if (gap.end - from < SNAP_MINUTES * 2) return null;
+          const place = placeSpan(from, gap.end, range);
+          return (
+            <div
+              key={gap.start}
+              className="pointer-events-none absolute inset-x-1 flex items-start justify-center rounded-md border border-dashed border-primary/40 pt-1 text-xs text-primary"
+              style={{ top: `${place.top}%`, height: `${place.height}%` }}
+            >
+              {translate("crm.booking.free_from", {
+                time: timeOfMinutes(from),
+              })}
+            </div>
+          );
+        })}
+        {nowMinutes != null &&
+        nowMinutes >= range.start &&
+        nowMinutes <= range.end ? (
+          <div
+            className="pointer-events-none absolute inset-x-0 z-10 h-0.5 bg-destructive"
+            style={{
+              top: `${placeSpan(nowMinutes, nowMinutes, range).top}%`,
+            }}
+            aria-hidden
+          />
+        ) : null}
         {Array.from({ length: (range.end - range.start) / 60 }, (_, index) => (
           <div
             key={index}
@@ -372,7 +428,7 @@ const SpecialistColumn = ({
               className={cn(
                 "absolute inset-x-1 overflow-hidden rounded-md border px-2 py-1 text-left text-xs shadow-sm",
                 booking.status === "booked" &&
-                  "border-primary/40 bg-primary/15 text-foreground",
+                  "border-primary bg-primary text-primary-foreground",
                 booking.status === "completed" &&
                   "border-border bg-muted text-muted-foreground",
                 booking.status === "no_show" &&

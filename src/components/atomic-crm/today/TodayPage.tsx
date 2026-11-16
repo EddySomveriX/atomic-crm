@@ -15,10 +15,14 @@ import { Link } from "react-router";
 import { formatMoney } from "../money/money";
 import type { CrmDataProvider } from "../providers/types";
 import { useConfigurationContext } from "../root/ConfigurationContext";
+import { dayIn, isoWeekday } from "../booking/bookingTime";
+import { DayRibbon } from "../booking/DayRibbon";
 import { TodayBookings } from "../booking/TodayBookings";
+import { useSpecialists, useTodaySchedule } from "../booking/useBookingData";
 import { TodayMessages } from "../channels/TodayMessages";
 import { useModules } from "../modules/useModules";
 import { AddTask } from "../tasks/AddTask";
+import { TodaySummary } from "./TodaySummary";
 import type { Contact, Deal, Task } from "../types";
 import { formatBusinessDate, getBusinessDay } from "./businessDay";
 
@@ -48,6 +52,12 @@ export const TodayPage = () => {
     uiLocale,
   );
 
+  const schedule = useTodaySchedule(
+    day.start,
+    day.end,
+    isoWeekday(dayIn(day.start, timeZone)),
+  );
+  const { specialists } = useSpecialists();
   const mine = identity?.id != null ? { sales_id: identity.id } : {};
   const { data: planned = [], isPending: plannedPending } = useGetList<Task>(
     "tasks",
@@ -78,17 +88,37 @@ export const TodayPage = () => {
   );
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 pb-28 pt-6 sm:px-0 sm:pt-8">
-      <header>
-        <h1 className="flex flex-col leading-none">
-          <span className="text-lg font-medium text-muted-foreground first-letter:uppercase">
-            {weekday}
-          </span>
-          <span className="mt-1 text-5xl font-semibold tracking-tight sm:text-7xl">
-            {date}
-          </span>
-        </h1>
-      </header>
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 pb-28 pt-6 sm:px-0 sm:pt-8">
+      <TodaySummary
+        weekday={weekday}
+        date={date}
+        timeZone={timeZone}
+        bookings={schedule.bookings}
+        tasksCount={planned.length + overdue.length}
+      />
+
+      {isOn("booking") &&
+      schedule.hours.length + schedule.bookings.length > 0 ? (
+        <section className="hidden flex-col gap-3 md:flex">
+          <div className="flex items-baseline justify-between gap-4">
+            <h2 className="text-xl font-semibold">
+              {translate("crm.today.bookings")}
+            </h2>
+            <Link
+              to="/calendar"
+              className="text-sm font-medium hover:underline"
+            >
+              {translate("crm.booking.calendar")}
+            </Link>
+          </div>
+          <DayRibbon
+            bookings={schedule.bookings}
+            hours={schedule.hours}
+            specialists={specialists}
+            timeZone={timeZone}
+          />
+        </section>
+      ) : null}
 
       <div
         className={
@@ -100,11 +130,20 @@ export const TodayPage = () => {
         <div className="flex min-w-0 flex-col gap-10">
           {isOn("chats") ? <TodayMessages /> : null}
           {isOn("booking") ? (
-            <TodayBookings
-              start={day.start}
-              end={day.end}
-              timeZone={timeZone}
-            />
+            // On a computer the ribbon above shows the day; a phone gets a list
+            <div
+              className={
+                schedule.hours.length + schedule.bookings.length > 0
+                  ? "md:hidden"
+                  : undefined
+              }
+            >
+              <TodayBookings
+                start={day.start}
+                end={day.end}
+                timeZone={timeZone}
+              />
+            </div>
           ) : null}
           {isOn("tasks") && overdue.length > 0 ? (
             <TaskSection

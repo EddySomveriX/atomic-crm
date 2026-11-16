@@ -77,3 +77,32 @@ export const columnsOfDay = (
   );
   return specialistIds.filter((id) => busy.has(String(id)));
 };
+
+export interface Span {
+  start: number;
+  end: number;
+}
+
+/**
+ * Free stretches of a working day, in minutes since midnight: the working
+ * intervals minus the busy ones, keeping only stretches of at least
+ * `minimum` minutes.
+ */
+export const freeGaps = (
+  working: Span[],
+  busy: Span[],
+  minimum = 60,
+): Span[] => {
+  const sorted = [...busy].sort((a, b) => a.start - b.start);
+  const gaps: Span[] = [];
+  for (const interval of working) {
+    let cursor = interval.start;
+    for (const span of sorted) {
+      if (span.end <= cursor || span.start >= interval.end) continue;
+      if (span.start > cursor) gaps.push({ start: cursor, end: span.start });
+      cursor = Math.max(cursor, span.end);
+    }
+    if (cursor < interval.end) gaps.push({ start: cursor, end: interval.end });
+  }
+  return gaps.filter((gap) => gap.end - gap.start >= minimum);
+};

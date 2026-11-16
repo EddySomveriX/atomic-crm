@@ -7,7 +7,7 @@ import {
   timeIn,
   zonedDateTime,
 } from "./bookingTime";
-import { columnsOfDay, dayRange, placeSpan } from "./calendarLayout";
+import { columnsOfDay, dayRange, freeGaps, placeSpan } from "./calendarLayout";
 
 describe("booking times in the business time zone", () => {
   it("turns a wall-clock time of the business into a moment", () => {
@@ -72,5 +72,21 @@ describe("calendar day view", () => {
     expect(
       columnsOfDay([1, 2, 3], [{ sales_id: 3 }], [{ sales_id: 1 }]),
     ).toEqual([1, 3]);
+  });
+
+  it("finds the free stretches of an hour or more between bookings", () => {
+    expect(
+      freeGaps(
+        [{ start: 540, end: 1080 }],
+        [
+          { start: 600, end: 675 },
+          { start: 690, end: 780 },
+          { start: 1020, end: 1095 },
+        ],
+      ),
+    ).toEqual([
+      { start: 540, end: 600 },
+      { start: 780, end: 1020 },
+    ]);
   });
 });

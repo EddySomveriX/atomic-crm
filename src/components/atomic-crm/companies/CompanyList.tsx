@@ -9,14 +9,13 @@ import { DataImportButton } from "../dataImport/DataImportButton";
 import { TopToolbar } from "../layout/TopToolbar";
 import { CompanyEmpty } from "./CompanyEmpty";
 import { CompanyListFilter } from "./CompanyListFilter";
-import { ImageList } from "./GridList";
+import { CounterpartyRows } from "./CounterpartyRows";
 
 export const CompanyList = () => {
   const { identity } = useGetIdentity();
   if (!identity) return null;
   return (
     <List
-      title={false}
       perPage={25}
       sort={{ field: "name", order: "ASC" }}
       actions={<CompanyListActions />}
@@ -38,7 +37,7 @@ const CompanyListLayout = () => {
     <div className="w-full flex flex-row gap-8">
       <CompanyListFilter />
       <div className="flex flex-col flex-1 gap-4">
-        <ImageList />
+        <CounterpartyRows />
       </div>
     </div>
   );

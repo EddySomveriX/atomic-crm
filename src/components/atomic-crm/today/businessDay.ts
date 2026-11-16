@@ -86,3 +86,11 @@ export const formatBusinessDate = (
     month: "long",
   }).format(date),
 });
+
+/** "Доброго ранку" before noon, "доброго дня" until six, then "вечора". */
+export const greetingKey = (minutesOfDay: number): string =>
+  minutesOfDay < 12 * 60
+    ? "crm.today.greeting_morning"
+    : minutesOfDay < 18 * 60
+      ? "crm.today.greeting_day"
+      : "crm.today.greeting_evening";
