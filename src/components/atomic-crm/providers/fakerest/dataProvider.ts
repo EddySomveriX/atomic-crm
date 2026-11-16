@@ -1,3 +1,4 @@
+import type { CostInputs, CostSettings } from "../../costing/types";
 import type { DayTotals, TeamReportRow } from "../../team/types";
 import type {
   CrmDocument,
@@ -384,6 +385,9 @@ export const createDataProvider = ({
       _download?: string,
     ): Promise<string> =>
       Promise.reject(new Error("Documents are not available in the demo")),
+    getCostInputs: async (): Promise<CostInputs> =>
+      Promise.reject(new Error("Costs are not available in the demo")),
+    saveCostSettings: async (_settings: CostSettings): Promise<void> => {},
     getAnalytics: async (_from: Date, _to: Date) =>
       Promise.reject(new Error("Analytics are not available in the demo")),
     isInitialized: async (): Promise<boolean> => {

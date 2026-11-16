@@ -1,13 +1,14 @@
-import { useTranslate } from "ra-core";
+import { useCanAccess, useTranslate } from "ra-core";
 import { useSearchParams } from "react-router";
 import { cn } from "@/lib/utils";
 
+import { CostsTab } from "../costing/CostsTab";
 import { CertificatesTab } from "./CertificatesTab";
 import { OffersTab } from "./OffersTab";
 import { PackagesTab } from "./PackagesTab";
 import { PriceListTab } from "./PriceListTab";
 
-const TABS = ["prices", "offers", "packages", "certificates"] as const;
+const TABS = ["prices", "offers", "packages", "certificates", "costs"] as const;
 type Tab = (typeof TABS)[number];
 
 /**
@@ -17,7 +18,12 @@ type Tab = (typeof TABS)[number];
 export const PricesPage = () => {
   const translate = useTranslate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const tab: Tab = (TABS as readonly string[]).includes(
+  const { canAccess: canReadCosts } = useCanAccess({
+    resource: "costs",
+    action: "list",
+  });
+  const tabs = TABS.filter((item) => item !== "costs" || canReadCosts);
+  const tab: Tab = (tabs as readonly string[]).includes(
     searchParams.get("tab") ?? "",
   )
     ? (searchParams.get("tab") as Tab)
@@ -30,7 +36,7 @@ export const PricesPage = () => {
         role="tablist"
         className="-mx-4 flex gap-5 overflow-x-auto border-b px-4 md:mx-0 md:px-0"
       >
-        {TABS.map((item) => (
+        {tabs.map((item) => (
           <button
             key={item}
             type="button"
@@ -54,6 +60,7 @@ export const PricesPage = () => {
       {tab === "offers" ? <OffersTab /> : null}
       {tab === "packages" ? <PackagesTab /> : null}
       {tab === "certificates" ? <CertificatesTab /> : null}
+      {tab === "costs" ? <CostsTab /> : null}
     </div>
   );
 };

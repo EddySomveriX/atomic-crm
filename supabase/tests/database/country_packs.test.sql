@@ -108,7 +108,7 @@ select throws_ok(
 --
 -- Reference data is read-only for users
 --
-select is((select count(*)::int from public.tax_rates where country_code = 'UA'), 4, 'users read tax rates');
+select is((select count(*)::int from public.tax_rates where country_code = 'UA' and tax = 'vat'), 4, 'users read tax rates');
 select throws_ok($$ insert into public.tax_rates (country_code, code, rate, label, valid_from) values ('UA', 'custom', 1, 'x', '2026-01-01') $$, '42501', null, 'users cannot add tax rates');
 update public.tax_rates set rate = 99 where country_code = 'UA';
 delete from public.requisite_fields;
