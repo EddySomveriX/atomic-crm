@@ -192,3 +192,5 @@ verify_jwt = false
 verify_jwt = false
 [functions.documents_purge]
 verify_jwt = false
+[functions.automations_run]
+verify_jwt = false

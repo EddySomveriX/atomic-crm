@@ -1381,7 +1381,69 @@ export const englishCrmMessages = {
         "The file is over 20 MB: Telegram does not give such files to a bot",
       chat_save_download: "The file did not come from Telegram. Try later.",
     },
+    automations: {
+      title: "Automatic messages",
+      hint: "The bot writes to clients in Telegram at the right moment. Each message goes out once, from 9:00 to 20:00, only to those who agreed to the bot's terms. A client can write “stop” and the messages stop.",
+      kinds: {
+        review: {
+          name: "Review after a visit",
+          when: "2 hours after a completed booking",
+          text: "%{name}, thank you for visiting us! We would be grateful for a review: it takes a minute.",
+        },
+        rebook: {
+          name: "Time to repeat",
+          when: "The set number of days after a service, if the client has not booked yet",
+          text: "%{name}, hello! It has been %{days} days since “%{service}”: a good time to repeat it. Book with the button below.",
+        },
+        no_show: {
+          name: "After a missed visit",
+          when: "The day after a booking marked “did not come”",
+          text: "%{name}, sorry we missed you yesterday. Pick another time that suits you with the button below.",
+        },
+        reactivation: {
+          name: "Gone quiet",
+          when: "When a client has not come for the set number of days",
+          text: "%{name}, we have not seen you for a while! We would be glad to see you again: book with the button below.",
+        },
+        birthday: {
+          name: "Birthday",
+          when: "On the client's birthday",
+          text: "%{name}, happy birthday! We wish you joy and a great mood. See you at %{business}.",
+        },
+      },
+      review_link: "Where to leave a review",
+      review_link_hint:
+        "A link to Google Maps, Instagram or your website. It goes under the thanks.",
+      reactivation_after: "Write after",
+      days: "days",
+      after: "after",
+      rebook_hint:
+        "After how many days each service is worth repeating. An empty field: no reminder.",
+      rebook_no_services: "Add services in Prices first.",
+      birthday_hint: "The birthday is set on the client's card.",
+      edit_text: "Change the text",
+      standard_text: "Use the standard text",
+      placeholders:
+        "You can insert: %{name} the name, %{service} the service, %{days} the days, %{business} your name, %{link} the review link. The bot adds the line about “stop” itself.",
+      days_invalid: "The number of days is from 1 to 365",
+      save_failed:
+        "Not saved. The owner and managers change automatic messages.",
+      recent: "Recent messages",
+      recent_empty: "Nothing was sent yet.",
+      statuses: {
+        pending: "sending",
+        sent: "sent",
+        failed: "not delivered",
+      },
+      sample: {
+        name: "Olena",
+        service: "Haircut",
+        business: "your salon",
+      },
+      birth_date: "Birthday",
+    },
     nav: {
+      automations: "Automatic messages",
       documents: "Documents",
       pricing: "Prices",
       booking: "Booking",

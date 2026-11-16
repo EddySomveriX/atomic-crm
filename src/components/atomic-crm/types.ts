@@ -73,6 +73,8 @@ export type Company = {
   kind?: "company" | "sole_proprietor" | "person";
   /** Personal discount of a client, in percent */
   personal_discount?: number | null;
+  /** For the birthday greeting (automatic messages) */
+  birth_date?: string | null;
   roles?: ("client" | "supplier" | "partner")[];
   country_code?: string | null;
   requisites?: Record<string, string>;

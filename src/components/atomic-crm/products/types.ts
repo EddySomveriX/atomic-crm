@@ -25,6 +25,8 @@ export interface Product extends RaRecord {
   sort_order?: number;
   /** An extra a client adds to a service */
   is_addon?: boolean;
+  /** Days after which the service is worth repeating (automatic message) */
+  rebook_days?: number | null;
   /** products_summary: stock in all warehouses */
   quantity?: number;
   /** products_summary: average purchase cost in minor units */

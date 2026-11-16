@@ -6,7 +6,7 @@ import {
   type Identifier,
 } from "ra-core";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { Globe, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -91,9 +91,17 @@ export const ChatsPage = () => {
           open ? "hidden md:flex" : "flex",
         )}
       >
-        <h1 className="text-2xl font-semibold">
-          {translate("crm.chats.title")}
-        </h1>
+        <div className="flex items-baseline justify-between gap-3">
+          <h1 className="text-2xl font-semibold">
+            {translate("crm.chats.title")}
+          </h1>
+          <Link
+            to="/automations"
+            className="text-sm text-primary underline-offset-4 hover:underline"
+          >
+            {translate("crm.nav.automations")}
+          </Link>
+        </div>
         <div className="flex gap-1" role="tablist">
           {(["all", "waiting", "mine"] as Filter[]).map((item) => (
             <button

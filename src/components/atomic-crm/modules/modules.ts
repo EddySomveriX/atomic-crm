@@ -83,7 +83,10 @@ export const NAV_SECTIONS: NavSection[] = [
     module: "chats",
     icon: MessageCircle,
     labelKey: "crm.nav.chats",
-    pages: [{ path: "/chats", labelKey: "crm.nav.chats" }],
+    pages: [
+      { path: "/chats", labelKey: "crm.nav.chats" },
+      { path: "/automations", labelKey: "crm.nav.automations" },
+    ],
   },
   {
     key: "booking",

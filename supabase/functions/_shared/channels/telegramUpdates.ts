@@ -10,7 +10,7 @@ import {
   type BotInput,
   type BotState,
 } from "../bot/bookingFlow.ts";
-import { botLanguageOf, botText } from "../bot/botTexts.ts";
+import { botLanguageOf, botText, isStopWord } from "../bot/botTexts.ts";
 import { loadBusiness, makeBookingDeps } from "./bookingDeps.ts";
 import {
   CONVERSATION_COLUMNS,
@@ -213,6 +213,10 @@ const answerUpdate = async (
   }
 
   const conversation = await findOrOpenConversation(channel, parsed);
+  if (parsed.input.kind === "text" && isStopWord(parsed.input.text)) {
+    await stopAutomations(channel, botToken, conversation, parsed);
+    return;
+  }
   const business = await loadBusiness(channel.business_id);
   const deps = makeBookingDeps(business, {
     source: "telegram",
@@ -263,4 +267,33 @@ const answerUpdate = async (
       botToken,
     });
   }
+};
+
+/** "stop": no automatic messages to this chat from now on. */
+const stopAutomations = async (
+  channel: ChannelRow,
+  botToken: string,
+  conversation: ConversationRow,
+  parsed: ParsedUpdate,
+): Promise<void> => {
+  await insertMessage({
+    business_id: channel.business_id,
+    conversation_id: conversation.id,
+    direction: "in",
+    body: parsed.body,
+    handled_by_bot: true,
+    external_id: parsed.externalId,
+    status: "received",
+  });
+  const { error } = await supabaseAdmin
+    .from("conversations")
+    .update({ automations_off_at: new Date().toISOString() })
+    .eq("id", conversation.id);
+  if (error) throw error;
+  await deliverText(
+    conversation,
+    channel,
+    botText(conversation.language, "auto_stopped"),
+    { botToken },
+  );
 };

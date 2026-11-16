@@ -70,9 +70,22 @@ const uk = {
     "Чекаємо на вас через 2 години!\n%{service}\n%{when}\nМайстер: %{specialist}",
   reminder_now:
     "Нагадуємо про ваш запис:\n%{service}\n%{when}\nМайстер: %{specialist}",
+  auto_rebook:
+    "%{name}, вітаємо! Минуло вже %{days} днів після «%{service}» — саме час повторити. Записатися можна тут, кнопкою нижче.",
+  auto_no_show:
+    "%{name}, шкода, що вчора не вдалося зустрітися. Оберіть інший зручний час — кнопка нижче.",
+  auto_review:
+    "%{name}, дякуємо, що завітали до нас! Будемо вдячні за відгук — це займе хвилину.%{link}",
+  auto_birthday:
+    "%{name}, вітаємо з днем народження! Бажаємо радості й гарного настрою. Чекаємо на вас у %{business}.",
+  auto_reactivation:
+    "%{name}, давно вас не бачили! Будемо раді знову зустрітися — записатися можна кнопкою нижче.",
+  auto_stop_hint: "Щоб не отримувати такі повідомлення, напишіть «стоп».",
+  auto_stopped:
+    "Добре, більше не надсилатимемо автоматичних повідомлень. Записатися чи поставити питання можна будь-коли.",
 };
 
-type BotTextKey = keyof typeof uk;
+export type BotTextKey = keyof typeof uk;
 
 const en: Record<BotTextKey, string> = {
   greeting:
@@ -136,6 +149,19 @@ const en: Record<BotTextKey, string> = {
     "See you in 2 hours!\n%{service}\n%{when}\nSpecialist: %{specialist}",
   reminder_now:
     "A reminder of your booking:\n%{service}\n%{when}\nSpecialist: %{specialist}",
+  auto_rebook:
+    "%{name}, hello! It has been %{days} days since “%{service}”: a good time to repeat it. Book with the button below.",
+  auto_no_show:
+    "%{name}, sorry we missed you yesterday. Pick another time that suits you with the button below.",
+  auto_review:
+    "%{name}, thank you for visiting us! We would be grateful for a review: it takes a minute.%{link}",
+  auto_birthday:
+    "%{name}, happy birthday! We wish you joy and a great mood. See you at %{business}.",
+  auto_reactivation:
+    "%{name}, we have not seen you for a while! We would be glad to see you again: book with the button below.",
+  auto_stop_hint: "To stop these messages, write “stop”.",
+  auto_stopped:
+    "All right, no more automatic messages. You can book or ask a question any time.",
 };
 
 const TEXTS: Record<BotLanguage, Record<BotTextKey, string>> = { uk, en };
@@ -148,6 +174,10 @@ export const botText = (
   TEXTS[language][key].replace(/%\{(\w+)\}/g, (match, name: string) =>
     name in values ? String(values[name]) : match,
   );
+
+/** "stop" in a message: the client does not want automatic messages. */
+export const isStopWord = (text: string): boolean =>
+  /^\/?(стоп|stop|відписатися|unsubscribe)[.!]?$/iu.test(text.trim());
 
 /** The language of a client from Telegram's language code: uk or en. */
 export const botLanguageOf = (code: string | undefined | null): BotLanguage =>

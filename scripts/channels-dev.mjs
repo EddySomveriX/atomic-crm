@@ -5,12 +5,12 @@
  * Telegram cannot reach with a webhook:
  *   - every few seconds, fetches new messages of the connected bots
  *     (edge function channels_poll);
- *   - every minute, sends the booking reminders that are due
- *     (edge function booking_reminders);
+ *   - every minute, sends the booking reminders and the automatic messages
+ *     that are due (edge functions booking_reminders and automations_run);
  *   - every hour, removes documents kept in the trash over 30 days
  *     (edge function documents_purge).
  * In production a webhook replaces the polling, and a scheduled job
- * (Supabase Cron) calls booking_reminders and documents_purge.
+ * (Supabase Cron) calls booking_reminders, automations_run and documents_purge.
  *
  * Needs the local stack (make start) and the functions
  * (npx supabase functions serve). Run: node scripts/channels-dev.mjs
@@ -81,6 +81,19 @@ const remind = async () => {
   }
 };
 
+const automate = async () => {
+  try {
+    const { sent, failed } = await call("automations_run");
+    if (sent || failed) {
+      console.log(
+        `${stamp()} automatic messages: ${sent} sent, ${failed} failed`,
+      );
+    }
+  } catch (error) {
+    console.error(`${stamp()} ${error.message}`);
+  }
+};
+
 const purge = async () => {
   try {
     const { removed, orphans } = await call("documents_purge");
@@ -100,5 +113,7 @@ console.log(
 poll();
 remind();
 setInterval(remind, REMINDERS_EVERY_MS);
+automate();
+setInterval(automate, REMINDERS_EVERY_MS);
 purge();
 setInterval(purge, PURGE_EVERY_MS);
