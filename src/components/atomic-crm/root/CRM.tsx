@@ -27,6 +27,7 @@ import { AnalyticsPage } from "../analytics/AnalyticsPage";
 import { PricesPage } from "../pricing/PricesPage";
 import { DocumentsPage } from "../documents/DocumentsPage";
 import { AutomationsPage } from "../automations/AutomationsPage";
+import { MarketingPage } from "../marketing/MarketingPage";
 import { TeamPage } from "../team/TeamPage";
 import { InventoryPage } from "../stock/InventoryPage";
 import { Layout } from "../layout/Layout";
@@ -288,6 +289,7 @@ const DesktopAdmin = (
         <Route path={PricesPage.path} element={<PricesPage />} />
         <Route path={DocumentsPage.path} element={<DocumentsPage />} />
         <Route path={AutomationsPage.path} element={<AutomationsPage />} />
+        <Route path={MarketingPage.path} element={<MarketingPage />} />
         <Route path={TeamPage.path} element={<TeamPage />} />
       </CustomRoutes>
       <Resource name="deals" {...deals} />
@@ -306,6 +308,9 @@ const DesktopAdmin = (
       <Resource name="service_materials" />
       <Resource name="overhead_items" />
       <Resource name="product_cost_items" />
+      <Resource name="posts" />
+      <Resource name="post_targets" />
+      <Resource name="marketing_accounts" />
       <Resource name="bookings" />
       <Resource name="working_hours" />
       <Resource name="specialists" />
@@ -400,6 +405,7 @@ const MobileAdmin = (
           <Route path={PricesPage.path} element={<PricesPage />} />
           <Route path={DocumentsPage.path} element={<DocumentsPage />} />
           <Route path={AutomationsPage.path} element={<AutomationsPage />} />
+          <Route path={MarketingPage.path} element={<MarketingPage />} />
           <Route path={TeamPage.path} element={<TeamPage />} />
         </CustomRoutes>
         <Resource

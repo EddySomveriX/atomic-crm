@@ -74,7 +74,7 @@ export class TelegramError extends Error {
   constructor(
     readonly method: string,
     readonly code: number,
-    description: string,
+    readonly description: string,
   ) {
     super(`Telegram ${method} failed (${code}): ${description}`);
     this.name = "TelegramError";
@@ -244,3 +244,102 @@ export const deleteWebhook = (context: ConnectorContext) =>
 
 /** Header Telegram sends with every webhook delivery. */
 export const WEBHOOK_SECRET_HEADER = "X-Telegram-Bot-Api-Secret-Token";
+
+/** A chat the bot can see: a channel by its @username or id. */
+export interface TelegramChat {
+  id: number;
+  type: "private" | "group" | "supergroup" | "channel";
+  title?: string;
+  username?: string;
+}
+
+export const getChat = (chatId: string | number, context: ConnectorContext) =>
+  callTelegram<TelegramChat>("getChat", { chat_id: chatId }, context);
+
+/** The bot's rights in a chat: posting to a channel needs can_post_messages. */
+export const getChatMember = (
+  chatId: string | number,
+  userId: number,
+  context: ConnectorContext,
+) =>
+  callTelegram<{ status: string; can_post_messages?: boolean }>(
+    "getChatMember",
+    { chat_id: chatId, user_id: userId },
+    context,
+  );
+
+export interface ChannelMedia {
+  file: Blob;
+  fileName: string;
+  isVideo: boolean;
+}
+
+/** Caption limit of a photo or video in Telegram */
+export const MAX_MEDIA_CAPTION = 1024;
+export const MAX_TEXT_LENGTH = 4096;
+
+/**
+ * Posts to a channel: a text, one photo or video with a caption, or an album
+ * of up to 10. A text longer than a caption is sent as its own message after
+ * the media. Returns the id of the first message.
+ */
+export const postToChannel = async (
+  chatId: string | number,
+  text: string,
+  media: ChannelMedia[],
+  context: ConnectorContext,
+): Promise<number> => {
+  const fitsCaption = text.length <= MAX_MEDIA_CAPTION;
+  const caption = fitsCaption ? text : "";
+  let firstId: number;
+  if (media.length === 0) {
+    const sent = await sendMessage(
+      chatId,
+      text.slice(0, MAX_TEXT_LENGTH),
+      undefined,
+      context,
+    );
+    return sent.message_id;
+  }
+  if (media.length === 1) {
+    const [item] = media;
+    const form = new FormData();
+    form.append("chat_id", String(chatId));
+    form.append(item.isVideo ? "video" : "photo", item.file, item.fileName);
+    if (caption) form.append("caption", caption);
+    const sent = await callTelegram<TelegramMessage>(
+      item.isVideo ? "sendVideo" : "sendPhoto",
+      form,
+      context,
+    );
+    firstId = sent.message_id;
+  } else {
+    const form = new FormData();
+    form.append("chat_id", String(chatId));
+    const items = media.slice(0, 10).map((item, index) => {
+      const name = `file${index}`;
+      form.append(name, item.file, item.fileName);
+      return {
+        type: item.isVideo ? "video" : "photo",
+        media: `attach://${name}`,
+        ...(index === 0 && caption ? { caption } : {}),
+      };
+    });
+    form.append("media", JSON.stringify(items));
+    const sent = await callTelegram<TelegramMessage[]>(
+      "sendMediaGroup",
+      form,
+      context,
+    );
+    firstId = sent[0].message_id;
+  }
+  if (!fitsCaption) {
+    await sendMessage(
+      chatId,
+      text.slice(0, MAX_TEXT_LENGTH),
+      undefined,
+      context,
+    );
+  }
+  return firstId;
+};

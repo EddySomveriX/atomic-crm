@@ -1,3 +1,4 @@
+import type { PostMedia } from "../../marketing/types";
 import type { CostInputs, CostSettings } from "../../costing/types";
 import type { DayTotals, TeamReportRow } from "../../team/types";
 import type {
@@ -385,6 +386,18 @@ export const createDataProvider = ({
       _download?: string,
     ): Promise<string> =>
       Promise.reject(new Error("Documents are not available in the demo")),
+    connectMarketingAccount: async (): Promise<{ name: string }> =>
+      Promise.reject(new Error("Marketing is not available in the demo")),
+    uploadPostMedia: async (): Promise<PostMedia> =>
+      Promise.reject(new Error("Marketing is not available in the demo")),
+    postMediaUrl: async (): Promise<string> =>
+      Promise.reject(new Error("Marketing is not available in the demo")),
+    savePost: async (): Promise<Identifier> =>
+      Promise.reject(new Error("Marketing is not available in the demo")),
+    retryPost: async (): Promise<void> => {},
+    getFreeSlots: async (): Promise<
+      { product_id: Identifier; times: string[] }[]
+    > => [],
     getCostInputs: async (): Promise<CostInputs> =>
       Promise.reject(new Error("Costs are not available in the demo")),
     saveCostSettings: async (_settings: CostSettings): Promise<void> => {},

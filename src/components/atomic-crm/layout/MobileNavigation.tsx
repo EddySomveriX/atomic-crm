@@ -41,6 +41,7 @@ const MOBILE_PATHS: Record<string, string> = {
   analytics: "/analytics",
   pricing: "/prices",
   documents: "/documents",
+  marketing: "/marketing",
 };
 
 /**

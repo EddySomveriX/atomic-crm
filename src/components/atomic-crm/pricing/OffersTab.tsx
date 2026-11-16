@@ -1,4 +1,5 @@
 import {
+  useCanAccess,
   useCreate,
   useDelete,
   useGetList,
@@ -9,7 +10,8 @@ import {
   useUpdate,
 } from "ra-core";
 import { useState, type FormEvent } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Megaphone, Plus, Trash2 } from "lucide-react";
+import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,6 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 
+import { useModules } from "../modules/useModules";
 import { PROMOTION_KINDS, type Promotion, type PromotionKind } from "./types";
 
 const WEEKDAYS = [1, 2, 3, 4, 5, 6, 7];
@@ -98,6 +101,13 @@ const OfferRow = ({
   const [locale = "uk"] = useLocaleState();
   const [update] = useUpdate<Promotion>();
   const [remove] = useDelete<Promotion>();
+  const { modules } = useModules();
+  const { canAccess: canWritePosts } = useCanAccess({
+    resource: "posts",
+    action: "edit",
+  });
+  const canPost =
+    canWritePosts === true && (modules ?? []).includes("marketing");
   const condition = (() => {
     switch (offer.kind) {
       case "happy_hours":
@@ -137,6 +147,17 @@ const OfferRow = ({
         }
         aria-label={translate("crm.pricing.offer_active")}
       />
+      {canPost ? (
+        <Button
+          variant="outline"
+          size="sm"
+          render={<Link to={`/marketing?offer=${offer.id}`} />}
+          nativeButton={false}
+        >
+          <Megaphone />
+          {translate("crm.marketing.post_about_offer")}
+        </Button>
+      ) : null}
       {canEdit ? (
         <Button
           variant="ghost"

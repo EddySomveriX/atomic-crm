@@ -671,6 +671,10 @@ export const ukrainianCrmMessages = {
           name: "Документи",
           hint: "Скани й фото договорів, рахунків, накладних",
         },
+        marketing: {
+          name: "Маркетинг",
+          hint: "Пости в Instagram і Telegram-канал за розкладом",
+        },
       },
       coming_items: {
         purchases: "Закупівлі",
@@ -1544,6 +1548,131 @@ export const ukrainianCrmMessages = {
       card_summary: "%{cost}, прибуток %{profit}",
       card_link: "Розрахунок",
     },
+    marketing: {
+      errors: {
+        no_bot: "бот бізнесу не підключений",
+        telegram_channel:
+          "канал не знайдено або бот уже не адміністратор каналу",
+        media_missing: "фото чи відео поста не знайдено",
+        instagram_not_connected:
+          "акаунт Instagram не підключений — підключіть його знову",
+        instagram_limit:
+          "досягнуто денний ліміт постів Instagram, спробуйте завтра",
+        instagram_local:
+          "Instagram не може забрати фото з цього комп’ютера — запрацює після розміщення CRM в інтернеті",
+        token_expired: "токен Instagram прострочений — підключіть акаунт знову",
+        unknown: "не вдалося опублікувати",
+      },
+      tabs: { posts: "Публікації", accounts: "Акаунти" },
+      new_post: "Новий пост",
+      edit_post: "Змінити пост",
+      free_slots: "Вільні віконця",
+      no_free_slots: "На завтра вільного часу для онлайн-запису немає.",
+      post_about_offer: "Пост",
+      no_accounts:
+        "Спершу підключіть Telegram-канал або Instagram — тоді пости з CRM виходитимуть туди за розкладом.",
+      connect_first: "Підключити акаунт",
+      no_posts:
+        "Постів ще немає. Натисніть «Новий пост» або зробіть пост з акції у «Прайсі».",
+      no_time: "Без часу",
+      retry: "Повторити",
+      open_post: "Відкрити пост",
+      open_profile: "Профіль",
+      instagram_invalid:
+        "Нік Instagram — латинські літери, цифри, крапка й підкреслення",
+      failed: "Не вдалося. Спробуйте ще раз.",
+      account_kinds: {
+        telegram_channel: "Telegram-канал",
+        instagram: "Instagram",
+      },
+      formats: { post: "Пост", story: "Сторіс", reel: "Reels" },
+      statuses: {
+        draft: "Чернетка",
+        scheduled: "Заплановано",
+        published: "Опубліковано",
+        partly: "Вийшов не всюди",
+        failed: "Помилка",
+      },
+      target_statuses: {
+        pending: "чекає свого часу",
+        publishing: "публікується…",
+        published: "опубліковано",
+        failed: "не вийшов",
+      },
+      problems: {
+        no_account: "Оберіть, куди публікувати.",
+        empty: "Додайте текст або фото.",
+        too_long: "Текст задовгий: до 2200 символів.",
+        instagram_media: "Для Instagram потрібне фото або відео.",
+        reel_video: "Для Reels потрібне відео.",
+      },
+      editor: {
+        where: "Куди",
+        text: "Текст",
+        text_placeholder: "Про що пост? Акція, новинка, вільні віконця…",
+        media: "Фото або відео",
+        media_hint:
+          "До 10 файлів. Фото перетворюються на JPEG, відео — MP4 або MOV до 100 МБ.",
+        remove_media: "Прибрати файл",
+        too_big: "Файл завеликий: до 100 МБ",
+        wrong_type: "Підходять фото та відео MP4 або MOV",
+        when: "Коли",
+        when_now: "Зараз",
+        when_later: "У призначений час",
+        day: "День",
+        time: "Час",
+        past: "Цей час уже минув",
+        save_draft: "Зберегти чернетку",
+        publish_now: "Опублікувати",
+        schedule: "Запланувати",
+        saved_draft: "Чернетку збережено",
+        publishing: "Пост вийде протягом хвилини",
+        scheduled: "Пост заплановано",
+      },
+      accounts: {
+        enabled: "Публікувати сюди",
+        remove: "Відключити %{name}",
+        owner_only: "Акаунти підключають власник і менеджер.",
+        connected: "Підключено: %{name}",
+        connect: "Підключити",
+        telegram_title: "Telegram-канал",
+        telegram_hint:
+          "Додайте бота вашого бізнесу адміністратором каналу з правом публікувати пости, потім впишіть назву каналу.",
+        channel: "Назва каналу",
+        instagram_title: "Instagram",
+        instagram_hint:
+          "Потрібен бізнес-акаунт або акаунт автора. Пости виходять через ваш власний застосунок Meta — це безкоштовно.",
+        instagram_steps: {
+          "1": "Відкрийте developers.facebook.com, створіть застосунок і додайте до нього продукт «Instagram».",
+          "2": "У розділі «Налаштування API з входом через Instagram» додайте свій акаунт Instagram і підтвердіть доступ.",
+          "3": "Натисніть «Згенерувати токен» біля акаунта і скопіюйте його.",
+          "4": "Вставте токен сюди й натисніть «Підключити».",
+        },
+        token: "Токен доступу",
+        token_note:
+          "Токен зберігається лише на сервері й оновлюється сам. Нікому його не надсилайте.",
+        errors: {
+          no_bot: "Спершу підключіть бота бізнесу в налаштуваннях каналів.",
+          channel_not_found:
+            "Канал не знайдено. Перевірте назву й чи доданий бот до каналу.",
+          bot_not_admin:
+            "Бот не є адміністратором цього каналу або не має права публікувати.",
+          token_refused:
+            "Instagram не прийняв токен. Згенеруйте новий і спробуйте ще раз.",
+          invalid_input: "Перевірте введене.",
+        },
+      },
+      templates: {
+        offer_title: "%{name}: знижка %{percent}%",
+        happy_hours: "З %{from} до %{to}",
+        last_minute: "На записи в найближчі %{hours} год",
+        first_visit: "Для першого візиту",
+        promo_code: "Промокод: %{code}",
+        until: "Діє до %{date}",
+        book: "Записатися: %{link}",
+        free_title: "Вільний час на %{day}",
+      },
+    },
     materials: {
       title: "Матеріали на одну послугу",
       hint: "Коли візит відмічено «Прийшов», ці матеріали списуються з основного складу. Якщо відмітку скасувати — повертаються.",
@@ -1607,6 +1736,7 @@ export const ukrainianCrmMessages = {
       commission_column: "Праворуч — сума майстру за день за його відсотком.",
     },
     nav: {
+      marketing: "Маркетинг",
       team: "Команда",
       automations: "Автоповідомлення",
       documents: "Документи",

@@ -60,6 +60,7 @@ export const generateCompanies = (db: Db, size = 55): Required<Company>[] => {
       credit_limit: null,
       personal_discount: null,
       birth_date: null,
+      instagram: null,
     };
   });
 };

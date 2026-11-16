@@ -5,6 +5,7 @@ import {
   Handshake,
   Home,
   ListTodo,
+  Megaphone,
   MessageCircle,
   Package,
   Tag,
@@ -28,6 +29,7 @@ export const MODULE_KEYS = [
   "analytics",
   "pricing",
   "documents",
+  "marketing",
 ] as const;
 export type ModuleKey = (typeof MODULE_KEYS)[number];
 
@@ -37,9 +39,17 @@ export const defaultModules = (
 ): ModuleKey[] => {
   switch (businessType) {
     case "services":
-      return ["chats", "booking", "pricing", "tasks", "analytics"];
+      return ["chats", "booking", "pricing", "marketing", "tasks", "analytics"];
     case "retail":
-      return ["chats", "sales", "stock", "pricing", "documents", "analytics"];
+      return [
+        "chats",
+        "sales",
+        "stock",
+        "pricing",
+        "marketing",
+        "documents",
+        "analytics",
+      ];
     case "production":
       return ["sales", "stock", "documents", "tasks", "analytics"];
     case "b2b":
@@ -105,6 +115,13 @@ export const NAV_SECTIONS: NavSection[] = [
     icon: Tag,
     labelKey: "crm.nav.pricing",
     pages: [{ path: "/prices", labelKey: "crm.nav.pricing" }],
+  },
+  {
+    key: "marketing",
+    module: "marketing",
+    icon: Megaphone,
+    labelKey: "crm.nav.marketing",
+    pages: [{ path: "/marketing", labelKey: "crm.nav.marketing" }],
   },
   {
     key: "sales",

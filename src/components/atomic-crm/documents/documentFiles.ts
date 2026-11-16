@@ -110,7 +110,7 @@ const loadImage = (file: Blob): Promise<HTMLImageElement> =>
   });
 
 /** A photo as a JPEG no larger than 2000 px on its long side. */
-const photoAsJpeg = async (file: Blob): Promise<Uint8Array> => {
+export const photoAsJpeg = async (file: Blob): Promise<Uint8Array> => {
   const image = await loadImage(file);
   const scale = Math.min(
     1,

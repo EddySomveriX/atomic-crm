@@ -75,6 +75,8 @@ export type Company = {
   personal_discount?: number | null;
   /** For the birthday greeting (automatic messages) */
   birth_date?: string | null;
+  /** Instagram username of a client, without the @ */
+  instagram?: string | null;
   roles?: ("client" | "supplier" | "partner")[];
   country_code?: string | null;
   requisites?: Record<string, string>;

@@ -672,6 +672,10 @@ export const englishCrmMessages = {
           name: "Documents",
           hint: "Scans and photos of contracts, invoices, waybills",
         },
+        marketing: {
+          name: "Marketing",
+          hint: "Scheduled posts to Instagram and a Telegram channel",
+        },
       },
       coming_items: {
         purchases: "Purchases",
@@ -1541,6 +1545,131 @@ export const englishCrmMessages = {
       card_summary: "%{cost}, profit %{profit}",
       card_link: "The sums",
     },
+    marketing: {
+      errors: {
+        no_bot: "the business bot is not connected",
+        telegram_channel:
+          "the channel was not found or the bot is no longer its administrator",
+        media_missing: "a photo or video of the post was not found",
+        instagram_not_connected:
+          "the Instagram account is not connected: connect it again",
+        instagram_limit: "the daily Instagram limit is reached, try tomorrow",
+        instagram_local:
+          "Instagram cannot fetch photos from this computer: it works once the CRM is on the internet",
+        token_expired: "the Instagram token expired: connect the account again",
+        unknown: "publishing failed",
+      },
+      tabs: { posts: "Posts", accounts: "Accounts" },
+      new_post: "New post",
+      edit_post: "Change the post",
+      free_slots: "Free times",
+      no_free_slots: "There is no free time for online booking tomorrow.",
+      post_about_offer: "Post",
+      no_accounts:
+        "Connect a Telegram channel or Instagram first: then posts from the CRM go out there on schedule.",
+      connect_first: "Connect an account",
+      no_posts:
+        "No posts yet. Press “New post” or make a post from an offer in the price list.",
+      no_time: "No time set",
+      retry: "Try again",
+      open_post: "Open the post",
+      open_profile: "Profile",
+      instagram_invalid:
+        "An Instagram username has Latin letters, digits, dots and underscores",
+      failed: "That did not work. Try again.",
+      account_kinds: {
+        telegram_channel: "Telegram channel",
+        instagram: "Instagram",
+      },
+      formats: { post: "Post", story: "Story", reel: "Reel" },
+      statuses: {
+        draft: "Draft",
+        scheduled: "Scheduled",
+        published: "Published",
+        partly: "Not everywhere",
+        failed: "Failed",
+      },
+      target_statuses: {
+        pending: "waiting for its time",
+        publishing: "being published…",
+        published: "published",
+        failed: "did not go out",
+      },
+      problems: {
+        no_account: "Choose where to publish.",
+        empty: "Add a text or a photo.",
+        too_long: "The text is too long: up to 2200 characters.",
+        instagram_media: "Instagram needs a photo or a video.",
+        reel_video: "A reel needs a video.",
+      },
+      editor: {
+        where: "Where",
+        text: "Text",
+        text_placeholder:
+          "What is the post about? An offer, something new, free times…",
+        media: "Photos or video",
+        media_hint:
+          "Up to 10 files. Photos become JPEG; videos are MP4 or MOV up to 100 MB.",
+        remove_media: "Remove the file",
+        too_big: "The file is too big: up to 100 MB",
+        wrong_type: "Photos and MP4 or MOV videos fit",
+        when: "When",
+        when_now: "Now",
+        when_later: "At a set time",
+        day: "Day",
+        time: "Time",
+        past: "That time has passed",
+        save_draft: "Save the draft",
+        publish_now: "Publish",
+        schedule: "Schedule",
+        saved_draft: "Draft saved",
+        publishing: "The post goes out within a minute",
+        scheduled: "The post is scheduled",
+      },
+      accounts: {
+        enabled: "Publish here",
+        remove: "Disconnect %{name}",
+        owner_only: "Owners and managers connect accounts.",
+        connected: "Connected: %{name}",
+        connect: "Connect",
+        telegram_title: "Telegram channel",
+        telegram_hint:
+          "Add your business bot as an administrator of the channel with the right to post, then type the channel name.",
+        channel: "Channel name",
+        instagram_title: "Instagram",
+        instagram_hint:
+          "Needs a business or creator account. Posts go out through your own Meta app, free of charge.",
+        instagram_steps: {
+          "1": "Open developers.facebook.com, create an app and add the “Instagram” product to it.",
+          "2": "In “API setup with Instagram login”, add your Instagram account and confirm the access.",
+          "3": "Press “Generate token” next to the account and copy it.",
+          "4": "Paste the token here and press “Connect”.",
+        },
+        token: "Access token",
+        token_note:
+          "The token is kept on the server only and renews itself. Do not send it to anyone.",
+        errors: {
+          no_bot: "Connect the business bot in the channel settings first.",
+          channel_not_found:
+            "Channel not found. Check the name and that the bot was added to the channel.",
+          bot_not_admin:
+            "The bot is not an administrator of this channel or may not post.",
+          token_refused:
+            "Instagram refused the token. Generate a new one and try again.",
+          invalid_input: "Check what you typed.",
+        },
+      },
+      templates: {
+        offer_title: "%{name}: %{percent}% off",
+        happy_hours: "From %{from} to %{to}",
+        last_minute: "For bookings within the next %{hours} h",
+        first_visit: "For a first visit",
+        promo_code: "Promo code: %{code}",
+        until: "Until %{date}",
+        book: "Book: %{link}",
+        free_title: "Free times on %{day}",
+      },
+    },
     materials: {
       title: "Materials for one service",
       hint: "When a visit is marked “Came”, these materials are written off the main warehouse. Undo the mark and they come back.",
@@ -1603,6 +1732,7 @@ export const englishCrmMessages = {
         "On the right: what each specialist earned today by their percent.",
     },
     nav: {
+      marketing: "Marketing",
       team: "Team",
       automations: "Automatic messages",
       documents: "Documents",

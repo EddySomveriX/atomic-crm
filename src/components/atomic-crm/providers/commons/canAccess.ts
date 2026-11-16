@@ -19,6 +19,7 @@ export type CrmRole = "admin" | "manager" | "accountant" | "user";
 
 const READ_ONLY_ACTIONS = ["list", "show", "export"];
 const COST_RESOURCES = ["costs", "overhead_items", "product_cost_items"];
+const MARKETING_RESOURCES = ["posts", "post_targets", "marketing_accounts"];
 
 export const canAccess = <
   RecordType extends Record<string, any> = Record<string, any>,
@@ -42,6 +43,11 @@ export const canAccess = <
 
   // Owners and managers close the day
   if (params.resource === "day_closings") {
+    return role === "manager" || READ_ONLY_ACTIONS.includes(params.action);
+  }
+
+  // Owners and managers plan posts and connect accounts; others read
+  if (MARKETING_RESOURCES.includes(params.resource)) {
     return role === "manager" || READ_ONLY_ACTIONS.includes(params.action);
   }
 

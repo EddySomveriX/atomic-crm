@@ -7,11 +7,13 @@
  *     tells members of their new, moved and cancelled bookings
  *     (edge functions channels_poll and staff_notify);
  *   - every minute, sends the booking reminders and the automatic messages
- *     that are due (edge functions booking_reminders and automations_run);
+ *     that are due and publishes the planned posts (edge functions
+ *     booking_reminders, automations_run and posts_publish);
  *   - every hour, removes documents kept in the trash over 30 days
  *     (edge function documents_purge).
  * In production a webhook replaces the polling, and a scheduled job
- * (Supabase Cron) calls booking_reminders, automations_run and documents_purge.
+ * (Supabase Cron) calls booking_reminders, automations_run, posts_publish
+ * and documents_purge.
  *
  * Needs the local stack (make start) and the functions
  * (npx supabase functions serve). Run: node scripts/channels-dev.mjs
@@ -99,6 +101,19 @@ const automate = async () => {
   }
 };
 
+const publishPosts = async () => {
+  try {
+    const { published, failed, refreshed } = await call("posts_publish");
+    if (published || failed || refreshed) {
+      console.log(
+        `${stamp()} posts: ${published} published, ${failed} failed, ${refreshed} tokens refreshed`,
+      );
+    }
+  } catch (error) {
+    console.error(`${stamp()} ${error.message}`);
+  }
+};
+
 const purge = async () => {
   try {
     const { removed, orphans } = await call("documents_purge");
@@ -120,5 +135,7 @@ remind();
 setInterval(remind, REMINDERS_EVERY_MS);
 automate();
 setInterval(automate, REMINDERS_EVERY_MS);
+publishPosts();
+setInterval(publishPosts, REMINDERS_EVERY_MS);
 purge();
 setInterval(purge, PURGE_EVERY_MS);
