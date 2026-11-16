@@ -51,7 +51,11 @@ begin
       where day >= (p_from at time zone biz.timezone)::date and day < (p_to at time zone biz.timezone)::date
   ),
   period_bookings as (
-      select b.*, p.name as service, coalesce(b.price, p.price) as charged
+      select b.*, p.name as service, coalesce(b.price, p.price) as charged,
+             -- Cost of the materials written off for the visit
+             coalesce((select round(sum(case when m.kind = 'issue' then 1 else -1 end * m.quantity * coalesce(m.unit_cost, 0)))
+                       from public.stock_moves m
+                       where m.business_id = biz.id and m.booking_id = b.id), 0)::bigint as materials_cost
       from public.bookings b
       join public.products p on p.id = b.product_id
       where b.business_id = biz.id and b.starts_at >= p_from and b.starts_at < p_to
@@ -90,7 +94,9 @@ begin
                           where cv.business_id = biz.id and cv.created_at >= p_from and cv.created_at < p_to),
         'waiting_now', (select count(*) from public.conversations cv
                         where cv.business_id = biz.id and cv.waiting_since is not null),
-        'reply_minutes', (select round(percentile_cont(0.5) within group (order by minutes))::int from waits where minutes is not null)
+        'reply_minutes', (select round(percentile_cont(0.5) within group (order by minutes))::int from waits where minutes is not null),
+        'visits_revenue', (select coalesce(sum(charged), 0)::bigint from period_bookings where status = 'completed'),
+        'materials_cost', (select coalesce(sum(materials_cost), 0)::bigint from period_bookings where status = 'completed')
     ),
     'sales_by_month', (
         select jsonb_agg(jsonb_build_object(
@@ -153,7 +159,8 @@ begin
         from (
             select b.product_id as id, b.service as name,
                    count(*) filter (where b.status <> 'cancelled') as bookings,
-                   coalesce(sum(b.charged) filter (where b.status = 'completed'), 0) as revenue
+                   coalesce(sum(b.charged) filter (where b.status = 'completed'), 0) as revenue,
+                   coalesce(sum(b.materials_cost) filter (where b.status = 'completed'), 0) as materials_cost
             from period_bookings b
             group by b.product_id, b.service
             order by bookings desc

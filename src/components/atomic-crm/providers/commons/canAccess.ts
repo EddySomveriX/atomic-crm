@@ -44,6 +44,11 @@ export const canAccess = <
     return role === "manager" || READ_ONLY_ACTIONS.includes(params.action);
   }
 
+  // Owners and managers list the materials of a service
+  if (params.resource === "service_materials") {
+    return role === "manager" || READ_ONLY_ACTIONS.includes(params.action);
+  }
+
   // Only an owner moves documents to the trash and back
   if (params.resource === "documents" && params.action === "delete") {
     return false;

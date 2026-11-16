@@ -11,6 +11,7 @@ import { EyeOff, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 import {
   Popover,
   PopoverContent,
@@ -310,9 +311,24 @@ const WidgetBody = ({ id, data }: { id: string; data: Analytics }) => {
                   count: k.reply_minutes,
                 }),
         },
+        // Shown once a service has materials written off
+        ...(k.materials_cost > 0
+          ? [
+              { key: "materials_cost", value: f.money(k.materials_cost) },
+              {
+                key: "visits_margin",
+                value: f.money(k.visits_revenue - k.materials_cost),
+              },
+            ]
+          : []),
       ];
       return (
-        <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 lg:grid-cols-6">
+        <dl
+          className={cn(
+            "grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3",
+            tiles.length > 6 ? "lg:grid-cols-4" : "lg:grid-cols-6",
+          )}
+        >
           {tiles.map((tile) => (
             <div key={tile.key} className="flex flex-col-reverse gap-1">
               <dt className="text-sm text-muted-foreground">
@@ -449,7 +465,13 @@ const WidgetBody = ({ id, data }: { id: string; data: Analytics }) => {
             key: service.id,
             label: service.name,
             value: service.bookings,
-            note: f.money(service.revenue),
+            note:
+              service.materials_cost > 0
+                ? translate("crm.analytics.service_materials", {
+                    revenue: f.money(service.revenue),
+                    cost: f.money(service.materials_cost),
+                  })
+                : f.money(service.revenue),
           }))}
           format={(value) =>
             translate("crm.analytics.bookings_count", { smart_count: value })

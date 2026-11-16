@@ -27,6 +27,7 @@ import { useConfigurationContext } from "../root/ConfigurationContext";
 import { MovesTable } from "../stock/StockMoveList";
 import { ReversedMovesProvider } from "../stock/MoveFields";
 import { formatQuantity, isStocked } from "./productOptions";
+import { ServiceMaterials } from "./ServiceMaterials";
 import type { Product, StockLevel } from "./types";
 import { useWarehouseChoices } from "./useStockData";
 
@@ -80,7 +81,7 @@ const ProductShowContent = () => {
           <ProductFacts />
         </CardContent>
       </Card>
-      {stocked ? <StockPerWarehouse /> : null}
+      {stocked ? <StockPerWarehouse /> : <ServiceMaterials service={record} />}
       <SupplierSkus />
       {stocked ? (
         <Card>

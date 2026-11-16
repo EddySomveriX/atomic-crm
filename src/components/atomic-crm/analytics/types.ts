@@ -15,6 +15,10 @@ export interface Analytics {
     conversations: number;
     waiting_now: number;
     reply_minutes: number | null;
+    /** Price of completed visits */
+    visits_revenue: number;
+    /** Cost of the materials written off for completed visits */
+    materials_cost: number;
   };
   sales_by_month: { month: string; deals: number; bookings: number }[];
   bookings_by_month: {
@@ -38,6 +42,7 @@ export interface Analytics {
     name: string;
     bookings: number;
     revenue: number;
+    materials_cost: number;
   }[];
   specialists: {
     id: number;

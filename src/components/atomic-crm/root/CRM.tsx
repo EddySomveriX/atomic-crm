@@ -303,6 +303,7 @@ const DesktopAdmin = (
       <Resource name="stock_levels" {...stockLevels} />
       <Resource name="warehouses" {...warehouses} />
       <Resource name="supplier_skus" />
+      <Resource name="service_materials" />
       <Resource name="bookings" />
       <Resource name="working_hours" />
       <Resource name="specialists" />

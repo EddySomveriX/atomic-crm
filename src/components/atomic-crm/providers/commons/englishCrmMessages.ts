@@ -705,6 +705,7 @@ export const englishCrmMessages = {
       failed: "The appearance could not be saved",
     },
     analytics: {
+      service_materials: "%{revenue}, materials %{cost}",
       period: "Period",
       periods: {
         month: "This month",
@@ -743,6 +744,8 @@ export const englishCrmMessages = {
         attendance: "Came to their booking",
         new_clients: "New clients",
         reply_minutes: "Reply in chats",
+        materials_cost: "Materials of visits",
+        visits_margin: "Visits minus materials",
         stock_value: "Stock at cost",
         products: "Products",
         in_stock: "In stock",
@@ -1441,6 +1444,21 @@ export const englishCrmMessages = {
         business: "your salon",
       },
       birth_date: "Birthday",
+    },
+    materials: {
+      title: "Materials for one service",
+      hint: "When a visit is marked “Came”, these materials are written off the main warehouse. Undo the mark and they come back.",
+      none: "No materials yet. Add the dye, gloves or anything else one service uses.",
+      material: "Material or goods",
+      quantity: "Quantity",
+      in_stock: "In stock: %{quantity}",
+      cost: "Materials per visit: %{cost}",
+      cost_and_margin:
+        "Materials per visit: %{cost}. Left of the price: %{margin}",
+      cost_unknown:
+        "The cost shows once every material has been received into stock.",
+      remove: "Remove %{name}",
+      failed: "That did not work. The material may already be on the list.",
     },
     team: {
       title: "Team",

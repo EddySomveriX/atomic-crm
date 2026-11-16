@@ -704,6 +704,7 @@ export const ukrainianCrmMessages = {
       failed: "Не вдалося зберегти вигляд",
     },
     analytics: {
+      service_materials: "%{revenue}, матеріали %{cost}",
       period: "Період",
       periods: {
         month: "Цей місяць",
@@ -746,6 +747,8 @@ export const ukrainianCrmMessages = {
         attendance: "Прийшли на запис",
         new_clients: "Нових клієнтів",
         reply_minutes: "Відповідь у чатах",
+        materials_cost: "Матеріали на візити",
+        visits_margin: "Візити мінус матеріали",
         stock_value: "Товар на складі за собівартістю",
         products: "Товарів",
         in_stock: "У наявності",
@@ -1443,6 +1446,21 @@ export const ukrainianCrmMessages = {
         business: "ваш салон",
       },
       birth_date: "День народження",
+    },
+    materials: {
+      title: "Матеріали на одну послугу",
+      hint: "Коли візит відмічено «Прийшов», ці матеріали списуються з основного складу. Якщо відмітку скасувати — повертаються.",
+      none: "Матеріалів поки немає. Додайте фарбу, рукавички чи інше, що йде на одну послугу.",
+      material: "Матеріал або товар",
+      quantity: "Кількість",
+      in_stock: "На складі: %{quantity}",
+      cost: "Матеріали на один візит: %{cost}",
+      cost_and_margin:
+        "Матеріали на один візит: %{cost}. Залишається з ціни: %{margin}",
+      cost_unknown:
+        "Собівартість з’явиться після першого надходження всіх матеріалів на склад.",
+      remove: "Прибрати %{name}",
+      failed: "Не вдалося. Можливо, цей матеріал уже є у списку.",
     },
     team: {
       title: "Команда",
