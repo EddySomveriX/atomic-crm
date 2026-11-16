@@ -38,11 +38,11 @@ insert into public.members (business_id, user_id, role)
 insert into public.channels (business_id, kind, name)
   select business_id, 'telegram', key || '_bot' from seen;
 insert into public.channel_secrets (channel_id, bot_token, webhook_secret)
-  select id, '123:secret-' || name, 'hook' from public.channels;
+  select id, '123:secret-' || name, 'hook' from public.channels where business_id in (select business_id from seen);
 insert into public.conversations (business_id, channel_id, external_id, title)
   select c.business_id, c.id, '1001', 'Client of ' || c.name from public.channels c;
 insert into public.messages (business_id, conversation_id, direction, body, external_id, status)
-  select business_id, id, 'in', 'Hello', '1', 'received' from public.conversations;
+  select business_id, id, 'in', 'Hello', '1', 'received' from public.conversations where business_id in (select business_id from seen);
 insert into seen (key, business_id, id)
   select 'conversation', cv.business_id, cv.id from public.conversations cv join seen s on s.business_id = cv.business_id and s.key = 'kyiv';
 
@@ -66,8 +66,8 @@ select isnt((select last_message_at from public.conversations c join seen s on s
   'a message moves its conversation up the feed');
 
 -- Repeated deliveries
-insert into public.channel_events (channel_id, event_id) select id, '501' from public.channels;
-select throws_ok($$ insert into public.channel_events (channel_id, event_id) select id, '501' from public.channels $$,
+insert into public.channel_events (channel_id, event_id) select id, '501' from public.channels where business_id in (select business_id from seen);
+select throws_ok($$ insert into public.channel_events (channel_id, event_id) select id, '501' from public.channels where business_id in (select business_id from seen) $$,
   '23505', null, 'the same update of a channel is recorded once');
 select throws_ok($$ insert into public.messages (business_id, conversation_id, direction, body, external_id)
   select business_id, id, 'in', 'Hello again', '1' from seen where key = 'conversation' $$,
