@@ -203,7 +203,10 @@
     }
     body.appendChild(el("label", { text: t("service") }));
     body.appendChild(el("div", { class: "choices" }, info.services.map(function (service) {
-      return choice(service.name + " · " + service.duration_minutes + " " + t("minutes"), service.id === state.serviceId, function () { chooseService(service.id); });
+      var price = service.price != null && info.currency
+        ? " · " + new Intl.NumberFormat(lang === "en" ? "en-GB" : "uk-UA", { style: "currency", currency: info.currency, currencyDisplay: "narrowSymbol", maximumFractionDigits: service.price % 100 === 0 ? 0 : 2 }).format(service.price / 100)
+        : "";
+      return choice(service.name + " · " + service.duration_minutes + " " + t("minutes") + price, service.id === state.serviceId, function () { chooseService(service.id); });
     })));
     if (!state.serviceId) return;
     if (info.specialists.length > 1) {

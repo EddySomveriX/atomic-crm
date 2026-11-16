@@ -71,6 +71,8 @@ export type Company = {
   country: string;
   context_links?: string[];
   kind?: "company" | "sole_proprietor" | "person";
+  /** Personal discount of a client, in percent */
+  personal_discount?: number | null;
   roles?: ("client" | "supplier" | "partner")[];
   country_code?: string | null;
   requisites?: Record<string, string>;

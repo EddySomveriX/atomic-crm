@@ -19,9 +19,12 @@ const makeDeps = (overrides: Partial<BotDeps> = {}) => {
   const deps: BotDeps = {
     businessName: "Kvitka",
     timeZone: "Europe/Kyiv",
+    currency: "UAH",
     policy: { freeCancelHours: 24, blockUnreliable: true },
     now: () => NOW,
-    services: async () => [{ id: 1, name: "Haircut", duration_minutes: 60 }],
+    services: async () => [
+      { id: 1, name: "Haircut", duration_minutes: 60, price: 65000 },
+    ],
     specialists: async () => [
       { id: 10, name: "Olena" },
       { id: 11, name: "Iryna" },
@@ -63,6 +66,12 @@ const makeDeps = (overrides: Partial<BotDeps> = {}) => {
       return "moved";
     },
     reliability: async () => "regular",
+    quote: async () => ({
+      listPrice: 65000,
+      price: 55200,
+      offer: "Mornings",
+      percent: 15,
+    }),
     ...overrides,
   };
   return { deps, booked, actions };
@@ -153,6 +162,9 @@ describe("booking dialog of the bot", () => {
     expect(results[4].replies[0].askPhone).toBe(true);
     expect(results[5].phone).toBe("+380671234567");
     expect(results[5].replies[0].text).toContain("Iryna");
+    // The price after the offer, with the list price it replaces
+    expect(results[5].replies[0].text).toContain("552");
+    expect(results[5].replies[0].text).toContain("Mornings");
     expect(results[6].replies[0].text).toContain("Готово");
     expect(booked).toEqual([
       {

@@ -346,6 +346,8 @@ export const createDataProvider = ({
       error: "Channels are not available in the demo",
     }),
     sendBookingReminder: async (_bookingId: Identifier) => "no_chat" as const,
+    changePrices: async (_ids: Identifier[], _percent: number) => 0,
+    quotePrice: async () => null,
     getAnalytics: async (_from: Date, _to: Date) =>
       Promise.reject(new Error("Analytics are not available in the demo")),
     isInitialized: async (): Promise<boolean> => {

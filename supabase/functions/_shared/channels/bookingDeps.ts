@@ -15,6 +15,7 @@ export interface BusinessInfo {
   timezone: string;
   free_cancel_hours: number;
   block_unreliable: boolean;
+  currency: string;
 }
 
 export const loadBusiness = async (
@@ -22,7 +23,7 @@ export const loadBusiness = async (
 ): Promise<BusinessInfo> => {
   const { data, error } = await supabaseAdmin
     .from("businesses")
-    .select("id, name, timezone, free_cancel_hours, block_unreliable")
+    .select("id, name, timezone, free_cancel_hours, block_unreliable, currency")
     .eq("id", businessId)
     .single();
   if (error) throw error;
@@ -45,6 +46,7 @@ export const makeBookingDeps = (
   return {
     businessName: business.name,
     timeZone: business.timezone,
+    currency: business.currency,
     policy: {
       freeCancelHours: business.free_cancel_hours,
       blockUnreliable: business.block_unreliable,
@@ -52,14 +54,41 @@ export const makeBookingDeps = (
     now: () => new Date(),
     ...makeClientBookingDeps(business.id),
 
+    async quote(serviceId, salesId, startsAt, clientId) {
+      const { data, error } = await supabaseAdmin.rpc("price_quote", {
+        p_business_id: business.id,
+        p_product_id: serviceId,
+        p_sales_id: salesId,
+        p_starts_at: startsAt,
+        p_client_id: clientId,
+      });
+      if (error) throw error;
+      const row = (
+        (data ?? []) as {
+          list_price: number | null;
+          price: number | null;
+          promotion_name: string | null;
+          percent: number | null;
+        }[]
+      )[0];
+      return {
+        listPrice: row?.list_price ?? null,
+        price: row?.price ?? null,
+        offer: row?.promotion_name ?? null,
+        percent: row?.percent ?? null,
+      };
+    },
+
     async services() {
       if (servicesCache) return servicesCache;
       const { data, error } = await supabaseAdmin
         .from("products")
-        .select("id, name, duration_minutes")
+        .select("id, name, duration_minutes, price")
         .eq("business_id", business.id)
         .eq("kind", "service")
         .eq("archived", false)
+        .eq("show_online", true)
+        .eq("is_addon", false)
         .not("duration_minutes", "is", null)
         .order("name");
       if (error) throw error;

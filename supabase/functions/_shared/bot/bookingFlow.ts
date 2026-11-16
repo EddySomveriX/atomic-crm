@@ -1,4 +1,10 @@
-import { botText, formatDay, formatTime, formatWhen } from "./botTexts.ts";
+import {
+  botText,
+  formatDay,
+  formatPrice,
+  formatTime,
+  formatWhen,
+} from "./botTexts.ts";
 import {
   DAYS_AHEAD,
   DAYS_SHOWN,
@@ -86,7 +92,15 @@ export async function runBookingFlow(
           text: t("choose_service"),
           buttons: services.map((service) => [
             {
-              text: `${service.name} · ${t("minutes", { count: service.duration_minutes })}`,
+              text: [
+                service.name,
+                t("minutes", { count: service.duration_minutes }),
+                service.price != null
+                  ? formatPrice(service.price, deps.currency, lang)
+                  : null,
+              ]
+                .filter(Boolean)
+                .join(" · "),
               data: `svc:${service.id}`,
             },
           ]),
@@ -199,6 +213,31 @@ export async function runBookingFlow(
     };
   };
 
+  /** "Ціна: 552 ₴ замість 650 ₴ (Щасливі години)" or nothing. */
+  const priceLine = async (
+    slot: FreeSlot,
+    serviceId: number,
+    clientId: number | null,
+  ): Promise<string> => {
+    const quote = await deps.quote(
+      serviceId,
+      slot.sales_id,
+      slot.starts_at,
+      clientId,
+    );
+    if (quote.price == null) return "";
+    const price = formatPrice(quote.price, deps.currency, lang);
+    const line =
+      quote.listPrice != null && quote.listPrice !== quote.price
+        ? t("price_offer", {
+            price,
+            list: formatPrice(quote.listPrice, deps.currency, lang),
+            offer: quote.offer ?? `−${quote.percent}%`,
+          })
+        : t("price_line", { price });
+    return `\n${line}`;
+  };
+
   const askConfirm = async (
     next: BotState,
     extra: Partial<BotResult> = {},
@@ -206,7 +245,13 @@ export async function runBookingFlow(
     done(
       [
         {
-          text: t("confirm", await describe(next.slot!, next.serviceId!)),
+          text:
+            t("confirm", await describe(next.slot!, next.serviceId!)) +
+            (await priceLine(
+              next.slot!,
+              next.serviceId!,
+              extra.clientId ?? conversation.clientId,
+            )),
           buttons: [
             [
               { text: t("confirm_button"), data: "confirm" },

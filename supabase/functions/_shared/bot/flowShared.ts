@@ -17,6 +17,16 @@ export interface BotService {
   id: number;
   name: string;
   duration_minutes: number;
+  /** List price in minor units; empty when not set */
+  price?: number | null;
+}
+
+/** What a booking will cost, from the price list and the offers. */
+export interface BotQuote {
+  listPrice: number | null;
+  price: number | null;
+  offer: string | null;
+  percent: number | null;
 }
 
 export interface BotSpecialist {
@@ -58,6 +68,8 @@ export interface BookingPolicy {
 export interface BotDeps {
   businessName: string;
   timeZone: string;
+  /** Currency of the business, ISO 4217 */
+  currency: string;
   policy: BookingPolicy;
   now: () => Date;
   services: () => Promise<BotService[]>;
@@ -90,6 +102,13 @@ export interface BotDeps {
     slot: FreeSlot,
   ) => Promise<"moved" | "taken" | "not_found">;
   reliability: (clientId: number) => Promise<ReliabilityLevel>;
+  /** The price of a service for a specialist, time and client */
+  quote: (
+    serviceId: number,
+    salesId: number,
+    startsAt: string,
+    clientId: number | null,
+  ) => Promise<BotQuote>;
 }
 
 export interface BotState {

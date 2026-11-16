@@ -31,6 +31,10 @@ export const ProductInputs = ({ isEdit = false }: { isEdit?: boolean }) => {
         helperText={false}
       />
       <TextInput source="name" validate={required()} helperText={false} />
+      <TextInput
+        source="category"
+        helperText={translate("crm.pricing.category_hint")}
+      />
       <div className="grid gap-4 sm:grid-cols-2">
         <TextInput source="sku" helperText={false} />
         <SelectInput
@@ -59,6 +63,13 @@ export const ProductInputs = ({ isEdit = false }: { isEdit?: boolean }) => {
         helperText={translate("crm.products.barcodes_hint")}
       />
       <TextInput source="description" multiline helperText={false} />
+      <BooleanInput source="show_online" helperText={false} />
+      {kind === "service" ? (
+        <BooleanInput
+          source="is_addon"
+          helperText={translate("crm.pricing.addon_hint")}
+        />
+      ) : null}
       {isEdit ? <BooleanInput source="archived" helperText={false} /> : null}
     </div>
   );

@@ -6,6 +6,7 @@ import {
   ListTodo,
   MessageCircle,
   Package,
+  Tag,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -24,6 +25,7 @@ export const MODULE_KEYS = [
   "stock",
   "tasks",
   "analytics",
+  "pricing",
 ] as const;
 export type ModuleKey = (typeof MODULE_KEYS)[number];
 
@@ -33,9 +35,9 @@ export const defaultModules = (
 ): ModuleKey[] => {
   switch (businessType) {
     case "services":
-      return ["chats", "booking", "tasks", "analytics"];
+      return ["chats", "booking", "pricing", "tasks", "analytics"];
     case "retail":
-      return ["chats", "sales", "stock", "analytics"];
+      return ["chats", "sales", "stock", "pricing", "analytics"];
     case "production":
       return ["sales", "stock", "tasks", "analytics"];
     case "b2b":
@@ -90,6 +92,13 @@ export const NAV_SECTIONS: NavSection[] = [
       { path: "/calendar", labelKey: "crm.booking.calendar" },
       { path: "/working-hours", labelKey: "crm.booking.schedule" },
     ],
+  },
+  {
+    key: "pricing",
+    module: "pricing",
+    icon: Tag,
+    labelKey: "crm.nav.pricing",
+    pages: [{ path: "/prices", labelKey: "crm.nav.pricing" }],
   },
   {
     key: "sales",

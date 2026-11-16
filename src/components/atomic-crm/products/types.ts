@@ -18,6 +18,13 @@ export interface Product extends RaRecord {
   duration_minutes?: number | null;
   /** Pause after a booked service before the next one, in minutes */
   buffer_minutes?: number;
+  /** Group of the price list: "Стрижки", "Манікюр" */
+  category?: string | null;
+  /** Offered by the bot and the website */
+  show_online?: boolean;
+  sort_order?: number;
+  /** An extra a client adds to a service */
+  is_addon?: boolean;
   /** products_summary: stock in all warehouses */
   quantity?: number;
   /** products_summary: average purchase cost in minor units */

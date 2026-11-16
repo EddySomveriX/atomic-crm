@@ -24,6 +24,7 @@ import { CalendarPage, WorkingHoursPage } from "../booking";
 import { ChatsPage } from "../channels/ChatsPage";
 import { TasksPage } from "../tasks/TasksPage";
 import { AnalyticsPage } from "../analytics/AnalyticsPage";
+import { PricesPage } from "../pricing/PricesPage";
 import { InventoryPage } from "../stock/InventoryPage";
 import { Layout } from "../layout/Layout";
 import { SetupPage } from "../business/SetupPage";
@@ -281,6 +282,7 @@ const DesktopAdmin = (
         <Route path={WorkingHoursPage.path} element={<WorkingHoursPage />} />
         <Route path={ChatsPage.path} element={<ChatsPage />} />
         <Route path={AnalyticsPage.path} element={<AnalyticsPage />} />
+        <Route path={PricesPage.path} element={<PricesPage />} />
       </CustomRoutes>
       <Resource name="deals" {...deals} />
       <Resource name="contacts" {...contacts} />
@@ -303,6 +305,13 @@ const DesktopAdmin = (
       <Resource name="messages" />
       <Resource name="reply_templates" />
       <Resource name="client_reliability" />
+      <Resource name="specialist_prices" />
+      <Resource name="price_history" />
+      <Resource name="promotions" />
+      <Resource name="packages" />
+      <Resource name="client_packages" />
+      <Resource name="gift_certificates" />
+      <Resource name="certificate_uses" />
     </Admin>
   );
 };
@@ -379,6 +388,7 @@ const MobileAdmin = (
           <Route path={WorkingHoursPage.path} element={<WorkingHoursPage />} />
           <Route path={ChatsPage.path} element={<ChatsPage />} />
           <Route path={AnalyticsPage.path} element={<AnalyticsPage />} />
+          <Route path={PricesPage.path} element={<PricesPage />} />
         </CustomRoutes>
         <Resource
           name="contacts"
@@ -404,6 +414,13 @@ const MobileAdmin = (
         <Resource name="messages" />
         <Resource name="reply_templates" />
         <Resource name="client_reliability" />
+        <Resource name="specialist_prices" />
+        <Resource name="price_history" />
+        <Resource name="promotions" />
+        <Resource name="packages" />
+        <Resource name="client_packages" />
+        <Resource name="gift_certificates" />
+        <Resource name="certificate_uses" />
       </Admin>
     </PersistQueryClientProvider>
   );

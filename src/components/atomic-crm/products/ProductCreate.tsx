@@ -19,6 +19,7 @@ export const ProductCreate = () => (
         unit_code: "pcs",
         barcodes: [],
         buffer_minutes: 0,
+        show_online: true,
       }}
     >
       <ProductInputs />

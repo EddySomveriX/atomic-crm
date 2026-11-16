@@ -131,6 +131,7 @@ async function handle(payload: Payload): Promise<Response> {
       return jsonResponse({
         business: business.name,
         language,
+        currency: deps.currency,
         services,
         specialists,
       });

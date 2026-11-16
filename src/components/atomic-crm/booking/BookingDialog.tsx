@@ -26,6 +26,7 @@ import {
 
 import type { CrmDataProvider } from "../providers/types";
 import { ClientReliabilityBadge } from "../reliability/ReliabilityBadge";
+import { BookingPrice } from "./BookingPrice";
 import { dayIn, timeIn, zonedDateTime } from "./bookingTime";
 import {
   BOOKING_STATUSES,
@@ -52,6 +53,7 @@ interface BookingFormValues {
   status: BookingStatus | "cancelled_by_client";
   note: string | null;
   late_minutes: number | null;
+  promo_code?: string | null;
 }
 
 /**
@@ -113,7 +115,9 @@ export const BookingDialog = ({
         ? { status: "cancelled" as const, cancelled_by: "client" as const }
         : { status: (values.status ?? "booked") as BookingStatus }),
       note: values.note || null,
-      ...(booking ? { late_minutes: values.late_minutes || null } : {}),
+      ...(booking
+        ? { late_minutes: values.late_minutes || null }
+        : { promo_code: values.promo_code?.trim().toUpperCase() || null }),
     };
     const options = {
       onSuccess: () => {
@@ -204,6 +208,15 @@ export const BookingDialog = ({
             {booking ? (
               <BookingFacts booking={booking} timeZone={timeZone} />
             ) : null}
+            {booking ? (
+              <BookingPrice booking={booking} readOnly={readOnly} />
+            ) : (
+              <TextInput
+                source="promo_code"
+                label={translate("crm.pricing.promo_code_field")}
+                helperText={false}
+              />
+            )}
             {booking ? (
               <SelectInput
                 source="status"

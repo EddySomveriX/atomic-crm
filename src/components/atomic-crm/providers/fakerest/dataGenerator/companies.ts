@@ -58,6 +58,7 @@ export const generateCompanies = (db: Db, size = 55): Required<Company>[] => {
       currency: null,
       payment_terms_days: null,
       credit_limit: null,
+      personal_discount: null,
     };
   });
 };

@@ -43,6 +43,8 @@ const uk = {
   expired: "Ця кнопка вже неактуальна. Почнімо спочатку.",
   ack: "Дякуємо за повідомлення! Адміністратор відповість найближчим часом.",
   minutes: "%{count} хв",
+  price_line: "Ціна: %{price}",
+  price_offer: "Ціна: %{price} замість %{list} (%{offer})",
   my_bookings_button: "Мої записи",
   my_bookings: "Ваші записи:",
   no_bookings: "У вас немає майбутніх записів.",
@@ -107,6 +109,8 @@ const en: Record<BotTextKey, string> = {
   expired: "This button is out of date. Let's start again.",
   ack: "Thank you for your message! We will answer soon.",
   minutes: "%{count} min",
+  price_line: "Price: %{price}",
+  price_offer: "Price: %{price} instead of %{list} (%{offer})",
   my_bookings_button: "My bookings",
   my_bookings: "Your bookings:",
   no_bookings: "You have no bookings ahead.",
@@ -180,3 +184,16 @@ export const formatWhen = (
   language: BotLanguage,
 ): string =>
   `${formatDay(date, timeZone, language)}, ${formatTime(date, timeZone)}`;
+
+/** "650 ₴" for minor units of a currency, in the language of the client. */
+export const formatPrice = (
+  minor: number,
+  currency: string,
+  language: BotLanguage,
+): string =>
+  new Intl.NumberFormat(LOCALES[language], {
+    style: "currency",
+    currency,
+    currencyDisplay: "narrowSymbol",
+    maximumFractionDigits: minor % 100 === 0 ? 0 : 2,
+  }).format(minor / 100);

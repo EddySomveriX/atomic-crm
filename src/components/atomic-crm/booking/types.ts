@@ -33,6 +33,13 @@ export interface Booking extends RaRecord {
   late_minutes?: number | null;
   /** The client confirmed the visit from the reminder */
   confirmed_at?: string | null;
+  /** Price list price and the price after the offer, in minor units */
+  list_price?: number | null;
+  price?: number | null;
+  promotion_id?: Identifier | null;
+  promo_code?: string | null;
+  /** The package of the client that pays for this booking */
+  client_package_id?: Identifier | null;
 }
 
 export interface WorkingHours extends RaRecord {
