@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import { useMemo } from "react";
 import {
+  useCanAccess,
   useDataProvider,
   useGetIdentity,
   useGetList,
@@ -23,6 +24,7 @@ import { TodayMessages } from "../channels/TodayMessages";
 import { useModules } from "../modules/useModules";
 import { AddTask } from "../tasks/AddTask";
 import { TodaySummary } from "./TodaySummary";
+import { CloseDayCard } from "../team/CloseDay";
 import type { Contact, Deal, Task } from "../types";
 import { formatBusinessDate, getBusinessDay } from "./businessDay";
 
@@ -35,6 +37,10 @@ const CLOSED_STAGES = ["won", "lost"];
  */
 export const TodayPage = () => {
   const translate = useTranslate();
+  const { canAccess: canCloseDay } = useCanAccess({
+    resource: "day_closings",
+    action: "create",
+  });
   const { isOn } = useModules();
   const [uiLocale = "uk"] = useLocaleState();
   const dataProvider = useDataProvider<CrmDataProvider>();
@@ -96,6 +102,8 @@ export const TodayPage = () => {
         bookings={schedule.bookings}
         tasksCount={planned.length + overdue.length}
       />
+
+      {isOn("booking") && canCloseDay ? <CloseDayCard /> : null}
 
       {isOn("booking") &&
       schedule.hours.length + schedule.bookings.length > 0 ? (

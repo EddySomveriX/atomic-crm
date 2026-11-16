@@ -1442,7 +1442,54 @@ export const englishCrmMessages = {
       },
       birth_date: "Birthday",
     },
+    team: {
+      title: "Team",
+      my_telegram: "My Telegram",
+      link_hint:
+        "Link your Telegram: the bot will tell you of your new, moved and cancelled bookings.",
+      link: "Link Telegram",
+      open_bot_hint:
+        "Press the button to open the bot, then press “Start” in it.",
+      open_bot: "Open the bot",
+      code_hint: "The link works for 15 minutes. Your code: %{code}",
+      check_link: "I pressed Start",
+      linked: "Linked: messages come from %{bot}.",
+      unlink: "Unlink",
+      no_bot: "Connect the business bot first:",
+      bot_settings: "Business settings",
+      has_telegram: "Gets messages in Telegram",
+      periods: {
+        month: "This month",
+        last_month: "Last month",
+        week: "This week",
+      },
+      revenue: "Revenue",
+      commission: "Due to specialists",
+      visits: "%{smart_count} visit |||| %{smart_count} visits",
+      no_shows: "%{smart_count} no-show |||| %{smart_count} no-shows",
+      report_hint:
+        "Revenue is the price of completed bookings. The owner sets each specialist's percent; the amount due is revenue × percent. Package visits are priced 0.",
+      percent_label: "Percent for %{name}",
+      percent_invalid: "The percent is a number from 0 to 100",
+      failed: "That did not work. Try again.",
+      close_hint: "At the end of the day, mark every visit and close the day.",
+      close_day: "Close the day",
+      close_again: "Update",
+      day_closed: "Day closed at %{time}: %{visits} visits, %{revenue}",
+      day_closed_now: "The day is closed",
+      close_failed:
+        "The day was not closed. Owners and managers close the day.",
+      mark_hint:
+        "Mark whether the client came: %{smart_count} visit left |||| Mark whether the clients came: %{smart_count} visits left",
+      came: "Came",
+      not_came: "Did not come",
+      day_totals:
+        "Today %{smart_count} visit for %{revenue} |||| Today %{smart_count} visits for %{revenue}",
+      commission_column:
+        "On the right: what each specialist earned today by their percent.",
+    },
     nav: {
+      team: "Team",
       automations: "Automatic messages",
       documents: "Documents",
       pricing: "Prices",

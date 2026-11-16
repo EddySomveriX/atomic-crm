@@ -1,6 +1,7 @@
 import { supabaseAdmin } from "../supabaseAdmin.ts";
 import {
   answerCallbackQuery,
+  sendMessage,
   type TelegramMessage,
   type TelegramUpdate,
   type TelegramUser,
@@ -10,7 +11,12 @@ import {
   type BotInput,
   type BotState,
 } from "../bot/bookingFlow.ts";
-import { botLanguageOf, botText, isStopWord } from "../bot/botTexts.ts";
+import {
+  botLanguageOf,
+  botText,
+  isStopWord,
+  staffLinkCode,
+} from "../bot/botTexts.ts";
 import { loadBusiness, makeBookingDeps } from "./bookingDeps.ts";
 import {
   CONVERSATION_COLUMNS,
@@ -207,6 +213,11 @@ const answerUpdate = async (
   const parsed = parseUpdate(update);
   if (!parsed || !channel.enabled) return;
   const context = { fetch, settings: { botToken } };
+  const code = staffLinkCode(parsed.body);
+  if (code) {
+    await linkStaff(channel, botToken, parsed, code);
+    return;
+  }
   if (parsed.callbackId) {
     // Stops the spinner on the button; a failure here changes nothing else
     await answerCallbackQuery(parsed.callbackId, context).catch(() => null);
@@ -295,5 +306,29 @@ const stopAutomations = async (
     channel,
     botText(conversation.language, "auto_stopped"),
     { botToken },
+  );
+};
+
+/** A member opened the bot with their code: their chat gets their bookings. */
+const linkStaff = async (
+  channel: ChannelRow,
+  botToken: string,
+  parsed: ParsedUpdate,
+  code: string,
+): Promise<void> => {
+  const { data: name, error } = await supabaseAdmin.rpc("link_staff_telegram", {
+    p_business_id: channel.business_id,
+    p_code: code,
+    p_chat_id: parsed.chatId,
+  });
+  if (error) throw error;
+  const language = botLanguageOf(parsed.from?.language_code);
+  await sendMessage(
+    parsed.chatId,
+    name
+      ? botText(language, "staff_linked", { name })
+      : botText(language, "staff_code_invalid"),
+    undefined,
+    { fetch, settings: { botToken } },
   );
 };

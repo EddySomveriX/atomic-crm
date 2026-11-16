@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Clock,
   Plus,
+  Users,
 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -189,6 +190,14 @@ export const CalendarPage = () => {
           <span className="hidden sm:inline">
             {translate("crm.booking.schedule")}
           </span>
+        </Link>
+        <Link
+          to="/team"
+          className={buttonVariants({ variant: "outline" })}
+          aria-label={translate("crm.nav.team")}
+        >
+          <Users />
+          <span className="hidden sm:inline">{translate("crm.nav.team")}</span>
         </Link>
         {canWrite ? (
           <Button onClick={() => openNew()}>

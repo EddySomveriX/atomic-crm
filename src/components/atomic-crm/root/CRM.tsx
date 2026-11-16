@@ -27,6 +27,7 @@ import { AnalyticsPage } from "../analytics/AnalyticsPage";
 import { PricesPage } from "../pricing/PricesPage";
 import { DocumentsPage } from "../documents/DocumentsPage";
 import { AutomationsPage } from "../automations/AutomationsPage";
+import { TeamPage } from "../team/TeamPage";
 import { InventoryPage } from "../stock/InventoryPage";
 import { Layout } from "../layout/Layout";
 import { SetupPage } from "../business/SetupPage";
@@ -287,6 +288,7 @@ const DesktopAdmin = (
         <Route path={PricesPage.path} element={<PricesPage />} />
         <Route path={DocumentsPage.path} element={<DocumentsPage />} />
         <Route path={AutomationsPage.path} element={<AutomationsPage />} />
+        <Route path={TeamPage.path} element={<TeamPage />} />
       </CustomRoutes>
       <Resource name="deals" {...deals} />
       <Resource name="contacts" {...contacts} />
@@ -395,6 +397,7 @@ const MobileAdmin = (
           <Route path={PricesPage.path} element={<PricesPage />} />
           <Route path={DocumentsPage.path} element={<DocumentsPage />} />
           <Route path={AutomationsPage.path} element={<AutomationsPage />} />
+          <Route path={TeamPage.path} element={<TeamPage />} />
         </CustomRoutes>
         <Resource
           name="contacts"

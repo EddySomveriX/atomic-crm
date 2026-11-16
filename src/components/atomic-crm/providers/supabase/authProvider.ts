@@ -115,6 +115,7 @@ export const getCurrentBusinessId = async (): Promise<string> => {
 const getCrmRole = (sale: CurrentSale): CrmRole => {
   if (sale.business_role === "owner") return "admin";
   if (sale.business_role === "accountant") return "accountant";
+  if (sale.business_role === "manager") return "manager";
   return "user";
 };
 

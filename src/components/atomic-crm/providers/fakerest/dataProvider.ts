@@ -1,3 +1,4 @@
+import type { DayTotals, TeamReportRow } from "../../team/types";
 import type {
   CrmDocument,
   DocumentUploadInput,
@@ -363,6 +364,20 @@ export const createDataProvider = ({
       _id: Identifier,
     ): Promise<SaveAttachmentResult> =>
       Promise.reject(new Error("Documents are not available in the demo")),
+    createStaffLinkCode: async (): Promise<string> =>
+      Promise.reject(new Error("The team is not available in the demo")),
+    unlinkStaffTelegram: async (_id: Identifier): Promise<void> => {},
+    getStaffTelegram: async (): Promise<Identifier[]> => [],
+    setMemberCommission: async (
+      _id: Identifier,
+      _percent: number | null,
+    ): Promise<void> => {},
+    getTeamReport: async (
+      _from: string,
+      _to: string,
+    ): Promise<TeamReportRow[]> => [],
+    closeDay: async (_day: string): Promise<DayTotals> =>
+      Promise.reject(new Error("The team is not available in the demo")),
     documentLink: async (
       _filePath: string,
       _seconds?: number,

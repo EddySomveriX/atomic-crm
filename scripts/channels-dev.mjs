@@ -3,8 +3,9 @@
 /**
  * Local runner of the channels (stage 3), for a developer machine that
  * Telegram cannot reach with a webhook:
- *   - every few seconds, fetches new messages of the connected bots
- *     (edge function channels_poll);
+ *   - every few seconds, fetches new messages of the connected bots and
+ *     tells members of their new, moved and cancelled bookings
+ *     (edge functions channels_poll and staff_notify);
  *   - every minute, sends the booking reminders and the automatic messages
  *     that are due (edge functions booking_reminders and automations_run);
  *   - every hour, removes documents kept in the trash over 30 days
@@ -61,6 +62,10 @@ const poll = async () => {
       console.log(
         `${stamp()} messages: ${processed} processed, ${failures} failed`,
       );
+    }
+    const { sent, failed } = await call("staff_notify");
+    if (sent || failed) {
+      console.log(`${stamp()} team messages: ${sent} sent, ${failed} failed`);
     }
   } catch (error) {
     console.error(`${stamp()} ${error.message}`);

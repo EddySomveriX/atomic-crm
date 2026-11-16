@@ -83,6 +83,14 @@ const uk = {
   auto_stop_hint: "Щоб не отримувати такі повідомлення, напишіть «стоп».",
   auto_stopped:
     "Добре, більше не надсилатимемо автоматичних повідомлень. Записатися чи поставити питання можна будь-коли.",
+  staff_linked:
+    "Готово, %{name}! Сюди приходитимуть повідомлення про ваші записи: нові, перенесені й скасовані.",
+  staff_code_invalid:
+    "Код не підійшов або застарів. Отримайте новий у CRM: Команда → Мій Telegram.",
+  staff_new: "Новий запис\n%{service}\n%{when}\nКлієнт: %{client}",
+  staff_moved: "Запис перенесено\n%{service}\nтепер %{when}\nКлієнт: %{client}",
+  staff_cancelled: "Запис скасовано\n%{service}\n%{when}\nКлієнт: %{client}",
+  staff_no_client: "без клієнта",
 };
 
 export type BotTextKey = keyof typeof uk;
@@ -162,6 +170,14 @@ const en: Record<BotTextKey, string> = {
   auto_stop_hint: "To stop these messages, write “stop”.",
   auto_stopped:
     "All right, no more automatic messages. You can book or ask a question any time.",
+  staff_linked:
+    "Done, %{name}! Messages about your bookings will come here: new, moved and cancelled.",
+  staff_code_invalid:
+    "The code did not fit or has expired. Get a new one in the CRM: Team → My Telegram.",
+  staff_new: "New booking\n%{service}\n%{when}\nClient: %{client}",
+  staff_moved: "Booking moved\n%{service}\nnow %{when}\nClient: %{client}",
+  staff_cancelled: "Booking cancelled\n%{service}\n%{when}\nClient: %{client}",
+  staff_no_client: "no client",
 };
 
 const TEXTS: Record<BotLanguage, Record<BotTextKey, string>> = { uk, en };
@@ -174,6 +190,10 @@ export const botText = (
   TEXTS[language][key].replace(/%\{(\w+)\}/g, (match, name: string) =>
     name in values ? String(values[name]) : match,
   );
+
+/** The code in "/start staff_ABCD2345", the deep link a member opens. */
+export const staffLinkCode = (text: string): string | null =>
+  /^\/start\s+staff_([A-Za-z2-9]{8})$/.exec(text.trim())?.[1] ?? null;
 
 /** "stop" in a message: the client does not want automatic messages. */
 export const isStopWord = (text: string): boolean =>

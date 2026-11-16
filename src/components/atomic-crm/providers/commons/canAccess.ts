@@ -10,11 +10,12 @@ type CanAccessParams<
 /**
  * Roles of the frontend, derived from the role in the current business:
  * - admin: owner of the business
+ * - manager: runs the business day (closes it) like an owner
  * - accountant: reads and exports, changes nothing
  * - user: every other role
  * The database enforces the same rules (RLS); this only hides what would fail.
  */
-export type CrmRole = "admin" | "accountant" | "user";
+export type CrmRole = "admin" | "manager" | "accountant" | "user";
 
 const READ_ONLY_ACTIONS = ["list", "show", "export"];
 
@@ -36,6 +37,11 @@ export const canAccess = <
   // Non admins can't access the configuration resource
   if (params.resource === "configuration") {
     return false;
+  }
+
+  // Owners and managers close the day
+  if (params.resource === "day_closings") {
+    return role === "manager" || READ_ONLY_ACTIONS.includes(params.action);
   }
 
   // Only an owner moves documents to the trash and back

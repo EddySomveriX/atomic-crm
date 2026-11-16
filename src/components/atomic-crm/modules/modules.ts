@@ -96,6 +96,7 @@ export const NAV_SECTIONS: NavSection[] = [
     pages: [
       { path: "/calendar", labelKey: "crm.booking.calendar" },
       { path: "/working-hours", labelKey: "crm.booking.schedule" },
+      { path: "/team", labelKey: "crm.nav.team" },
     ],
   },
   {

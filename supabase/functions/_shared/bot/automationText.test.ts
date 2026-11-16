@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { automationMessage } from "./automationText.ts";
-import { isStopWord } from "./botTexts.ts";
+import { isStopWord, staffLinkCode } from "./botTexts.ts";
 
 const values = { name: "Olena", business: "Studio", service: "Cut", days: 21 };
 
@@ -55,5 +55,17 @@ describe("isStopWord", () => {
 
   it("does not stop on a sentence that only mentions it", () => {
     expect(isStopWord("стоп, а можна на завтра?")).toBe(false);
+  });
+});
+
+describe("staffLinkCode", () => {
+  it("reads the code of the link a member opens", () => {
+    expect(staffLinkCode("/start staff_AB23CD45")).toBe("AB23CD45");
+  });
+
+  it("ignores an ordinary start and other text", () => {
+    expect(staffLinkCode("/start")).toBeNull();
+    expect(staffLinkCode("staff_AB23CD45")).toBeNull();
+    expect(staffLinkCode("/start staff_AB1")).toBeNull();
   });
 });
