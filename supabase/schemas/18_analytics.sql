@@ -9,7 +9,8 @@
 -- hours follow the business time zone.
 --
 -- Revenue until payments exist (stage 4): won deals, by their closing date,
--- plus completed bookings at the price of their service.
+-- plus completed bookings at the price they were booked at (the price of
+-- their service for bookings made before prices were kept).
 --
 
 CREATE OR REPLACE FUNCTION "public"."business_analytics"("p_from" timestamp with time zone, "p_to" timestamp with time zone) RETURNS "jsonb"
@@ -39,7 +40,7 @@ begin
       from public.deals d
       where d.business_id = biz.id and d.stage = 'won' and d.archived_at is null and d.currency = biz.currency
       union all
-      select (b.starts_at at time zone biz.timezone)::date, coalesce(p.price, 0), b.client_id, 'booking'
+      select (b.starts_at at time zone biz.timezone)::date, coalesce(b.price, p.price, 0), b.client_id, 'booking'
       from public.bookings b
       join public.products p on p.id = b.product_id
       where b.business_id = biz.id and b.status = 'completed'
@@ -50,7 +51,7 @@ begin
       where day >= (p_from at time zone biz.timezone)::date and day < (p_to at time zone biz.timezone)::date
   ),
   period_bookings as (
-      select b.*, p.name as service, p.price
+      select b.*, p.name as service, coalesce(b.price, p.price) as charged
       from public.bookings b
       join public.products p on p.id = b.product_id
       where b.business_id = biz.id and b.starts_at >= p_from and b.starts_at < p_to
@@ -152,7 +153,7 @@ begin
         from (
             select b.product_id as id, b.service as name,
                    count(*) filter (where b.status <> 'cancelled') as bookings,
-                   coalesce(sum(b.price) filter (where b.status = 'completed'), 0) as revenue
+                   coalesce(sum(b.charged) filter (where b.status = 'completed'), 0) as revenue
             from period_bookings b
             group by b.product_id, b.service
             order by bookings desc
