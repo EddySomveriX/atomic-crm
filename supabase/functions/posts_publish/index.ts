@@ -3,6 +3,7 @@ import { supabaseAdmin } from "../_shared/supabaseAdmin.ts";
 import { createErrorResponse } from "../_shared/utils.ts";
 import { isServiceRequest, jsonResponse } from "../_shared/channels/http.ts";
 import { loadBotToken } from "../_shared/channels/delivery.ts";
+import { refreshChannelTokens } from "../_shared/channels/tokens.ts";
 import {
   TelegramError,
   postToChannel,
@@ -20,7 +21,8 @@ import {
  * Publishes the posts that are due: claims each target once
  * (claim_due_posts), posts it to the Telegram channel or the Instagram
  * account, and records the outcome; a post's status follows its targets.
- * Also refreshes Instagram tokens that end within 10 days.
+ * Also refreshes Instagram tokens (of posts and of the chat channel) that
+ * end within 10 days.
  * Service role only (a scheduled job, or scripts/channels-dev.mjs).
  * → { published, failed, refreshed }
  */
@@ -238,6 +240,6 @@ Deno.serve(async (req: Request) => {
         .eq("id", target.target_id);
     }
   }
-  outcome.refreshed = await refreshTokens();
+  outcome.refreshed = (await refreshTokens()) + (await refreshChannelTokens());
   return jsonResponse(outcome);
 });

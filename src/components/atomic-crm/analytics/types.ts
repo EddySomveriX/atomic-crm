@@ -1,3 +1,5 @@
+import type { ChannelKind } from "../channels/types";
+
 /** What public.business_analytics() returns (supabase/schemas/18_analytics.sql). */
 export interface Analytics {
   currency: string;
@@ -57,9 +59,9 @@ export interface Analytics {
     last_day: string;
   }[];
   deals_by_stage: { stage: string; deals: number; amount: number }[];
-  channels: { kind: "telegram" | "widget"; conversations: number }[];
+  channels: { kind: ChannelKind; conversations: number }[];
   booking_sources: {
-    source: "crm" | "telegram" | "widget";
+    source: "crm" | ChannelKind;
     bookings: number;
   }[];
   stock: {

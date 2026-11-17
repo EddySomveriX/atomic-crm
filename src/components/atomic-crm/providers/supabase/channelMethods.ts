@@ -1,3 +1,5 @@
+import type { MessengerConnection } from "../../channels/MessengersSettings";
+import type { MessengerKind } from "../../channels/types";
 import { HttpError, type Identifier } from "ra-core";
 
 import { getSupabaseClient } from "./supabase";
@@ -45,6 +47,20 @@ export const channelMethods = {
 
   async disconnectTelegram(): Promise<void> {
     await invoke("telegram_connect", "DELETE");
+  },
+
+  /** Checks the token of a messenger and connects it to the chat center. */
+  connectMessenger(input: {
+    kind: MessengerKind;
+    access_token: string;
+    app_secret?: string;
+    phone_number_id?: string;
+  }): Promise<MessengerConnection> {
+    return invoke<MessengerConnection>("channel_connect", "POST", input);
+  },
+
+  async disconnectMessenger(kind: MessengerKind): Promise<void> {
+    await invoke("channel_connect", "DELETE", { kind });
   },
 
   /** Sends an answer to the client of a conversation through its channel. */

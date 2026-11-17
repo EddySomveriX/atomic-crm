@@ -7,12 +7,12 @@ import {
 } from "ra-core";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { Globe, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import type { Company } from "../types";
+import { ChannelIcon } from "./ChannelIcon";
 import { ConversationView } from "./ConversationView";
-import type { Channel, Conversation } from "./types";
+import type { Channel, ChannelKind, Conversation } from "./types";
 import { URGENT_AFTER_MINUTES, waitedMinutes, waitingLabel } from "./waiting";
 
 /** The feed refreshes itself this often */
@@ -43,8 +43,9 @@ export const ChatsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const openId = Number(searchParams.get("id")) || null;
   const [filter, setFilter] = useState<Filter>("all");
+  const [channelFilter, setChannelFilter] = useState<ChannelKind | null>(null);
 
-  const { data: conversations = [], isPending } = useGetList<Conversation>(
+  const { data: allConversations = [], isPending } = useGetList<Conversation>(
     "conversations",
     {
       pagination: { page: 1, perPage: 100 },
@@ -59,9 +60,19 @@ export const ChatsPage = () => {
     { refetchInterval: REFRESH_MS },
   );
   const { data: channels = [] } = useGetList<Channel>("channels", {
-    pagination: { page: 1, perPage: 10 },
+    pagination: { page: 1, perPage: 20 },
     sort: { field: "id", order: "ASC" },
   });
+  const kindOf = (item: Conversation) =>
+    channels.find((channel) => channel.id === item.channel_id)?.kind;
+  // Channels that have chats: the feed can be narrowed to one of them
+  const usedKinds = [
+    ...new Set(allConversations.flatMap((item) => kindOf(item) ?? [])),
+  ];
+  const conversations =
+    channelFilter == null
+      ? allConversations
+      : allConversations.filter((item) => kindOf(item) === channelFilter);
   const clientIds = [
     ...new Set(conversations.flatMap((item) => item.client_id ?? [])),
   ];
@@ -77,8 +88,7 @@ export const ChatsPage = () => {
     conversation.title ??
     conversation.phone ??
     translate("crm.chats.unknown_client");
-  const channelOf = (conversation: Conversation) =>
-    channels.find((channel) => channel.id === conversation.channel_id)?.kind;
+  const channelOf = kindOf;
 
   const select = (id: Identifier | null) =>
     setSearchParams(id == null ? {} : { id: String(id) });
@@ -121,6 +131,30 @@ export const ChatsPage = () => {
             </button>
           ))}
         </div>
+        {usedKinds.length > 1 ? (
+          <div className="flex flex-wrap gap-1" role="tablist">
+            {usedKinds.map((kind) => (
+              <button
+                key={kind}
+                type="button"
+                role="tab"
+                aria-selected={channelFilter === kind}
+                onClick={() =>
+                  setChannelFilter(channelFilter === kind ? null : kind)
+                }
+                className={cn(
+                  "flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs",
+                  channelFilter === kind
+                    ? "border-primary bg-accent font-medium"
+                    : "text-muted-foreground hover:bg-accent/60",
+                )}
+              >
+                <ChannelIcon kind={kind} className="size-3.5" />
+                {translate(`crm.chats.channels.${kind}`)}
+              </button>
+            ))}
+          </div>
+        ) : null}
         <ul className="flex min-h-0 flex-1 flex-col divide-y overflow-y-auto rounded-lg border bg-card">
           {!isPending && conversations.length === 0 ? (
             <li className="p-6 text-center text-sm text-muted-foreground">
@@ -199,15 +233,5 @@ export const ChatsPage = () => {
     </div>
   );
 };
-
-export const ChannelIcon = ({ kind }: { kind?: Channel["kind"] }) =>
-  kind === "widget" ? (
-    <Globe
-      className="size-5 shrink-0 text-muted-foreground"
-      aria-label="Website"
-    />
-  ) : (
-    <Send className="size-5 shrink-0 text-sky-600" aria-label="Telegram" />
-  );
 
 ChatsPage.path = "/chats";

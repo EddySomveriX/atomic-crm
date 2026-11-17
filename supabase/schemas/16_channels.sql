@@ -154,6 +154,8 @@ CREATE OR REPLACE FUNCTION "public"."handle_message_created"() RETURNS "trigger"
 begin
   update public.conversations c
   set last_message_at = new.created_at,
+      -- Opens the 24 hours in which Instagram, Messenger and WhatsApp let a business answer
+      last_inbound_at = case when new.direction = 'in' then new.created_at else c.last_inbound_at end,
       waiting_since = case
           when new.direction = 'in' and not new.handled_by_bot then coalesce(c.waiting_since, new.created_at)
           when new.direction = 'out' and new.sales_id is not null then null
@@ -201,7 +203,8 @@ $$;
 -- once: the reminder time is written before the reminder is sent, so a
 -- second run never sends it again. A booking made less than 24 (2) hours
 -- ahead gets no 24-hour (2-hour) reminder. The conversation is the one the
--- booking was made in, or the latest Telegram conversation of the client.
+-- booking was made in, or the latest conversation of the client the
+-- business may write in (public.chat_reachable).
 -- Server only.
 CREATE OR REPLACE FUNCTION "public"."claim_due_reminders"("p_now" timestamp with time zone DEFAULT now()) RETURNS TABLE("booking_id" bigint, "kind" "text", "conversation_id" bigint)
     LANGUAGE "plpgsql" SECURITY DEFINER
@@ -232,14 +235,18 @@ begin
       where b.id = d.id
       returning b.id, d.kind, b.conversation_id, b.client_id, b.business_id
   )
-  select c.id, c.kind, coalesce(c.conversation_id, (
+  -- The conversation the booking was made in while the business may still
+  -- write there, else the latest conversation of the client it may write in
+  select c.id, c.kind, coalesce((
       select cv.id
       from public.conversations cv
       join public.channels ch on ch.id = cv.channel_id
-      where cv.client_id = c.client_id and cv.business_id = c.business_id and ch.kind = 'telegram'
-      order by cv.last_message_at desc nulls last
+      where cv.business_id = c.business_id and ch.enabled
+        and (cv.id = c.conversation_id or cv.client_id = c.client_id)
+        and public.chat_reachable(ch.kind, cv.last_inbound_at, p_now)
+      order by (cv.id = c.conversation_id) desc nulls last, cv.last_message_at desc nulls last
       limit 1
-  ))
+  ), c.conversation_id)
   from claimed c;
 end;
 $$;

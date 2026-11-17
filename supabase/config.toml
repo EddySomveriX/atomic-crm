@@ -200,3 +200,7 @@ verify_jwt = false
 verify_jwt = false
 [functions.posts_publish]
 verify_jwt = false
+[functions.channel_webhook]
+verify_jwt = false
+[functions.channel_connect]
+verify_jwt = false

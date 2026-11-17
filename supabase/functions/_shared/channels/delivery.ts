@@ -3,6 +3,17 @@ import {
   sendMessage,
   type ReplyMarkup,
 } from "../../../../connectors/telegram/index.ts";
+import {
+  MetaError,
+  sendText as sendMetaText,
+} from "../../../../connectors/meta/index.ts";
+import { sendText as sendViberText } from "../../../../connectors/viber/index.ts";
+import {
+  isMessengerKind,
+  renderReply,
+  type Choice,
+  type MessengerKind,
+} from "../../../../connectors/messaging.ts";
 import type { BotReply } from "../bot/bookingFlow.ts";
 
 export interface ConversationRow {
@@ -22,7 +33,7 @@ export interface ConversationRow {
 export interface ChannelRow {
   id: number;
   business_id: string;
-  kind: "telegram" | "widget";
+  kind: "telegram" | "widget" | MessengerKind;
   name: string | null;
   enabled: boolean;
 }
@@ -92,11 +103,117 @@ export const insertMessage = async (message: {
   return data.id as number;
 };
 
+/** Hours Instagram, Messenger and WhatsApp let a business answer a client */
+export const REPLY_WINDOW_HOURS = 24;
+const WINDOWED: readonly string[] = ["instagram", "messenger", "whatsapp"];
+
+/** Buttons of a bot reply as a flat list, for the messengers. */
+export const choicesOf = (reply: BotReply): Choice[] =>
+  (reply.buttons ?? []).flat().map((button) => ({
+    data: button.data,
+    label: button.text,
+  }));
+
+/**
+ * Sends through Instagram, Messenger, WhatsApp or Viber. Refuses with
+ * "window_closed" when Meta's 24 hours since the client's last message have
+ * passed. Remembers the buttons it offered, so a typed answer is understood.
+ */
+const sendToMessenger = async (
+  kind: MessengerKind,
+  conversation: { id: number; channel_id: number; external_id: string },
+  text: string,
+  buttons: Choice[],
+): Promise<string | null> => {
+  const { data, error } = await supabaseAdmin
+    .from("conversations")
+    .select(
+      "last_inbound_at, channels(external_id, enabled, channel_secrets(access_token)), businesses(name)",
+    )
+    .eq("id", conversation.id)
+    .single();
+  if (error) throw error;
+  const channel = one(
+    data.channels as unknown as {
+      external_id: string | null;
+      enabled: boolean;
+      channel_secrets:
+        | { access_token: string | null }
+        | { access_token: string | null }[]
+        | null;
+    },
+  );
+  const token = one(channel?.channel_secrets ?? null)?.access_token;
+  if (!channel?.enabled || !token) throw new Error("channel_off");
+  if (
+    WINDOWED.includes(kind) &&
+    !(
+      data.last_inbound_at &&
+      Date.now() - new Date(data.last_inbound_at).getTime() <
+        REPLY_WINDOW_HOURS * 3600 * 1000
+    )
+  ) {
+    throw new Error("window_closed");
+  }
+  const rendered = renderReply(kind, text, buttons);
+  const context = { fetch, settings: { access_token: token } };
+  const externalId =
+    kind === "viber"
+      ? await sendViberText(
+          {
+            chatId: conversation.external_id,
+            text: rendered.text,
+            senderName:
+              one(data.businesses as unknown as { name: string })?.name ?? "",
+            buttons: rendered.buttons,
+          },
+          context,
+        )
+      : await sendMetaText(
+          {
+            kind,
+            accountId: channel.external_id ?? "",
+            chatId: conversation.external_id,
+            text: rendered.text,
+            buttons: rendered.buttons,
+          },
+          context,
+        );
+  const { error: choicesError } = await supabaseAdmin
+    .from("conversations")
+    .update({ reply_choices: rendered.choices })
+    .eq("id", conversation.id);
+  if (choicesError) throw choicesError;
+  return externalId;
+};
+
+/** Inline buttons written for Telegram, as a flat list for the messengers. */
+const choicesOfMarkup = (markup: ReplyMarkup | undefined): Choice[] =>
+  markup && "inline_keyboard" in markup
+    ? markup.inline_keyboard
+        .flat()
+        .flatMap((button) =>
+          button.callback_data
+            ? [{ data: button.callback_data, label: button.text }]
+            : [],
+        )
+    : [];
+
+const one = <T>(value: T | T[] | null | undefined): T | null =>
+  Array.isArray(value) ? (value[0] ?? null) : (value ?? null);
+
+/** Why a messenger refused, as a code the chat shows in plain words. */
+const failureOf = (error: unknown): string => {
+  if (error instanceof MetaError && error.code === 190) return "token_expired";
+  if (error instanceof Error) return error.message;
+  return "send failed";
+};
+
 /**
  * Sends a text to the client of a conversation through its channel and
- * records it. A Telegram message goes out at once; a widget message waits
- * for the visitor's page to fetch it. The message is recorded as failed,
- * with the reason, when Telegram refuses it.
+ * records it. A message of Telegram or a messenger goes out at once; a
+ * widget message waits for the visitor's page to fetch it. The message is
+ * recorded as failed, with the reason, when the channel refuses it.
  */
 export const deliverText = async (
   conversation: Pick<
@@ -109,6 +226,8 @@ export const deliverText = async (
     salesId?: number | null;
     replyMarkup?: ReplyMarkup;
     botToken?: string | null;
+    /** Buttons for the messengers (Telegram takes replyMarkup) */
+    buttons?: Choice[];
   } = {},
 ): Promise<{
   id: number | null;
@@ -132,6 +251,18 @@ export const deliverText = async (
     } catch (error) {
       status = "failed";
       failure = error instanceof Error ? error.message : "send failed";
+    }
+  } else if (isMessengerKind(channel.kind)) {
+    try {
+      externalId = await sendToMessenger(
+        channel.kind,
+        conversation,
+        text,
+        options.buttons ?? choicesOfMarkup(options.replyMarkup),
+      );
+    } catch (error) {
+      status = "failed";
+      failure = failureOf(error);
     }
   }
   const id = await insertMessage({

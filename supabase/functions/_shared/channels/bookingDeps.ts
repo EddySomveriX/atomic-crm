@@ -1,3 +1,4 @@
+import type { MessengerKind } from "../../../../connectors/messaging.ts";
 import { supabaseAdmin } from "../supabaseAdmin.ts";
 import {
   dayIn,
@@ -38,7 +39,10 @@ export const loadBusiness = async (
  */
 export const makeBookingDeps = (
   business: BusinessInfo,
-  booking: { source: "telegram" | "widget"; conversationId: number | null },
+  booking: {
+    source: "telegram" | "widget" | MessengerKind;
+    conversationId: number | null;
+  },
 ): BotDeps => {
   let servicesCache: BotService[] | null = null;
   const specialistsCache = new Map<number, BotSpecialist[]>();

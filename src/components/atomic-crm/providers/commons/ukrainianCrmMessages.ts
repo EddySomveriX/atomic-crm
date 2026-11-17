@@ -578,7 +578,15 @@ export const ukrainianCrmMessages = {
         cancelled: "Скасовано",
         cancelled_by_client: "Скасував клієнт",
       },
-      sources: { crm: "CRM", telegram: "Telegram", widget: "Сайт" },
+      sources: {
+        crm: "CRM",
+        telegram: "Telegram",
+        widget: "Сайт",
+        instagram: "Instagram",
+        messenger: "Messenger",
+        whatsapp: "WhatsApp",
+        viber: "Viber",
+      },
       remind_now: "Надіслати нагадування",
       reminder_sent: "Нагадування надіслано клієнту в Telegram",
       reminder_no_chat:
@@ -616,7 +624,25 @@ export const ukrainianCrmMessages = {
       template_title: "Назва, напр. «Години роботи»",
       template_body: "Текст відповіді",
       template_failed: "Не вдалося зберегти шаблон",
-      channels: { telegram: "Telegram", widget: "Сайт" },
+      channels: {
+        telegram: "Telegram",
+        widget: "Сайт",
+        instagram: "Instagram",
+        messenger: "Messenger",
+        whatsapp: "WhatsApp",
+        viber: "Viber",
+      },
+      client_chats: "Чати з клієнтом",
+      window_left:
+        "Відповісти можна ще %{smart_count} годину |||| Відповісти можна ще %{smart_count} години |||| Відповісти можна ще %{smart_count} годин",
+      window_closed:
+        "%{channel} дозволяє писати клієнту лише 24 години після його останнього повідомлення. Час минув — клієнт має написати першим.",
+      errors: {
+        window_closed: "24 години минули — клієнт має написати першим",
+        token_expired:
+          "доступ до месенджера прострочений — підключіть його знову",
+        channel_off: "месенджер відключений",
+      },
     },
     channels: {
       title: "Канали",
@@ -1258,6 +1284,12 @@ export const ukrainianCrmMessages = {
       switch_error: "Не вдалося перейти до бізнесу",
     },
     setup: {
+      requisites_optional:
+        "Необов’язково. Якщо бізнес ще не оформлений, натисніть «Заповню пізніше» — реквізити можна додати потім у налаштуваннях бізнесу.",
+      requisites_later: "Заповню пізніше",
+      requisites_skipped:
+        "Реквізити заповните пізніше в налаштуваннях бізнесу. Вони знадобляться для рахунків і документів.",
+      requisites_fill: "Заповнити зараз",
       title: "Налаштуйте свій бізнес",
       title_another: "Додати бізнес",
       intro:
@@ -1671,6 +1703,64 @@ export const ukrainianCrmMessages = {
         until: "Діє до %{date}",
         book: "Записатися: %{link}",
         free_title: "Вільний час на %{day}",
+      },
+    },
+    messengers: {
+      on: "Підключено: %{name}",
+      connected: "Підключено: %{name}",
+      failed: "Не вдалося. Спробуйте ще раз.",
+      offline:
+        "Акаунт збережено. Повідомлення почнуть приходити, коли CRM буде розміщено в інтернеті: месенджер надсилає їх лише на публічну адресу.",
+      webhook_hint:
+        "Останній крок: вставте ці два значення у кабінеті застосунку Meta, розділ «Webhooks», і підпишіться на подію messages.",
+      webhook_url: "Адреса (Callback URL)",
+      verify_token: "Токен перевірки",
+      copy: "Скопіювати: %{label}",
+      copied: "Скопійовано",
+      fields: {
+        access_token: "Токен доступу",
+        app_secret: "Секрет застосунку (App Secret)",
+        phone_number_id: "ID номера телефону",
+      },
+      errors: {
+        invalid_input: "Перевірте введене: чогось бракує або воно закоротке.",
+        token_refused:
+          "Месенджер не прийняв токен. Згенеруйте новий і спробуйте ще раз.",
+        webhook_failed:
+          "Акаунт збережено, але месенджер не прийняв адресу для повідомлень.",
+      },
+      instagram: {
+        hint: "Потрібен бізнес-акаунт Instagram. Безкоштовно. Відповідати клієнту можна 24 години після його повідомлення.",
+        steps: {
+          "1": "На developers.facebook.com відкрийте свій застосунок, продукт «Instagram», і ввімкніть доступ до повідомлень.",
+          "2": "Згенеруйте токен для свого акаунта Instagram.",
+          "3": "Секрет застосунку — у розділі «Налаштування застосунку» → «Основне».",
+        },
+      },
+      messenger: {
+        hint: "Потрібна сторінка Facebook вашого бізнесу. Безкоштовно. Те саме правило 24 годин.",
+        steps: {
+          "1": "У своєму застосунку Meta додайте продукт «Messenger» і підключіть сторінку бізнесу.",
+          "2": "Згенеруйте токен сторінки (Page Access Token).",
+          "3": "Секрет застосунку — у розділі «Налаштування застосунку» → «Основне».",
+        },
+      },
+      whatsapp: {
+        hint: "Потрібні акаунт Meta Business і номер телефону для WhatsApp Business Platform. Повідомлення платні за тарифами Meta.",
+        steps: {
+          "1": "У своєму застосунку Meta додайте продукт «WhatsApp» і номер телефону.",
+          "2": "Скопіюйте ID номера телефону і створіть постійний токен (системний користувач у Meta Business).",
+          "3": "Секрет застосунку — у розділі «Налаштування застосунку» → «Основне».",
+        },
+      },
+      viber: {
+        hint: "Потрібен бот Viber. З 5 лютого 2024 року нові боти Viber платні (близько 100 € на місяць) і оформлюються через Rakuten Viber або його партнерів.",
+        steps: {
+          "1": "Оформіть бота у Rakuten Viber або в офіційного партнера.",
+          "2": "У кабінеті бота скопіюйте токен (Authentication token).",
+          "3": "Вставте токен сюди й натисніть «Підключити».",
+        },
+        ready: "Viber надсилатиме повідомлення в CRM.",
       },
     },
     materials: {

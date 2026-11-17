@@ -23,6 +23,7 @@ import { ClientPricingCard } from "../pricing/ClientPricingCard";
 import { ReliabilityCard } from "../reliability/ReliabilityCard";
 import { DocumentsPanel } from "../documents/DocumentsPanel";
 import { ClientBirthday } from "../automations/ClientBirthday";
+import { ClientChats } from "../channels/ClientChats";
 import { ClientInstagram } from "../marketing/ClientInstagram";
 import { CounterpartyInfo } from "../counterparties/CounterpartyInfo";
 
@@ -53,6 +54,7 @@ export const CompanyAside = ({ link = "edit" }: CompanyAsideProps) => {
           <ClientPricingCard client={record} />
           <ClientBirthday client={record} />
           <ClientInstagram client={record} />
+          <ClientChats clientId={record.id} />
         </>
       ) : null}
 

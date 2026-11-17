@@ -242,7 +242,7 @@ begin
           from public.conversations cv
           join public.channels ch on ch.id = cv.channel_id
           where cv.client_id = d.client_id and cv.business_id = d.business_id
-            and ch.kind = 'telegram' and ch.enabled
+            and ch.enabled and public.chat_reachable(ch.kind, cv.last_inbound_at, p_now)
             and cv.consent_at is not null and cv.automations_off_at is null
           order by cv.last_message_at desc nulls last
           limit 1

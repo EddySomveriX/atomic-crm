@@ -1,8 +1,17 @@
 import type { Identifier, RaRecord } from "ra-core";
 
+export const MESSENGER_KINDS = [
+  "instagram",
+  "messenger",
+  "whatsapp",
+  "viber",
+] as const;
+export type MessengerKind = (typeof MESSENGER_KINDS)[number];
+export type ChannelKind = "telegram" | "widget" | MessengerKind;
+
 export interface Channel extends RaRecord {
-  kind: "telegram" | "widget";
-  /** Telegram: the username of the bot */
+  kind: ChannelKind;
+  /** Telegram: the username of the bot; a messenger: the name of the account */
   name: string | null;
   /** Public key of the website widget */
   public_key: string;
@@ -21,6 +30,8 @@ export interface Conversation extends RaRecord {
   last_message_at: string | null;
   /** Since when the client waits for a person (empty: answered) */
   waiting_since: string | null;
+  /** The last message of the client: opens the time to answer in Meta channels */
+  last_inbound_at?: string | null;
 }
 
 export interface Message extends RaRecord {
@@ -33,7 +44,7 @@ export interface Message extends RaRecord {
   handled_by_bot: boolean;
   status: "received" | "pending" | "sent" | "failed";
   error: string | null;
-  /** A file or photo the client sent in Telegram */
+  /** A file or photo the client sent */
   attachment: {
     kind: "document" | "photo";
     file_name: string;

@@ -577,7 +577,15 @@ export const englishCrmMessages = {
         cancelled: "Cancelled",
         cancelled_by_client: "Cancelled by the client",
       },
-      sources: { crm: "CRM", telegram: "Telegram", widget: "Website" },
+      sources: {
+        crm: "CRM",
+        telegram: "Telegram",
+        widget: "Website",
+        instagram: "Instagram",
+        messenger: "Messenger",
+        whatsapp: "WhatsApp",
+        viber: "Viber",
+      },
       remind_now: "Send a reminder",
       reminder_sent: "Reminder sent to the client in Telegram",
       reminder_no_chat:
@@ -615,7 +623,24 @@ export const englishCrmMessages = {
       template_title: "Title, e.g. “Opening hours”",
       template_body: "Text of the answer",
       template_failed: "The template could not be saved",
-      channels: { telegram: "Telegram", widget: "Website" },
+      channels: {
+        telegram: "Telegram",
+        widget: "Website",
+        instagram: "Instagram",
+        messenger: "Messenger",
+        whatsapp: "WhatsApp",
+        viber: "Viber",
+      },
+      client_chats: "Chats with the client",
+      window_left:
+        "You can answer for %{smart_count} more hour |||| You can answer for %{smart_count} more hours",
+      window_closed:
+        "%{channel} lets a business write only within 24 hours of the last message of the client. The time is over: the client has to write first.",
+      errors: {
+        window_closed: "24 hours have passed: the client has to write first",
+        token_expired: "the access to the messenger expired: connect it again",
+        channel_off: "the messenger is disconnected",
+      },
     },
     channels: {
       title: "Channels",
@@ -1256,6 +1281,12 @@ export const englishCrmMessages = {
       switch_error: "Could not switch business",
     },
     setup: {
+      requisites_optional:
+        "Optional. If the business is not registered yet, press “Fill in later”: you can add the requisites in the business settings.",
+      requisites_later: "Fill in later",
+      requisites_skipped:
+        "You will fill in the requisites later in the business settings. Invoices and documents need them.",
+      requisites_fill: "Fill in now",
       title: "Set up your business",
       title_another: "Add a business",
       intro:
@@ -1668,6 +1699,65 @@ export const englishCrmMessages = {
         until: "Until %{date}",
         book: "Book: %{link}",
         free_title: "Free times on %{day}",
+      },
+    },
+    messengers: {
+      on: "Connected: %{name}",
+      connected: "Connected: %{name}",
+      failed: "That did not work. Try again.",
+      offline:
+        "The account is saved. Messages start coming once the CRM is on the internet: a messenger sends them to a public address only.",
+      webhook_hint:
+        "The last step: paste these two values in the Meta app dashboard, section “Webhooks”, and subscribe to the messages event.",
+      webhook_url: "Address (Callback URL)",
+      verify_token: "Verify token",
+      copy: "Copy: %{label}",
+      copied: "Copied",
+      fields: {
+        access_token: "Access token",
+        app_secret: "App secret",
+        phone_number_id: "Phone number ID",
+      },
+      errors: {
+        invalid_input:
+          "Check what you typed: something is missing or too short.",
+        token_refused:
+          "The messenger refused the token. Generate a new one and try again.",
+        webhook_failed:
+          "The account is saved, but the messenger refused the address for messages.",
+      },
+      instagram: {
+        hint: "Needs an Instagram business account. Free. You can answer a client for 24 hours after their message.",
+        steps: {
+          "1": "On developers.facebook.com open your app, the “Instagram” product, and turn on access to messages.",
+          "2": "Generate a token for your Instagram account.",
+          "3": "The app secret is in “App settings” → “Basic”.",
+        },
+      },
+      messenger: {
+        hint: "Needs the Facebook Page of your business. Free. The same 24-hour rule.",
+        steps: {
+          "1": "In your Meta app add the “Messenger” product and connect the Page of the business.",
+          "2": "Generate a Page access token.",
+          "3": "The app secret is in “App settings” → “Basic”.",
+        },
+      },
+      whatsapp: {
+        hint: "Needs a Meta Business account and a phone number for the WhatsApp Business Platform. Messages are paid at Meta rates.",
+        steps: {
+          "1": "In your Meta app add the “WhatsApp” product and a phone number.",
+          "2": "Copy the phone number ID and create a permanent token (a system user in Meta Business).",
+          "3": "The app secret is in “App settings” → “Basic”.",
+        },
+      },
+      viber: {
+        hint: "Needs a Viber bot. Since 5 February 2024 new Viber bots are paid (about EUR 100 a month) and are set up through Rakuten Viber or its partners.",
+        steps: {
+          "1": "Set up a bot with Rakuten Viber or an official partner.",
+          "2": "Copy the authentication token in the bot account.",
+          "3": "Paste the token here and press “Connect”.",
+        },
+        ready: "Viber will send messages to the CRM.",
       },
     },
     materials: {

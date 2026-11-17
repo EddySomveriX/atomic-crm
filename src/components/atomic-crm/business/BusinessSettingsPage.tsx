@@ -19,11 +19,7 @@ import { reloadApp } from "./reloadApp";
 import type { CrmDataProvider } from "../providers/types";
 import { CONFIGURATION_STORE_KEY } from "../root/ConfigurationContext";
 import { RequisiteFields } from "./RequisiteFields";
-import {
-  compactRequisites,
-  findInvalidRequisites,
-  findMissingRequisites,
-} from "./requisiteRules";
+import { compactRequisites, findInvalidRequisites } from "./requisiteRules";
 import {
   BUSINESS_ROLES,
   type Business,
@@ -93,7 +89,6 @@ const BusinessDetails = ({ business }: { business: Business }) => {
   });
 
   const invalid = findInvalidRequisites(fields, requisites);
-  const missing = findMissingRequisites(fields, requisites);
 
   const { mutate, isPending } = useMutation({
     mutationFn: () =>
@@ -154,12 +149,7 @@ const BusinessDetails = ({ business }: { business: Business }) => {
       <div>
         <Button
           onClick={() => mutate()}
-          disabled={
-            isPending ||
-            name.trim() === "" ||
-            invalid.length > 0 ||
-            missing.length > 0
-          }
+          disabled={isPending || name.trim() === "" || invalid.length > 0}
         >
           {translate("ra.action.save")}
         </Button>

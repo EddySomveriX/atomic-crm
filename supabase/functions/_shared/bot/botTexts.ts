@@ -28,6 +28,8 @@ const uk = {
   ask_phone:
     "Надішліть, будь ласка, свій номер телефону кнопкою нижче, щоб ми могли підтвердити запис.",
   phone_button: "Надіслати номер",
+  ask_phone_typed:
+    "Напишіть, будь ласка, свій номер телефону (наприклад, +380671234567), щоб ми могли підтвердити запис.",
   phone_invalid:
     "Не вдалося прочитати номер. Натисніть кнопку «Надіслати номер».",
   confirm:
@@ -116,6 +118,8 @@ const en: Record<BotTextKey, string> = {
   ask_phone:
     "Please send your phone number with the button below so we can confirm the booking.",
   phone_button: "Send my number",
+  ask_phone_typed:
+    "Please type your phone number (for example, +380671234567) so we can confirm the booking.",
   phone_invalid: "We could not read the number. Press “Send my number”.",
   confirm:
     "Please check your booking:\n%{service}\n%{when}\nSpecialist: %{specialist}\n\nIs everything right?",

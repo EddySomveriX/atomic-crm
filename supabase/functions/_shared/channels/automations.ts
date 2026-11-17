@@ -88,7 +88,7 @@ export const sendClaimedAutomation = async (
 
   let status: "sent" | "failed" = "failed";
   let failure: string | null = "the bot is off";
-  if (channel?.kind === "telegram" && channel.enabled) {
+  if (channel && channel.kind !== "widget" && channel.enabled) {
     const result = await deliverText(row, channel, text, {
       replyMarkup: WITH_BOOK_BUTTON.includes(claimed.kind)
         ? {

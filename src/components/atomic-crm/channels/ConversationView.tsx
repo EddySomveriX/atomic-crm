@@ -24,6 +24,7 @@ import { useSpecialists } from "../booking/useBookingData";
 import type { CrmDataProvider } from "../providers/types";
 import { ClientReliabilityBadge } from "../reliability/ReliabilityBadge";
 import { ClientLink } from "./ClientLink";
+import { replyWindow } from "./replyWindow";
 import { TemplatesMenu } from "./TemplatesMenu";
 import type { Channel, Conversation, Message } from "./types";
 import { ChatAttachment } from "../documents/ChatAttachment";
@@ -83,6 +84,12 @@ export const ConversationView = ({
     },
     onError: () => notify("crm.chats.send_failed", { type: "error" }),
   });
+
+  // Instagram, Messenger and WhatsApp: 24 hours to answer after the client wrote
+  const lastInbound =
+    [...messages].reverse().find((message) => message.direction === "in")
+      ?.created_at ?? conversation.last_inbound_at;
+  const answerTime = replyWindow(channelKind, lastInbound, new Date());
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -187,30 +194,47 @@ export const ConversationView = ({
         <div ref={bottom} />
       </div>
 
-      <form onSubmit={submit} className="flex items-end gap-2 border-t p-3">
-        <TemplatesMenu onPick={(body) => setText(body)} />
-        <Textarea
-          value={text}
-          onChange={(event) => setText(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
-              submit(event);
-            }
-          }}
-          placeholder={translate("crm.chats.answer_placeholder")}
-          rows={2}
-          maxLength={4096}
-          className="min-h-11 flex-1 resize-none"
-        />
-        <Button
-          type="submit"
-          size="icon"
-          disabled={!text.trim() || send.isPending}
-          aria-label={translate("crm.chats.send")}
-        >
-          <Send />
-        </Button>
-      </form>
+      {answerTime.isOpen ? (
+        <>
+          {answerTime.hoursLeft != null ? (
+            <p className="border-t px-3 pt-2 text-xs text-muted-foreground">
+              {translate("crm.chats.window_left", {
+                smart_count: Math.max(answerTime.hoursLeft, 1),
+              })}
+            </p>
+          ) : null}
+          <form onSubmit={submit} className="flex items-end gap-2 border-t p-3">
+            <TemplatesMenu onPick={(body) => setText(body)} />
+            <Textarea
+              value={text}
+              onChange={(event) => setText(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+                  submit(event);
+                }
+              }}
+              placeholder={translate("crm.chats.answer_placeholder")}
+              rows={2}
+              maxLength={4096}
+              className="min-h-11 flex-1 resize-none"
+            />
+            <Button
+              type="submit"
+              size="icon"
+              disabled={!text.trim() || send.isPending}
+              aria-label={translate("crm.chats.send")}
+            >
+              <Send />
+            </Button>
+          </form>
+        </>
+      ) : (
+        <p className="border-t p-3 text-sm text-muted-foreground">
+          {translate("crm.chats.window_closed", {
+            channel: translate(`crm.chats.channels.${channelKind}`),
+          })}
+        </p>
+      )}
     </div>
   );
 };
@@ -253,7 +277,9 @@ const MessageBubble = ({ message }: { message: Message }) => {
           }),
           fromBot ? translate("crm.chats.bot") : null,
           message.status === "failed"
-            ? translate("crm.chats.not_delivered")
+            ? translate(`crm.chats.errors.${message.error}`, {
+                _: translate("crm.chats.not_delivered"),
+              })
             : null,
         ]
           .filter(Boolean)

@@ -1,3 +1,4 @@
+import type { MessengerConnection } from "../../channels/MessengersSettings";
 import type { PostMedia } from "../../marketing/types";
 import type { CostInputs, CostSettings } from "../../costing/types";
 import type { DayTotals, TeamReportRow } from "../../team/types";
@@ -350,6 +351,9 @@ export const createDataProvider = ({
     connectTelegram: async (_token: string) =>
       Promise.reject(new Error("Channels are not available in the demo")),
     disconnectTelegram: async (): Promise<void> => {},
+    connectMessenger: async (): Promise<MessengerConnection> =>
+      Promise.reject(new Error("Messengers are not available in the demo")),
+    disconnectMessenger: async (): Promise<void> => {},
     sendChatMessage: async (_conversationId: Identifier, _text: string) => ({
       status: "failed" as const,
       error: "Channels are not available in the demo",

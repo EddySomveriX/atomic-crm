@@ -19,11 +19,7 @@ import { CONFIGURATION_STORE_KEY } from "../root/ConfigurationContext";
 import { defaultModules, type ModuleKey } from "../modules/modules";
 import { ModulesPicker } from "../modules/ModulesPicker";
 import { RequisiteFields } from "./RequisiteFields";
-import {
-  compactRequisites,
-  findInvalidRequisites,
-  findMissingRequisites,
-} from "./requisiteRules";
+import { compactRequisites, findInvalidRequisites } from "./requisiteRules";
 import { BUSINESS_TYPES, type BusinessType, type Requisites } from "./types";
 
 const BUSINESS_TYPE_HINTS: Record<BusinessType, string> = {
@@ -56,6 +52,8 @@ export const SetupPage = () => {
   const [businessType, setBusinessType] = useState<BusinessType | null>(null);
   const [modules, setModules] = useState<ModuleKey[]>(defaultModules(null));
   const [requisites, setRequisites] = useState<Requisites>({});
+  // A business not registered yet starts without requisites
+  const [isSkippingRequisites, setIsSkippingRequisites] = useState(false);
 
   const { data: packs = [] } = useQuery({
     queryKey: ["country_packs"],
@@ -71,13 +69,11 @@ export const SetupPage = () => {
   });
 
   const pack = packs.find((p) => p.code === countryCode);
-  const invalid = findInvalidRequisites(fields, requisites);
-  const missing = findMissingRequisites(fields, requisites);
+  const invalid = isSkippingRequisites
+    ? []
+    : findInvalidRequisites(fields, requisites);
   const canSubmit =
-    name.trim() !== "" &&
-    businessType !== null &&
-    invalid.length === 0 &&
-    missing.length === 0;
+    name.trim() !== "" && businessType !== null && invalid.length === 0;
 
   const { mutate, isPending } = useMutation({
     mutationFn: () =>
@@ -85,7 +81,7 @@ export const SetupPage = () => {
         name: name.trim(),
         country_code: countryCode,
         business_type: businessType!,
-        requisites: compactRequisites(requisites),
+        requisites: isSkippingRequisites ? {} : compactRequisites(requisites),
         modules,
       }),
     onSuccess: () => {
@@ -208,11 +204,43 @@ export const SetupPage = () => {
             <legend className="mb-3 text-base font-medium">
               {translate("crm.setup.requisites", { _: "Requisites" })}
             </legend>
-            <RequisiteFields
-              fields={fields}
-              value={requisites}
-              onChange={setRequisites}
-            />
+            {isSkippingRequisites ? (
+              <div className="flex flex-wrap items-center gap-3 rounded-lg border border-dashed px-4 py-3 text-sm">
+                <span className="flex-1 text-muted-foreground">
+                  {translate("crm.setup.requisites_skipped")}
+                </span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsSkippingRequisites(false)}
+                >
+                  {translate("crm.setup.requisites_fill")}
+                </Button>
+              </div>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground">
+                  {translate("crm.setup.requisites_optional")}
+                </p>
+                <RequisiteFields
+                  fields={fields}
+                  value={requisites}
+                  onChange={setRequisites}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="self-start"
+                  onClick={() => {
+                    setRequisites({});
+                    setIsSkippingRequisites(true);
+                  }}
+                >
+                  {translate("crm.setup.requisites_later")}
+                </Button>
+              </>
+            )}
           </fieldset>
 
           <div className="flex flex-col gap-3">

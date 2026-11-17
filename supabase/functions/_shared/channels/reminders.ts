@@ -46,7 +46,9 @@ export const sendBookingReminder = async (
   const channel = one(
     conversation.channels as unknown as Pick<ChannelRow, "kind" | "enabled">,
   );
-  if (channel?.kind !== "telegram" || !channel.enabled) return "no_chat";
+  if (!channel || channel.kind === "widget" || !channel.enabled) {
+    return "no_chat";
+  }
 
   const product = one(booking.products as unknown as { name: string });
   const specialist = one(

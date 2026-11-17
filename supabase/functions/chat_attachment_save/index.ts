@@ -17,8 +17,13 @@ import {
   downloadFile,
 } from "../../../connectors/telegram/index.ts";
 
+import {
+  MessengerFileError,
+  downloadMessengerFile,
+} from "../_shared/channels/messengerFiles.ts";
+
 /**
- * Saves a file or photo a client sent in Telegram to the documents of the
+ * Saves a file or photo a client sent in Telegram or a messenger to the documents of the
  * business, attached to the client of the chat (TZ section 6.4).
  * POST { message_id } → { status: "saved" | "duplicate", document_id, title }
  * or { status: "failed", reason: "type" | "size" | "download" }.
@@ -26,7 +31,12 @@ import {
 
 interface Attachment {
   kind: "document" | "photo";
-  file_id: string;
+  /** Telegram */
+  file_id?: string;
+  /** Instagram, Messenger, Viber */
+  url?: string;
+  /** WhatsApp */
+  media_id?: string;
   file_name: string;
   mime_type: string;
   size: number | null;
@@ -35,11 +45,15 @@ interface Attachment {
 const isAttachment = (value: unknown): value is Attachment => {
   const item = value as Partial<Attachment> | null;
   return (
-    typeof item?.file_id === "string" &&
+    (typeof item?.file_id === "string" ||
+      typeof item?.url === "string" ||
+      typeof item?.media_id === "string") &&
     typeof item.file_name === "string" &&
     typeof item.mime_type === "string"
   );
 };
+
+const UNKNOWN_TYPE = "application/octet-stream";
 
 async function save(req: Request, user: User) {
   const context = await getBusinessContext(user.id);
@@ -71,7 +85,11 @@ async function save(req: Request, user: User) {
     });
   }
   const attachment = message.attachment;
-  if (!isAcceptedType(attachment.mime_type)) {
+  // The messengers do not always name the type: it is read from the download
+  if (
+    attachment.mime_type !== UNKNOWN_TYPE &&
+    !isAcceptedType(attachment.mime_type)
+  ) {
     return jsonResponse({ status: "failed", reason: "type" });
   }
   if ((attachment.size ?? 0) > MAX_DOCUMENT_BYTES) {
@@ -84,19 +102,44 @@ async function save(req: Request, user: User) {
   ) as { channel_id: number; client_id: number | null; title: string | null };
 
   let file: Blob;
-  try {
-    const botToken = await loadBotToken(conversation.channel_id);
-    file = await downloadFile(attachment.file_id, {
-      fetch,
-      timeoutMs: 60_000,
-      settings: { botToken: botToken ?? undefined },
-    });
-  } catch (error) {
-    if (!(error instanceof TelegramError)) throw error;
-    return jsonResponse({ status: "failed", reason: "download" });
+  if (attachment.file_id) {
+    try {
+      const botToken = await loadBotToken(conversation.channel_id);
+      file = await downloadFile(attachment.file_id, {
+        fetch,
+        timeoutMs: 60_000,
+        settings: { botToken: botToken ?? undefined },
+      });
+    } catch (error) {
+      if (!(error instanceof TelegramError)) throw error;
+      return jsonResponse({ status: "failed", reason: "download" });
+    }
+  } else {
+    const { data: secret } = await supabaseAdmin
+      .from("channel_secrets")
+      .select("access_token")
+      .eq("channel_id", conversation.channel_id)
+      .maybeSingle();
+    try {
+      file = await downloadMessengerFile(
+        attachment,
+        secret?.access_token ?? null,
+        MAX_DOCUMENT_BYTES,
+      );
+    } catch (error) {
+      if (!(error instanceof MessengerFileError)) throw error;
+      return jsonResponse({ status: "failed", reason: error.reason });
+    }
   }
   if (file.size > MAX_DOCUMENT_BYTES) {
     return jsonResponse({ status: "failed", reason: "size" });
+  }
+  const mimeType =
+    attachment.mime_type === UNKNOWN_TYPE
+      ? file.type.split(";")[0] || UNKNOWN_TYPE
+      : attachment.mime_type;
+  if (!isAcceptedType(mimeType)) {
+    return jsonResponse({ status: "failed", reason: "type" });
   }
 
   const date = message.created_at.slice(0, 10);
@@ -107,12 +150,12 @@ async function save(req: Request, user: User) {
   const stored = await storeDocument({
     businessId: context.business_id,
     userId: user.id,
-    file: new Blob([file], { type: attachment.mime_type }),
+    file: new Blob([file], { type: mimeType }),
     fileName: attachment.file_name,
-    mimeType: attachment.mime_type,
+    mimeType,
     title: title || attachment.file_name,
     kind: attachment.kind === "photo" ? "photo" : "other",
-    source: "telegram",
+    source: attachment.file_id ? "telegram" : "chat",
     companyId: conversation.client_id,
   });
   await supabaseAdmin

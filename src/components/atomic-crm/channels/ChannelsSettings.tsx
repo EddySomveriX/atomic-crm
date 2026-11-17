@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import type { CrmDataProvider } from "../providers/types";
+import { MessengersSettings } from "./MessengersSettings";
 import type { Channel } from "./types";
 import { widgetSnippet } from "./widgetSnippet";
 
@@ -26,7 +27,7 @@ import { widgetSnippet } from "./widgetSnippet";
 export const ChannelsSettings = () => {
   const translate = useTranslate();
   const { data: channels = [], refetch } = useGetList<Channel>("channels", {
-    pagination: { page: 1, perPage: 10 },
+    pagination: { page: 1, perPage: 20 },
     sort: { field: "id", order: "ASC" },
   });
   const telegram = channels.find(
@@ -45,6 +46,7 @@ export const ChannelsSettings = () => {
         </p>
       </div>
       <TelegramChannel connected={telegram} onChange={() => refetch()} />
+      <MessengersSettings channels={channels} onChange={() => refetch()} />
       <WidgetChannel widget={widget} onChange={() => refetch()} />
     </section>
   );

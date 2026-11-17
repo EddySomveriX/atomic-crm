@@ -68,7 +68,7 @@ async function sendNow(req: Request, user: User) {
       .select("id, channels!inner(kind)")
       .eq("business_id", context.business_id)
       .eq("client_id", booking.client_id)
-      .eq("channels.kind", "telegram")
+      .neq("channels.kind", "widget")
       .order("last_message_at", { ascending: false, nullsFirst: false })
       .limit(1)
       .maybeSingle();
