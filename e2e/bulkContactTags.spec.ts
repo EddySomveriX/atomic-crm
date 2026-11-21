@@ -14,7 +14,7 @@ test("user adds a tag to several contacts", async ({
     email: "john@doe.com",
     first_name: "John",
     last_name: "Doe",
-    password: "password",
+    password: "password-Strong1",
   });
 
   await createContact({
@@ -33,7 +33,7 @@ test("user adds a tag to several contacts", async ({
   await page.goto("/");
 
   await page.getByLabel("Email").fill("john@doe.com");
-  await page.getByLabel("Password").fill("password");
+  await page.getByLabel("Password").fill("password-Strong1");
   await page.getByRole("button", { name: "Sign in" }).click();
 
   await expect(page).toHaveTitle(/Atomic CRM/);

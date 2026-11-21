@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { test, expect } from "./fixtures";
 
 test("only the first user can sign up", async ({ createUser }) => {
-  await createUser({ email: "john@doe.com", password: "password" });
+  await createUser({ email: "john@doe.com", password: "password-Strong1" });
 
   const supabase = createClient(
     process.env.VITE_SUPABASE_URL ?? "http://127.0.0.1:54341",
@@ -11,7 +11,7 @@ test("only the first user can sign up", async ({ createUser }) => {
   );
   const { error } = await supabase.auth.signUp({
     email: "jane@doe.com",
-    password: "password",
+    password: "password-Strong1",
   });
 
   expect(error).not.toBeNull();
@@ -29,12 +29,12 @@ test("an administrator can still create users", async ({
     email: "john@doe.com",
     first_name: "John",
     last_name: "Doe",
-    password: "password",
+    password: "password-Strong1",
   });
 
   await page.goto("/");
   await page.getByLabel("Email").fill("john@doe.com");
-  await page.getByLabel("Password").fill("password");
+  await page.getByLabel("Password").fill("password-Strong1");
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page.getByRole("link", { name: "Dashboard" })).toBeVisible();
 

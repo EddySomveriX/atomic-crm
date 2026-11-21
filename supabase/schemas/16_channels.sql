@@ -284,3 +284,6 @@ create policy "Business read" on public.reply_templates for select to authentica
 create policy "Business insert" on public.reply_templates for insert to authenticated with check (business_id = (select public.current_business_id()) and (select public.can_write_current_business()));
 create policy "Business update" on public.reply_templates for update to authenticated using (business_id = (select public.current_business_id()) and (select public.can_write_current_business())) with check (business_id = (select public.current_business_id()));
 create policy "Business delete" on public.reply_templates for delete to authenticated using (business_id = (select public.current_business_id()) and (select public.can_write_current_business()));
+
+-- Row level security filters every table by business_id
+create index messages_business_id_idx on public.messages using btree (business_id);

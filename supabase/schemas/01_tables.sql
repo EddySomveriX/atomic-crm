@@ -229,3 +229,6 @@ create index contacts_company_id_idx on public.contacts using btree (company_id)
 create index deal_notes_deal_id_idx on public.deal_notes using btree (deal_id);
 create index deals_company_id_idx on public.deals using btree (company_id);
 create index members_user_id_idx on public.members using btree (user_id);
+
+-- Row level security filters every table by business_id
+create index user_invitations_business_id_idx on public.user_invitations using btree (business_id);

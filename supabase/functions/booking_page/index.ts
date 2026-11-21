@@ -19,6 +19,7 @@ import {
   phoneDigits,
   sendSms,
 } from "../../../connectors/sms/index.ts";
+import { publicLimitResponse } from "../_shared/rateLimit.ts";
 
 /**
  * The public booking page of a business (/book/<slug>). No sign-in: the page
@@ -408,6 +409,12 @@ Deno.serve(async (req: Request) =>
     } catch {
       return createErrorResponse(400, "Expected a JSON body");
     }
+    const limited = await publicLimitResponse(
+      req,
+      "booking_page",
+      payload?.action,
+    );
+    if (limited) return limited;
     try {
       return await handle(payload);
     } catch (error) {

@@ -31,6 +31,8 @@ import { CRM } from "@/components/atomic-crm/root/CRM";
  *    />
  * );
  */
-const App = () => <CRM />;
+// No usage data leaves the CRM: telemetry to the authors of the original
+// atomic-crm stays off
+const App = () => <CRM disableTelemetry />;
 
 export default App;

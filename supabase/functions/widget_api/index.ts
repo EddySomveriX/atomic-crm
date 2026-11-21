@@ -16,6 +16,7 @@ import {
   firstPerTime,
 } from "../_shared/bot/bookingFlow.ts";
 import { botText, formatWhen } from "../_shared/bot/botTexts.ts";
+import { publicLimitResponse } from "../_shared/rateLimit.ts";
 
 /**
  * The public API of the website widget (TZ section 5.2): a visitor of the
@@ -289,6 +290,8 @@ Deno.serve(async (req: Request) =>
     } catch {
       return createErrorResponse(400, "Expected a JSON body");
     }
+    const limited = await publicLimitResponse(req, "widget", payload?.action);
+    if (limited) return limited;
     try {
       return await handle(payload);
     } catch (error) {

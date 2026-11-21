@@ -6,7 +6,7 @@ test.describe("global search", () => {
       first_name: "John",
       last_name: "Doe",
       email: "john@doe.com",
-      password: "password",
+      password: "password-Strong1",
     });
 
     // The contact is created before its notes, so every note is newer
@@ -25,7 +25,7 @@ test.describe("global search", () => {
   }) => {
     await page.goto("/");
     await page.getByLabel("Email").fill("john@doe.com");
-    await page.getByLabel("Password").fill("password");
+    await page.getByLabel("Password").fill("password-Strong1");
     await page.getByRole("button", { name: "Sign in" }).click();
     await expect(page.getByText("Latest Activity")).toBeVisible();
 

@@ -297,3 +297,17 @@ create policy "Business read" on public.day_closings for select to authenticated
 
 revoke all on function public.link_staff_telegram(uuid, text, text) from public, anon, authenticated;
 grant execute on function public.link_staff_telegram(uuid, text, text) to service_role;
+
+-- Row level security filters every table by business_id
+create index staff_link_codes_business_id_idx on public.staff_link_codes using btree (business_id);
+create index staff_notifications_business_id_idx on public.staff_notifications using btree (business_id);
+
+-- Actions of members: never callable without signing in
+revoke all on function public.team_report(date, date) from public, anon;
+grant execute on function public.team_report(date, date) to authenticated, service_role;
+revoke all on function public.close_day(date) from public, anon;
+grant execute on function public.close_day(date) to authenticated, service_role;
+revoke all on function public.set_member_commission(bigint, numeric) from public, anon;
+grant execute on function public.set_member_commission(bigint, numeric) to authenticated, service_role;
+revoke all on function public.create_staff_link_code() from public, anon;
+grant execute on function public.create_staff_link_code() to authenticated, service_role;

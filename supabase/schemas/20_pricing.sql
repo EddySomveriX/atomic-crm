@@ -597,3 +597,10 @@ create policy "Business update" on public.gift_certificates for update to authen
 
 create policy "Business read" on public.certificate_uses for select to authenticated using (business_id = (select public.current_business_id()));
 create policy "Business insert" on public.certificate_uses for insert to authenticated with check (business_id = (select public.current_business_id()) and (select public.can_write_current_business()));
+
+-- Row level security filters every table by business_id
+create index certificate_uses_business_id_idx on public.certificate_uses using btree (business_id);
+create index client_packages_business_id_idx on public.client_packages using btree (business_id);
+create index packages_business_id_idx on public.packages using btree (business_id);
+create index price_history_business_id_idx on public.price_history using btree (business_id);
+create index specialist_prices_business_id_idx on public.specialist_prices using btree (business_id);

@@ -119,6 +119,9 @@ const getCrmRole = (sale: CurrentSale): CrmRole => {
   return "user";
 };
 
+/** Where react-query keeps loaded data for offline use (its default key). */
+const OFFLINE_CACHE_KEY = "REACT_QUERY_OFFLINE_CACHE";
+
 /** Forget everything tied to the current user or business. */
 export function clearCache() {
   const storage = getLocalStorage();
@@ -144,6 +147,9 @@ export const getAuthProvider = (): AuthProvider => {
     },
     logout: async (params) => {
       clearCache();
+      // Clients, phones and notes kept for offline use stay on this device
+      // otherwise, for the next person at a shared computer
+      getLocalStorage()?.removeItem(OFFLINE_CACHE_KEY);
       return baseAuthProvider.logout(params);
     },
     checkAuth: async (params) => {

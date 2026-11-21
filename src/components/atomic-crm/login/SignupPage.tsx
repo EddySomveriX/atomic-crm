@@ -139,10 +139,12 @@ export const SignupPage = () => {
             <div className="flex flex-col gap-2">
               <Label htmlFor="password">{translate("ra.auth.password")}</Label>
               <Input
-                {...register("password", { required: true })}
+                {...register("password", { required: true, minLength: 10 })}
                 id="password"
                 type="password"
+                autoComplete="new-password"
                 required
+                minLength={10}
               />
             </div>
             <div className="flex flex-col gap-4 justify-between items-center mt-8">

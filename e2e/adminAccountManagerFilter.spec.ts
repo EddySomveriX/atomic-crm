@@ -7,14 +7,14 @@ test.describe("admin filtering by account manager", () => {
       email: "john@doe.com",
       first_name: "John",
       last_name: "Doe",
-      password: "password",
+      password: "password-Strong1",
     });
 
     const teammate = await createSales({
       email: "marie@curie.com",
       first_name: "Marie",
       last_name: "Curie",
-      password: "password",
+      password: "password-Strong1",
     });
 
     const company = await createCompany({
@@ -46,7 +46,7 @@ test.describe("admin filtering by account manager", () => {
   }) => {
     await page.goto("/");
     await page.getByLabel("Email").fill("john@doe.com");
-    await page.getByLabel("Password").fill("password");
+    await page.getByLabel("Password").fill("password-Strong1");
     await page.getByRole("button", { name: "Sign in" }).click();
 
     await menu.goToContacts();
@@ -83,7 +83,7 @@ test.describe("admin filtering by account manager", () => {
   }) => {
     await page.goto("/");
     await page.getByLabel("Email").fill("marie@curie.com");
-    await page.getByLabel("Password").fill("password");
+    await page.getByLabel("Password").fill("password-Strong1");
     await page.getByRole("button", { name: "Sign in" }).click();
 
     await menu.goToContacts();

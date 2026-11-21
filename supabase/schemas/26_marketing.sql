@@ -357,3 +357,6 @@ grant all on function public.retry_post(bigint) to authenticated;
 grant all on function public.retry_post(bigint) to service_role;
 revoke all on function public.claim_due_posts(timestamp with time zone) from public, anon, authenticated;
 grant execute on function public.claim_due_posts(timestamp with time zone) to service_role;
+
+-- Row level security filters every table by business_id
+create index post_targets_business_id_idx on public.post_targets using btree (business_id);

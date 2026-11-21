@@ -620,8 +620,9 @@ const uploadToBucket = async (fi: RAFile) => {
   const file = fi.rawFile;
   const fileParts = file.name.split(".");
   const fileExt = fileParts.length > 1 ? `.${file.name.split(".").pop()}` : "";
-  const fileName = `${Math.random()}${fileExt}`;
-  const filePath = `${fileName}`;
+  // The folder of the business keeps files apart (storage policies); the
+  // random name keeps the public link unguessable
+  const filePath = `${await getCurrentBusinessId()}/${crypto.randomUUID()}${fileExt}`;
   const { error: uploadError } = await getSupabaseClient()
     .storage.from(ATTACHMENTS_BUCKET)
     .upload(filePath, dataContent);

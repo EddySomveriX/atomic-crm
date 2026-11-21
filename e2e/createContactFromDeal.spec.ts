@@ -8,7 +8,7 @@ test.describe("user creating a contact from the deal form", () => {
       first_name: "John",
       last_name: "Doe",
       email: "john@doe.com",
-      password: "password",
+      password: "password-Strong1",
     });
 
     const company = await createCompany({
@@ -31,7 +31,7 @@ test.describe("user creating a contact from the deal form", () => {
   }) => {
     await page.goto("/");
     await page.getByLabel("Email").fill("john@doe.com");
-    await page.getByLabel("Password").fill("password");
+    await page.getByLabel("Password").fill("password-Strong1");
     await page.getByRole("button", { name: "Sign in" }).click();
     await expect(page).toHaveTitle(/Atomic CRM/);
 
