@@ -49,5 +49,11 @@ export const formatMoney = (
     currency,
     currencyDisplay: "narrowSymbol",
     signDisplay: signed ? "exceptZero" : "auto",
-    ...(compact ? { notation: "compact", minimumSignificantDigits: 3 } : {}),
+    ...(compact
+      ? {
+          notation: "compact",
+          minimumSignificantDigits: 3,
+          maximumSignificantDigits: 3,
+        }
+      : {}),
   }).format(fromMinor(minor, currency));

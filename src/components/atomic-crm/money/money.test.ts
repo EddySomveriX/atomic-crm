@@ -40,6 +40,9 @@ describe("money", () => {
       plainSpaces(formatMoney(1240000, "UAH", "en-US", { compact: true })),
     ).toBe("₴12.4K");
     expect(
+      plainSpaces(formatMoney(51138374, "UAH", "en-US", { compact: true })),
+    ).toBe("₴511K");
+    expect(
       plainSpaces(formatMoney(120000, "PLN", "pl-PL", { signed: true })),
     ).toBe("+1200,00 zł");
   });

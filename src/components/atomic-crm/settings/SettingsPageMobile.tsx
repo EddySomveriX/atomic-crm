@@ -41,6 +41,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { AccentPicker } from "../appearance/AccentPicker";
+import { CalmModeSwitch } from "../appearance/CalmModeSwitch";
 import { MobileBusinessSection } from "../business/MobileBusinessSection";
 import { MobileStockSection } from "../stock/MobileStockSection";
 
@@ -115,6 +117,8 @@ export const SettingsPageMobile = () => {
             <MobileBusinessSection />
             <MobileStockSection />
             <PreferencesSection />
+            <AccentPicker />
+            <CalmModeSwitch />
             <InboundEmailSection />
             <McpServerSection />
             <AboutSection />

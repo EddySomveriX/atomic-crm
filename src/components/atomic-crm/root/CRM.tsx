@@ -24,6 +24,7 @@ import { CalendarPage, WorkingHoursPage } from "../booking";
 import { ChatsPage } from "../channels/ChatsPage";
 import { TasksPage } from "../tasks/TasksPage";
 import { AnalyticsPage } from "../analytics/AnalyticsPage";
+import { BusinessMapPage } from "../businessMap/BusinessMapPage";
 import { PricesPage } from "../pricing/PricesPage";
 import { DocumentsPage } from "../documents/DocumentsPage";
 import { AutomationsPage } from "../automations/AutomationsPage";
@@ -291,6 +292,7 @@ const DesktopAdmin = (
         <Route path={WorkingHoursPage.path} element={<WorkingHoursPage />} />
         <Route path={ChatsPage.path} element={<ChatsPage />} />
         <Route path={AnalyticsPage.path} element={<AnalyticsPage />} />
+        <Route path={BusinessMapPage.path} element={<BusinessMapPage />} />
         <Route path={PricesPage.path} element={<PricesPage />} />
         <Route path={DocumentsPage.path} element={<DocumentsPage />} />
         <Route path={AutomationsPage.path} element={<AutomationsPage />} />
@@ -413,6 +415,7 @@ const MobileAdmin = (
           <Route path={WorkingHoursPage.path} element={<WorkingHoursPage />} />
           <Route path={ChatsPage.path} element={<ChatsPage />} />
           <Route path={AnalyticsPage.path} element={<AnalyticsPage />} />
+          <Route path={BusinessMapPage.path} element={<BusinessMapPage />} />
           <Route path={PricesPage.path} element={<PricesPage />} />
           <Route path={DocumentsPage.path} element={<DocumentsPage />} />
           <Route path={AutomationsPage.path} element={<AutomationsPage />} />

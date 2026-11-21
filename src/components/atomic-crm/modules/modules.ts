@@ -191,7 +191,10 @@ export const NAV_SECTIONS: NavSection[] = [
     module: "analytics",
     icon: ChartColumn,
     labelKey: "crm.nav.analytics",
-    pages: [{ path: "/analytics", labelKey: "crm.nav.analytics" }],
+    pages: [
+      { path: "/analytics", labelKey: "crm.nav.analytics" },
+      { path: "/business-map", labelKey: "crm.nav.business_map" },
+    ],
   },
 ];
 

@@ -7,8 +7,8 @@ import {
 } from "ra-core";
 import { useState, type ReactNode } from "react";
 import { Link, useSearchParams } from "react-router";
-import { EyeOff, SlidersHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { EyeOff, Map as MapIcon, SlidersHorizontal } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
@@ -91,6 +91,13 @@ export const AnalyticsPage = () => {
         <h1 className="mr-auto text-2xl font-semibold">
           {translate("crm.nav.analytics")}
         </h1>
+        <Link
+          to="/business-map"
+          className={buttonVariants({ variant: "outline", size: "sm" })}
+        >
+          <MapIcon />
+          {translate("crm.nav.business_map")}
+        </Link>
         <div
           className="flex max-w-full overflow-x-auto rounded-md border p-0.5"
           role="radiogroup"
