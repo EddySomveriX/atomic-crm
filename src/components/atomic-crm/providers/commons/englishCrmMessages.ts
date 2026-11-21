@@ -1857,6 +1857,31 @@ export const englishCrmMessages = {
           "%{smart_count} visit today |||| %{smart_count} visits today",
       },
     },
+    tour: {
+      label: "Getting started",
+      progress: "%{step} of %{total}",
+      next: "Next",
+      skip: "Skip",
+      done: "Got it",
+      steps: {
+        today: {
+          title: "“Today” is your day",
+          text: "Today's visits, clients waiting for an answer and tasks, on one screen. Start your day here.",
+        },
+        create: {
+          title: "“+” creates everything",
+          text: "A new visit, client, task or deal in a couple of taps, from any screen.",
+        },
+        chats: {
+          title: "All messages in “Chats”",
+          text: "Telegram, Instagram, WhatsApp, Viber and the website in one feed. The bot books clients by itself and leaves you the hard questions.",
+        },
+        more: {
+          title: "Everything else is in “More”",
+          text: "Prices, stock, analytics and settings. There you also choose the sections of the bottom bar, and your interface color in the profile.",
+        },
+      },
+    },
     materials: {
       title: "Materials for one service",
       hint: "When a visit is marked “Came”, these materials are written off the main warehouse. Undo the mark and they come back.",

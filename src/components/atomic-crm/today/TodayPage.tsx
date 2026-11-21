@@ -12,6 +12,7 @@ import {
   useUpdate,
 } from "ra-core";
 import { Link } from "react-router";
+import { WelcomeTour } from "./WelcomeTour";
 
 import { formatMoney } from "../money/money";
 import type { CrmDataProvider } from "../providers/types";
@@ -95,6 +96,7 @@ export const TodayPage = () => {
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 pb-28 pt-6 sm:px-0 sm:pt-8">
+      <WelcomeTour />
       <TodaySummary
         weekday={weekday}
         date={date}
