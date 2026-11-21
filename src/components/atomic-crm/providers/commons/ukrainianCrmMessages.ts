@@ -1623,6 +1623,7 @@ export const ukrainianCrmMessages = {
       no_accounts:
         "Спершу підключіть Telegram-канал або Instagram — тоді пости з CRM виходитимуть туди за розкладом.",
       connect_first: "Підключити акаунт",
+      no_posts_title: "Постів ще немає",
       no_posts:
         "Постів ще немає. Натисніть «Новий пост» або зробіть пост з акції у «Прайсі».",
       no_time: "Без часу",
@@ -1891,6 +1892,12 @@ export const ukrainianCrmMessages = {
     undo: {
       deleted: "Видалено",
       failed: "Не вдалося видалити. Спробуйте ще раз.",
+    },
+    states: {
+      loading: "Завантаження",
+      error:
+        "Не вдалося завантажити дані. Перевірте з’єднання й спробуйте ще раз.",
+      retry: "Спробувати ще раз",
     },
     materials: {
       title: "Матеріали на одну послугу",

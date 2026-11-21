@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Pencil, RotateCw, Trash2 } from "lucide-react";
+import { Megaphone, Pencil, RotateCw, Trash2 } from "lucide-react";
 import {
   useDataProvider,
   useGetList,
@@ -15,6 +15,7 @@ import type { CrmDataProvider } from "../providers/types";
 import { MediaThumb } from "./MediaThumb";
 import type { MarketingAccount, Post, PostTarget } from "./types";
 import { useUndoableDelete } from "../misc/useUndoableDelete";
+import { EmptyState, LoadingRows } from "../misc/PageStates";
 
 /** How often the list looks for posts the server has published meanwhile */
 const REFRESH_MS = 30_000;
@@ -89,12 +90,14 @@ export const PostList = ({
     }
   };
 
-  if (isPending) return null;
+  if (isPending) return <LoadingRows />;
   if (posts.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground">
-        {translate("crm.marketing.no_posts")}
-      </p>
+      <EmptyState
+        icon={Megaphone}
+        title={translate("crm.marketing.no_posts_title")}
+        text={translate("crm.marketing.no_posts")}
+      />
     );
   }
 

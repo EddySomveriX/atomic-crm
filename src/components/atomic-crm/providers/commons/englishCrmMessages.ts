@@ -1618,6 +1618,7 @@ export const englishCrmMessages = {
       no_accounts:
         "Connect a Telegram channel or Instagram first: then posts from the CRM go out there on schedule.",
       connect_first: "Connect an account",
+      no_posts_title: "No posts yet",
       no_posts:
         "No posts yet. Press “New post” or make a post from an offer in the price list.",
       no_time: "No time set",
@@ -1885,6 +1886,11 @@ export const englishCrmMessages = {
     undo: {
       deleted: "Deleted",
       failed: "That was not deleted. Try again.",
+    },
+    states: {
+      loading: "Loading",
+      error: "The data did not load. Check the connection and try again.",
+      retry: "Try again",
     },
     materials: {
       title: "Materials for one service",
