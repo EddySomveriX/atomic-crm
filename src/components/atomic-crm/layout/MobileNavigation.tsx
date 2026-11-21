@@ -1,3 +1,12 @@
+import { Pin } from "lucide-react";
+import { useStore } from "ra-core";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { PINNED_STORE_KEY, splitPinned, togglePinned } from "./pinnedSections";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -58,8 +67,8 @@ export const MobileNavigation = () => {
     (section) => MOBILE_PATHS[section.key] != null,
   );
   const [today, ...others] = sections;
-  const pinned = others.slice(0, 2);
-  const more = others.slice(2);
+  const [chosen, setChosen] = useStore<string[]>(PINNED_STORE_KEY, []);
+  const { pinned, more } = splitPinned(others, chosen);
   const current = sectionOfPath(location.pathname);
   const isSettings = matchPath("/settings/*", location.pathname) != null;
 
@@ -99,6 +108,16 @@ export const MobileNavigation = () => {
         {pinned[1] ? button(pinned[1]) : null}
         <MoreButton
           sections={more}
+          pinnable={others}
+          pinnedKeys={pinned.map((section) => section.key)}
+          onTogglePin={(key) =>
+            setChosen(
+              togglePinned(
+                pinned.map((section) => section.key),
+                key,
+              ),
+            )
+          }
           isActive={
             isSettings || more.some((section) => section.key === current?.key)
           }
@@ -111,50 +130,106 @@ export const MobileNavigation = () => {
 /** "More": the other sections and the settings. */
 const MoreButton = ({
   sections,
+  pinnable,
+  pinnedKeys,
+  onTogglePin,
   isActive,
 }: {
   sections: NavSection[];
+  /** Sections that can sit on the bar */
+  pinnable: NavSection[];
+  pinnedKeys: string[];
+  onTogglePin: (key: string) => void;
   isActive: boolean;
 }) => {
   const translate = useTranslate();
+  const [isChoosing, setIsChoosing] = useState(false);
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        render={
-          <Button
-            variant="ghost"
-            className={cn(
-              "flex-col gap-1 h-auto py-2 px-1 rounded-md w-16",
-              isActive ? null : "text-muted-foreground",
-            )}
-          />
-        }
-      >
-        <Ellipsis className="size-6" />
-        <span className="text-[0.6rem] font-medium">
-          {translate("crm.nav.more")}
-        </span>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-56">
-        {sections.map((section) => (
-          <DropdownMenuItem
-            key={section.key}
-            className="h-12 gap-3 px-4 text-base"
-            render={<Link to={MOBILE_PATHS[section.key]} />}
-          >
-            <section.icon className="size-5" />
-            {translate(section.labelKey)}
-          </DropdownMenuItem>
-        ))}
-        <DropdownMenuItem
-          className="h-12 gap-3 px-4 text-base"
-          render={<Link to="/settings" />}
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="ghost"
+              className={cn(
+                "flex-col gap-1 h-auto py-2 px-1 rounded-md w-16",
+                isActive ? null : "text-muted-foreground",
+              )}
+            />
+          }
         >
-          <Settings className="size-5" />
-          {translate("crm.settings.title")}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <Ellipsis className="size-6" />
+          <span className="text-[0.6rem] font-medium">
+            {translate("crm.nav.more")}
+          </span>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="min-w-56">
+          {sections.map((section) => (
+            <DropdownMenuItem
+              key={section.key}
+              className="h-12 gap-3 px-4 text-base"
+              render={<Link to={MOBILE_PATHS[section.key]} />}
+            >
+              <section.icon className="size-5" />
+              {translate(section.labelKey)}
+            </DropdownMenuItem>
+          ))}
+          <DropdownMenuItem
+            className="h-12 gap-3 px-4 text-base"
+            render={<Link to="/settings" />}
+          >
+            <Settings className="size-5" />
+            {translate("crm.settings.title")}
+          </DropdownMenuItem>
+          {pinnable.length > 1 ? (
+            <DropdownMenuItem
+              className="h-12 gap-3 px-4 text-base"
+              onClick={() => setIsChoosing(true)}
+            >
+              <Pin className="size-5" />
+              {translate("crm.navigation.customize")}
+            </DropdownMenuItem>
+          ) : null}
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <Dialog open={isChoosing} onOpenChange={setIsChoosing}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{translate("crm.navigation.customize")}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            {translate("crm.navigation.customize_hint")}
+          </p>
+          <ul className="flex flex-col gap-1">
+            {pinnable.map((section) => {
+              const isPinned = pinnedKeys.includes(section.key);
+              return (
+                <li key={section.key}>
+                  <button
+                    type="button"
+                    role="checkbox"
+                    aria-checked={isPinned}
+                    onClick={() => onTogglePin(section.key)}
+                    className={cn(
+                      "flex h-12 w-full items-center gap-3 rounded-md border px-4 text-left",
+                      isPinned
+                        ? "border-primary bg-accent"
+                        : "hover:bg-muted/60",
+                    )}
+                  >
+                    <section.icon className="size-5" />
+                    <span className="flex-1">
+                      {translate(section.labelKey)}
+                    </span>
+                    {isPinned ? <Pin className="size-4 text-primary" /> : null}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

@@ -1254,6 +1254,9 @@ export const englishCrmMessages = {
     },
     language: "Language",
     navigation: {
+      customize: "Customize the menu",
+      customize_hint:
+        "Choose two sections for the bottom bar. The others stay in “More”.",
       label: "CRM navigation",
     },
     profile: {
@@ -1837,6 +1840,22 @@ export const englishCrmMessages = {
       cancel: "Cancel",
       cancel_ask: "Cancel this booking?",
       move_hint: "To move a booking, cancel it and book another time.",
+    },
+    notifications: {
+      title: "Notifications",
+      label_count:
+        "Notifications: %{smart_count} needs attention |||| Notifications: %{smart_count} need attention",
+      empty: "All calm: nothing is waiting for you.",
+      items: {
+        waiting:
+          "%{smart_count} client waits for an answer |||| %{smart_count} clients wait for an answer",
+        overdue:
+          "%{smart_count} overdue task |||| %{smart_count} overdue tasks",
+        failed_posts:
+          "%{smart_count} post did not go out |||| %{smart_count} posts did not go out",
+        visits_today:
+          "%{smart_count} visit today |||| %{smart_count} visits today",
+      },
     },
     materials: {
       title: "Materials for one service",

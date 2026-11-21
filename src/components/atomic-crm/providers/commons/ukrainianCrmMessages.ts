@@ -1259,6 +1259,9 @@ export const ukrainianCrmMessages = {
     },
     language: "Мова",
     navigation: {
+      customize: "Налаштувати меню",
+      customize_hint:
+        "Оберіть два розділи для нижньої панелі. Решта залишиться в «Ще».",
       label: "Навігація CRM",
     },
     profile: {
@@ -1843,6 +1846,22 @@ export const ukrainianCrmMessages = {
       cancel_ask: "Скасувати цей запис?",
       move_hint:
         "Щоб перенести запис, скасуйте його й запишіться на інший час.",
+    },
+    notifications: {
+      title: "Сповіщення",
+      label_count:
+        "Сповіщення: %{smart_count} потребує уваги |||| Сповіщення: %{smart_count} потребують уваги |||| Сповіщення: %{smart_count} потребують уваги",
+      empty: "Усе спокійно: нічого не чекає на вас.",
+      items: {
+        waiting:
+          "%{smart_count} клієнт чекає відповіді |||| %{smart_count} клієнти чекають відповіді |||| %{smart_count} клієнтів чекають відповіді",
+        overdue:
+          "%{smart_count} прострочена справа |||| %{smart_count} прострочені справи |||| %{smart_count} прострочених справ",
+        failed_posts:
+          "%{smart_count} пост не вийшов |||| %{smart_count} пости не вийшли |||| %{smart_count} постів не вийшли",
+        visits_today:
+          "%{smart_count} візит сьогодні |||| %{smart_count} візити сьогодні |||| %{smart_count} візитів сьогодні",
+      },
     },
     materials: {
       title: "Матеріали на одну послугу",

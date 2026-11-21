@@ -33,6 +33,7 @@ import {
 import { useModules } from "../modules/useModules";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { GlobalSearchButton } from "../search/GlobalSearchButton";
+import { NotificationsBell } from "./NotificationsBell";
 import { BusinessMenu } from "./BusinessMenu";
 import { QuickCreateButton } from "./QuickCreateButton";
 
@@ -102,14 +103,17 @@ export const Sidebar = () => {
             collapsed ? "size-10 justify-center p-0" : "w-full justify-start",
           )}
         />
-        <GlobalSearchButton
-          variant={collapsed ? "icon" : "labelled"}
-          className={
-            collapsed
-              ? "size-10 rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-              : "w-full justify-start border-sidebar-border bg-transparent px-3 font-normal text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          }
-        />
+        <div className={cn("flex gap-1", collapsed && "flex-col")}>
+          <GlobalSearchButton
+            variant={collapsed ? "icon" : "labelled"}
+            className={
+              collapsed
+                ? "size-10 rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                : "min-w-0 flex-1 justify-start border-sidebar-border bg-transparent px-3 font-normal text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            }
+          />
+          <NotificationsBell className="size-10 shrink-0 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" />
+        </div>
       </div>
 
       <nav
