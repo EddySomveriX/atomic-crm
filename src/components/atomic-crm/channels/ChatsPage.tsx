@@ -14,6 +14,8 @@ import { ChannelIcon } from "./ChannelIcon";
 import { ConversationView } from "./ConversationView";
 import type { Channel, ChannelKind, Conversation } from "./types";
 import { URGENT_AFTER_MINUTES, waitedMinutes, waitingLabel } from "./waiting";
+import { MessageCircle } from "lucide-react";
+import { EmptyState, LoadingRows } from "../misc/PageStates";
 
 /** The feed refreshes itself this often */
 const REFRESH_MS = 5_000;
@@ -156,13 +158,36 @@ export const ChatsPage = () => {
           </div>
         ) : null}
         <ul className="flex min-h-0 flex-1 flex-col divide-y overflow-y-auto rounded-lg border bg-card">
-          {!isPending && conversations.length === 0 ? (
-            <li className="p-6 text-center text-sm text-muted-foreground">
-              {translate(
-                channels.some((channel) => channel.enabled)
-                  ? "crm.chats.empty"
-                  : "crm.chats.no_channels",
-              )}
+          {isPending ? (
+            <li className="p-3">
+              <LoadingRows rows={5} />
+            </li>
+          ) : conversations.length === 0 ? (
+            <li className="p-3">
+              <EmptyState
+                icon={MessageCircle}
+                className="border-0"
+                title={translate(
+                  channels.some((channel) => channel.enabled)
+                    ? "crm.chats.empty_title"
+                    : "crm.chats.no_channels_title",
+                )}
+                text={translate(
+                  channels.some((channel) => channel.enabled)
+                    ? "crm.chats.empty"
+                    : "crm.chats.no_channels",
+                )}
+                action={
+                  channels.some((channel) => channel.enabled) ? undefined : (
+                    <Link
+                      to="/business"
+                      className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+                    >
+                      {translate("crm.chats.connect_channel")}
+                    </Link>
+                  )
+                }
+              />
             </li>
           ) : null}
           {conversations.map((conversation) => {

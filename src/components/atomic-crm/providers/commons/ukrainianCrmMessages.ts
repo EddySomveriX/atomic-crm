@@ -632,6 +632,9 @@ export const ukrainianCrmMessages = {
         whatsapp: "WhatsApp",
         viber: "Viber",
       },
+      empty_title: "Чатів поки немає",
+      no_channels_title: "Підключіть канал",
+      connect_channel: "Підключити Telegram, Instagram чи інший канал",
       client_chats: "Чати з клієнтом",
       window_left:
         "Відповісти можна ще %{smart_count} годину |||| Відповісти можна ще %{smart_count} години |||| Відповісти можна ще %{smart_count} годин",

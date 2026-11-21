@@ -631,6 +631,9 @@ export const englishCrmMessages = {
         whatsapp: "WhatsApp",
         viber: "Viber",
       },
+      empty_title: "No chats yet",
+      no_channels_title: "Connect a channel",
+      connect_channel: "Connect Telegram, Instagram or another channel",
       client_chats: "Chats with the client",
       window_left:
         "You can answer for %{smart_count} more hour |||| You can answer for %{smart_count} more hours",
