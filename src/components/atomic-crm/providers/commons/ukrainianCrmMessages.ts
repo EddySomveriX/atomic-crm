@@ -1262,6 +1262,9 @@ export const ukrainianCrmMessages = {
     },
     language: "Мова",
     navigation: {
+      favorites: "Обране",
+      favorite: "Додати «%{page}» в обране",
+      unfavorite: "Прибрати «%{page}» з обраного",
       customize: "Налаштувати меню",
       customize_hint:
         "Оберіть два розділи для нижньої панелі. Решта залишиться в «Ще».",

@@ -1257,6 +1257,9 @@ export const englishCrmMessages = {
     },
     language: "Language",
     navigation: {
+      favorites: "Favorites",
+      favorite: "Add “%{page}” to favorites",
+      unfavorite: "Remove “%{page}” from favorites",
       customize: "Customize the menu",
       customize_hint:
         "Choose two sections for the bottom bar. The others stay in “More”.",

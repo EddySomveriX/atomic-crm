@@ -7,6 +7,7 @@ import {
   SlidersHorizontal,
   User,
   Users,
+  Star,
 } from "lucide-react";
 import {
   CanAccess,
@@ -56,6 +57,20 @@ export const Sidebar = () => {
     typeof window !== "undefined" && window.innerWidth < 1024,
   );
   const current = sectionOfPath(pathname);
+  const [favorites, setFavorites] = useStore<string[]>("sidebar.favorites", []);
+  const toggleFavorite = (path: string) =>
+    setFavorites(
+      favorites.includes(path)
+        ? favorites.filter((item) => item !== path)
+        : [...favorites, path],
+    );
+  const favoritePages = favorites.flatMap((path) => {
+    const section = visibleSections(modules).find((item) =>
+      item.pages.some((page) => page.path === path),
+    );
+    const page = section?.pages.find((item) => item.path === path);
+    return section && page ? [{ section, page }] : [];
+  });
 
   return (
     <aside
@@ -120,8 +135,31 @@ export const Sidebar = () => {
         aria-label={translate("crm.navigation.label")}
         className="-mx-1 flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-1"
       >
+        {favoritePages.length > 0 ? (
+          <div className="mb-2 flex flex-col gap-0.5 border-b border-sidebar-border pb-2">
+            {collapsed ? null : (
+              <span className="px-2 pb-1 text-xs text-sidebar-foreground/60">
+                {translate("crm.navigation.favorites")}
+              </span>
+            )}
+            {favoritePages.map(({ page }) => (
+              <SidebarLink
+                key={page.path}
+                to={page.path}
+                icon={Star}
+                label={translate(page.labelKey, {
+                  smart_count: page.smartCount,
+                })}
+                isActive={pathname === page.path}
+                collapsed={collapsed}
+              />
+            ))}
+          </div>
+        ) : null}
         {visibleSections(modules).map((section) => (
           <SectionLink
+            favorites={favorites}
+            onToggleFavorite={toggleFavorite}
             key={section.key}
             section={section}
             isActive={section === current}
@@ -233,12 +271,16 @@ const SectionLink = ({
   collapsed,
   pathname,
   badge,
+  favorites,
+  onToggleFavorite,
 }: {
   section: NavSection;
   isActive: boolean;
   collapsed: boolean;
   pathname: string;
   badge?: React.ReactNode;
+  favorites: string[];
+  onToggleFavorite: (path: string) => void;
 }) => {
   const translate = useTranslate();
   const showPages = isActive && !collapsed && section.pages.length > 1;
@@ -258,7 +300,7 @@ const SectionLink = ({
             const isPage =
               pathname === page.path || pathname.startsWith(`${page.path}/`);
             return (
-              <li key={page.path}>
+              <li key={page.path} className="group/page flex items-center">
                 <Link
                   to={page.path}
                   aria-current={isPage ? "page" : undefined}
@@ -271,6 +313,34 @@ const SectionLink = ({
                 >
                   {translate(page.labelKey, { smart_count: page.smartCount })}
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => onToggleFavorite(page.path)}
+                  aria-pressed={favorites.includes(page.path)}
+                  aria-label={translate(
+                    favorites.includes(page.path)
+                      ? "crm.navigation.unfavorite"
+                      : "crm.navigation.favorite",
+                    {
+                      page: translate(page.labelKey, {
+                        smart_count: page.smartCount,
+                      }),
+                    },
+                  )}
+                  className={cn(
+                    "ml-auto mr-1 rounded p-1 text-sidebar-foreground/60 hover:text-sidebar-primary focus-visible:opacity-100",
+                    favorites.includes(page.path)
+                      ? "text-sidebar-primary"
+                      : "opacity-0 group-hover/page:opacity-100",
+                  )}
+                >
+                  <Star
+                    className={cn(
+                      "size-3.5",
+                      favorites.includes(page.path) && "fill-current",
+                    )}
+                  />
+                </button>
               </li>
             );
           })}
