@@ -1,7 +1,6 @@
 import {
   useCanAccess,
   useCreate,
-  useDelete,
   useGetList,
   useLocaleState,
   useNotify,
@@ -27,6 +26,7 @@ import { cn } from "@/lib/utils";
 
 import { useModules } from "../modules/useModules";
 import { PROMOTION_KINDS, type Promotion, type PromotionKind } from "./types";
+import { useUndoableDelete } from "../misc/useUndoableDelete";
 
 const WEEKDAYS = [1, 2, 3, 4, 5, 6, 7];
 const weekdayName = (weekday: number, locale: string) =>
@@ -100,7 +100,7 @@ const OfferRow = ({
   const translate = useTranslate();
   const [locale = "uk"] = useLocaleState();
   const [update] = useUpdate<Promotion>();
-  const [remove] = useDelete<Promotion>();
+  const deleteWithUndo = useUndoableDelete();
   const { modules } = useModules();
   const { canAccess: canWritePosts } = useCanAccess({
     resource: "posts",
@@ -164,9 +164,7 @@ const OfferRow = ({
           size="icon"
           className="size-8 text-muted-foreground"
           aria-label={translate("ra.action.delete")}
-          onClick={() =>
-            remove("promotions", { id: offer.id, previousData: offer })
-          }
+          onClick={() => deleteWithUndo("promotions", offer)}
         >
           <Trash2 className="size-4" />
         </Button>

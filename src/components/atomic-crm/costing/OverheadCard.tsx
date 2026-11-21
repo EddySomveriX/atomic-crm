@@ -3,7 +3,6 @@ import { Trash2 } from "lucide-react";
 import {
   useCanAccess,
   useCreate,
-  useDelete,
   useGetList,
   useLocaleState,
   useNotify,
@@ -18,6 +17,7 @@ import { formatMoney, getMinorDigits } from "../money/money";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { OverheadItem } from "./types";
 import { parseAmount } from "./useCostData";
+import { useUndoableDelete } from "../misc/useUndoableDelete";
 
 const MAX_MONTHS = 600;
 
@@ -28,7 +28,6 @@ const MAX_MONTHS = 600;
  */
 export const OverheadCard = ({ monthly }: { monthly: number }) => {
   const translate = useTranslate();
-  const notify = useNotify();
   const queryClient = useQueryClient();
   const [locale = "uk"] = useLocaleState();
   const { currency } = useConfigurationContext();
@@ -37,7 +36,7 @@ export const OverheadCard = ({ monthly }: { monthly: number }) => {
     resource: "overhead_items",
     action: "edit",
   });
-  const [remove] = useDelete();
+  const deleteWithUndo = useUndoableDelete();
   const refresh = () =>
     queryClient.invalidateQueries({ queryKey: ["cost_inputs"] });
   const { data: items = [] } = useGetList<OverheadItem>("overhead_items", {
@@ -91,15 +90,10 @@ export const OverheadCard = ({ monthly }: { monthly: number }) => {
                       name: item.name,
                     })}
                     onClick={() =>
-                      remove(
-                        "overhead_items",
-                        { id: item.id, previousData: item },
-                        {
-                          onSuccess: refresh,
-                          onError: () =>
-                            notify("crm.costing.failed", { type: "error" }),
-                        },
-                      )
+                      deleteWithUndo("overhead_items", item, {
+                        onSuccess: refresh,
+                        errorMessage: "crm.costing.failed",
+                      })
                     }
                   >
                     <Trash2 />

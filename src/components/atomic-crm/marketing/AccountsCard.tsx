@@ -3,7 +3,6 @@ import { Trash2 } from "lucide-react";
 import {
   useCanAccess,
   useDataProvider,
-  useDelete,
   useNotify,
   useTranslate,
   useUpdate,
@@ -16,6 +15,7 @@ import { Switch } from "@/components/ui/switch";
 
 import type { CrmDataProvider } from "../providers/types";
 import type { MarketingAccount } from "./types";
+import { useUndoableDelete } from "../misc/useUndoableDelete";
 
 /** Reasons the server gives for refusing an account, shown in plain words */
 const KNOWN_ERRORS = [
@@ -44,7 +44,7 @@ export const AccountsCard = ({
     action: "edit",
   });
   const [update] = useUpdate();
-  const [remove] = useDelete();
+  const deleteWithUndo = useUndoableDelete();
   const onError = () => notify("crm.marketing.failed", { type: "error" });
 
   return (
@@ -85,11 +85,9 @@ export const AccountsCard = ({
                     name: account.name,
                   })}
                   onClick={() =>
-                    remove(
-                      "marketing_accounts",
-                      { id: account.id, previousData: account },
-                      { onError },
-                    )
+                    deleteWithUndo("marketing_accounts", account, {
+                      errorMessage: "crm.marketing.failed",
+                    })
                   }
                 >
                   <Trash2 />

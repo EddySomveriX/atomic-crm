@@ -1,10 +1,4 @@
-import {
-  useCreate,
-  useDelete,
-  useGetList,
-  useNotify,
-  useTranslate,
-} from "ra-core";
+import { useCreate, useGetList, useNotify, useTranslate } from "ra-core";
 import { useState, type FormEvent } from "react";
 import { MessageSquareText, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,6 +11,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 import type { ReplyTemplate } from "./types";
+import { useUndoableDelete } from "../misc/useUndoableDelete";
 
 /**
  * Reply templates (TZ section 5.2): ready answers to frequent questions,
@@ -42,7 +37,7 @@ export const TemplatesMenu = ({
     },
   );
   const [create, { isPending }] = useCreate<ReplyTemplate>();
-  const [remove] = useDelete<ReplyTemplate>();
+  const deleteWithUndo = useUndoableDelete();
 
   const add = (event: FormEvent) => {
     event.preventDefault();
@@ -108,12 +103,7 @@ export const TemplatesMenu = ({
                   size="icon"
                   className="size-8"
                   aria-label={translate("ra.action.delete")}
-                  onClick={() =>
-                    remove("reply_templates", {
-                      id: template.id,
-                      previousData: template,
-                    })
-                  }
+                  onClick={() => deleteWithUndo("reply_templates", template)}
                 >
                   <Trash2 className="size-4" />
                 </Button>

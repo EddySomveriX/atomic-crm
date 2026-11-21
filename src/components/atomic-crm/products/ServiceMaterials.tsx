@@ -3,7 +3,6 @@ import {
   Form,
   useCanAccess,
   useCreate,
-  useDelete,
   useGetList,
   useLocaleState,
   useNotify,
@@ -27,6 +26,7 @@ import {
   type ServiceMaterial,
 } from "./materialCost";
 import type { Product } from "./types";
+import { useUndoableDelete } from "../misc/useUndoableDelete";
 
 /**
  * The goods and materials one visit of a service uses: they are written off
@@ -35,7 +35,6 @@ import type { Product } from "./types";
  */
 export const ServiceMaterials = ({ service }: { service: Product }) => {
   const translate = useTranslate();
-  const notify = useNotify();
   const [uiLocale = "uk"] = useLocaleState();
   const { locale } = useConfigurationContext();
   const money = (minor: number) => formatMoney(minor, service.currency, locale);
@@ -43,7 +42,7 @@ export const ServiceMaterials = ({ service }: { service: Product }) => {
     resource: "service_materials",
     action: "edit",
   });
-  const [remove] = useDelete();
+  const deleteWithUndo = useUndoableDelete();
   const { data: materials = [] } = useGetList<ServiceMaterial>(
     "service_materials",
     {
@@ -122,16 +121,9 @@ export const ServiceMaterials = ({ service }: { service: Product }) => {
                         name: product?.name ?? "",
                       })}
                       onClick={() =>
-                        remove(
-                          "service_materials",
-                          { id: item.id, previousData: item },
-                          {
-                            onError: () =>
-                              notify("crm.materials.failed", {
-                                type: "error",
-                              }),
-                          },
-                        )
+                        deleteWithUndo("service_materials", item, {
+                          errorMessage: "crm.materials.failed",
+                        })
                       }
                     >
                       <Trash2 />

@@ -1,6 +1,5 @@
 import {
   useCreate,
-  useDelete,
   useGetList,
   useLocaleState,
   useNotify,
@@ -17,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { timeOfMinutes, minutesOf } from "./bookingTime";
 import { specialistName, type Specialist, type WorkingHours } from "./types";
 import { useSpecialists } from "./useBookingData";
+import { useUndoableDelete } from "../misc/useUndoableDelete";
 
 const WEEKDAYS = [1, 2, 3, 4, 5, 6, 7];
 /** A Monday, to name the weekdays in the interface language */
@@ -91,7 +91,7 @@ const SpecialistHours = ({
   const notify = useNotify();
   const [locale = "uk"] = useLocaleState();
   const [create, { isPending }] = useCreate<WorkingHours>();
-  const [remove] = useDelete<WorkingHours>();
+  const deleteWithUndo = useUndoableDelete();
   const [adding, setAdding] = useState<number | null>(null);
 
   const add = (weekday: number, startsAt: string, endsAt: string) =>
@@ -167,12 +167,7 @@ const SpecialistHours = ({
                         type="button"
                         aria-label={translate("ra.action.delete")}
                         className="rounded p-0.5 hover:bg-background"
-                        onClick={() =>
-                          remove("working_hours", {
-                            id: item.id,
-                            previousData: item,
-                          })
-                        }
+                        onClick={() => deleteWithUndo("working_hours", item)}
                       >
                         <X className="size-3.5" />
                       </button>

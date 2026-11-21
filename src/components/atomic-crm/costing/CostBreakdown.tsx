@@ -2,7 +2,6 @@ import { Trash2 } from "lucide-react";
 import {
   useCanAccess,
   useCreate,
-  useDelete,
   useLocaleState,
   useNotify,
   useTranslate,
@@ -21,6 +20,7 @@ import { parsePercent } from "../team/types";
 import { computeCost, type CostLine } from "./costCalc";
 import type { CostInputs, ProductCostItem } from "./types";
 import { formatPercent, parseAmount } from "./useCostData";
+import { useUndoableDelete } from "../misc/useUndoableDelete";
 
 /** The lines of the cost of one product, a price to try and lines of its own. */
 export const CostBreakdown = ({
@@ -171,7 +171,7 @@ const OwnLines = ({
     action: "edit",
   });
   const [create, { isPending }] = useCreate();
-  const [remove] = useDelete();
+  const deleteWithUndo = useUndoableDelete();
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
   const [isPercent, setIsPercent] = useState(false);
@@ -204,14 +204,9 @@ const OwnLines = ({
                     name: item.name,
                   })}
                   onClick={() =>
-                    remove(
-                      "product_cost_items",
-                      { id: item.id, previousData: item },
-                      {
-                        onError: () =>
-                          notify("crm.costing.failed", { type: "error" }),
-                      },
-                    )
+                    deleteWithUndo("product_cost_items", item, {
+                      errorMessage: "crm.costing.failed",
+                    })
                   }
                 >
                   <Trash2 />

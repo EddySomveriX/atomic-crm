@@ -2,7 +2,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Pencil, RotateCw, Trash2 } from "lucide-react";
 import {
   useDataProvider,
-  useDelete,
   useGetList,
   useLocaleState,
   useNotify,
@@ -15,6 +14,7 @@ import { useBusinessTimeZone } from "../booking/useBookingData";
 import type { CrmDataProvider } from "../providers/types";
 import { MediaThumb } from "./MediaThumb";
 import type { MarketingAccount, Post, PostTarget } from "./types";
+import { useUndoableDelete } from "../misc/useUndoableDelete";
 
 /** How often the list looks for posts the server has published meanwhile */
 const REFRESH_MS = 30_000;
@@ -46,7 +46,7 @@ export const PostList = ({
   const dataProvider = useDataProvider<CrmDataProvider>();
   const timeZone = useBusinessTimeZone();
   const [locale = "uk"] = useLocaleState();
-  const [remove] = useDelete();
+  const deleteWithUndo = useUndoableDelete();
   const { data: posts = [], isPending } = useGetList<Post>(
     "posts",
     {
@@ -155,11 +155,9 @@ export const PostList = ({
                       size="icon-sm"
                       aria-label={translate("ra.action.delete")}
                       onClick={() =>
-                        remove(
-                          "posts",
-                          { id: post.id, previousData: post },
-                          { onError },
-                        )
+                        deleteWithUndo("posts", post, {
+                          errorMessage: "crm.marketing.failed",
+                        })
                       }
                     >
                       <Trash2 />

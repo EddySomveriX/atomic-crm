@@ -1882,6 +1882,10 @@ export const englishCrmMessages = {
         },
       },
     },
+    undo: {
+      deleted: "Deleted",
+      failed: "That was not deleted. Try again.",
+    },
     materials: {
       title: "Materials for one service",
       hint: "When a visit is marked “Came”, these materials are written off the main warehouse. Undo the mark and they come back.",
