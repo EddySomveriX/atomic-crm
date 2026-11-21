@@ -1,4 +1,7 @@
+import { useStore } from "ra-core";
 import { useEffect } from "react";
+
+import { ACCENT_STORE_KEY, accentVariables, isAccentKey } from "./accent";
 
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import {
@@ -17,15 +20,19 @@ export const useAppearance = (): Appearance => {
 
 /**
  * Applies the appearance of the current business to the page: the menu
- * colors as CSS variables and the font of the interface.
+ * colors as CSS variables (or the user's personal accent) and the font.
  */
 export const useApplyAppearance = () => {
   const appearance = useAppearance();
   const { menuColor, menuStyle, font } = appearance;
+  const [accent] = useStore<string | null>(ACCENT_STORE_KEY, null);
   useEffect(() => {
     const appearance = { menuColor, menuStyle, font };
     const root = document.documentElement;
-    const variables = menuVariables(appearance);
+    // A personal accent of the user wins over the colors of the business
+    const variables = isAccentKey(accent)
+      ? accentVariables(accent)
+      : menuVariables(appearance);
     Object.entries(variables).forEach(([name, value]) =>
       root.style.setProperty(name, value),
     );
@@ -39,5 +46,5 @@ export const useApplyAppearance = () => {
       Object.keys(variables).forEach((name) => root.style.removeProperty(name));
       root.style.removeProperty("--app-font");
     };
-  }, [menuColor, menuStyle, font]);
+  }, [menuColor, menuStyle, font, accent]);
 };

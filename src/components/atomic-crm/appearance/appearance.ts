@@ -2,7 +2,7 @@
  * Appearance of a business: the color and style of the left menu and the
  * font of the interface, kept in its configuration. Colors are presets
  * checked for contrast (WCAG AA for the menu text), so any choice stays
- * readable; the accent of the pages does not change.
+ * readable. A user may pick a personal accent instead (accent.ts).
  */
 
 export const MENU_COLORS = {
@@ -18,6 +18,7 @@ export type MenuColor = keyof typeof MENU_COLORS;
 export type MenuStyle = "dark" | "light";
 
 export const FONTS = {
+  inter: "Inter Variable",
   onest: "Onest Variable",
   manrope: "Manrope Variable",
   golos: "Golos Text Variable",
@@ -35,7 +36,7 @@ export interface Appearance {
 export const DEFAULT_APPEARANCE: Appearance = {
   menuColor: "forest",
   menuStyle: "dark",
-  font: "onest",
+  font: "inter",
 };
 
 /** A stored appearance with unknown or missing values replaced by defaults. */
@@ -93,6 +94,8 @@ export const loadFont = (font: FontKey): Promise<unknown> => {
       return import("@fontsource-variable/montserrat");
     case "nunito":
       return import("@fontsource-variable/nunito");
+    case "onest":
+      return import("@fontsource-variable/onest");
     default:
       return Promise.resolve();
   }

@@ -708,6 +708,22 @@ export const englishCrmMessages = {
       },
     },
     appearance: {
+      accent_title: "Interface color",
+      accent_hint:
+        "Your own color of buttons, selection and the menu. It applies to you only, on this device; others see the colors of the business.",
+      accents: {
+        business: "As the business",
+        green: "Green",
+        blue: "Blue",
+        teal: "Teal",
+        indigo: "Indigo",
+        violet: "Violet",
+        plum: "Plum",
+        rose: "Raspberry",
+        orange: "Orange",
+        amber: "Gold",
+        graphite: "Graphite",
+      },
       title: "Appearance",
       hint: "Logo, menu colors and font, for everyone in the business. Changes show at once.",
       logo: "Logo",
