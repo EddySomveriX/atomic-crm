@@ -1,6 +1,11 @@
 import { HttpError, type Identifier } from "ra-core";
 
 import type { DayTotals, TeamReportRow } from "../../team/types";
+import type {
+  WeeklyReportSettings,
+  WeeklyReportSendResult,
+} from "../../automations/weeklyReport";
+import { invoke } from "./channelMethods";
 import { getSupabaseClient } from "./supabase";
 
 const fail = (message: string, error: { message?: string; code?: string }) => {
@@ -67,5 +72,27 @@ export const teamMethods = {
     });
     if (error) fail("Failed to close the day", error);
     return data as DayTotals;
+  },
+
+  /** Settings of the weekly report in Telegram, or null before the first save. */
+  async getWeeklyReport(): Promise<WeeklyReportSettings | null> {
+    const { data, error } = await getSupabaseClient()
+      .from("weekly_reports")
+      .select("enabled, weekday, hour, recipients")
+      .maybeSingle();
+    if (error) fail("Failed to load", error);
+    return (data as WeeklyReportSettings | null) ?? null;
+  },
+
+  async saveWeeklyReport(settings: WeeklyReportSettings): Promise<void> {
+    const { error } = await getSupabaseClient()
+      .from("weekly_reports")
+      .upsert(settings, { onConflict: "business_id" });
+    if (error) fail("Failed to save", error);
+  },
+
+  /** Sends the report of the last seven days to the chosen members now. */
+  sendWeeklyReportNow(): Promise<WeeklyReportSendResult> {
+    return invoke<WeeklyReportSendResult>("weekly_report", "POST", {});
   },
 };

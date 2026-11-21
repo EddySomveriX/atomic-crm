@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 
 import type { Company } from "../types";
 import { AutomationCard, type AutomationChange } from "./AutomationCard";
+import { WeeklyReportCard } from "./WeeklyReportCard";
 import {
   AUTOMATION_KINDS,
   type Automation,
@@ -79,6 +80,7 @@ export const AutomationsPage = () => {
           />
         ))}
       </ul>
+      <WeeklyReportCard />
       <RecentSends />
     </div>
   );

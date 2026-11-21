@@ -13,7 +13,7 @@
 -- their service for bookings made before prices were kept).
 --
 
-CREATE OR REPLACE FUNCTION "public"."business_analytics"("p_from" timestamp with time zone, "p_to" timestamp with time zone) RETURNS "jsonb"
+CREATE OR REPLACE FUNCTION "public"."business_analytics_for"("p_business_id" "uuid", "p_from" timestamp with time zone, "p_to" timestamp with time zone) RETURNS "jsonb"
     LANGUAGE "plpgsql" STABLE
     SET "search_path" TO ''
     AS $$
@@ -22,7 +22,13 @@ declare
   first_month date;
   result jsonb;
 begin
-  select * into biz from public.businesses where id = public.current_business_id();
+  -- Signed-in users read their own business only; the server (the weekly
+  -- report) reads any business
+  if coalesce(auth.role(), '') <> 'service_role'
+     and p_business_id is distinct from public.current_business_id() then
+    raise exception 'Not your business' using errcode = '42501';
+  end if;
+  select * into biz from public.businesses where id = p_business_id;
   if biz.id is null then
     raise exception 'No current business' using errcode = '42501';
   end if;
@@ -245,4 +251,11 @@ begin
   ) into result;
   return result;
 end;
+$$;
+
+CREATE OR REPLACE FUNCTION "public"."business_analytics"("p_from" timestamp with time zone, "p_to" timestamp with time zone) RETURNS "jsonb"
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO ''
+    AS $$
+  select public.business_analytics_for(public.current_business_id(), p_from, p_to);
 $$;

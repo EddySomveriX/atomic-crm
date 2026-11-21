@@ -382,6 +382,12 @@ export const createDataProvider = ({
       _from: string,
       _to: string,
     ): Promise<TeamReportRow[]> => [],
+    getWeeklyReport: async () => null,
+    saveWeeklyReport: async (): Promise<void> => {},
+    sendWeeklyReportNow: async () =>
+      Promise.reject(
+        new Error("The weekly report is not available in the demo"),
+      ),
     closeDay: async (_day: string): Promise<DayTotals> =>
       Promise.reject(new Error("The team is not available in the demo")),
     documentLink: async (

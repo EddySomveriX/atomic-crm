@@ -196,6 +196,8 @@ verify_jwt = false
 verify_jwt = false
 [functions.staff_notify]
 verify_jwt = false
+[functions.weekly_report]
+verify_jwt = false
 [functions.marketing_connect]
 verify_jwt = false
 [functions.posts_publish]

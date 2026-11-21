@@ -8,7 +8,8 @@
  *     (edge functions channels_poll and staff_notify);
  *   - every minute, sends the booking reminders and the automatic messages
  *     that are due and publishes the planned posts (edge functions
- *     booking_reminders, automations_run and posts_publish);
+ *     booking_reminders, automations_run and posts_publish) and the
+ *     weekly reports to owners (edge function weekly_report);
  *   - every hour, removes documents kept in the trash over 30 days
  *     (edge function documents_purge).
  * In production a webhook replaces the polling, and a scheduled job
@@ -114,6 +115,17 @@ const publishPosts = async () => {
   }
 };
 
+const report = async () => {
+  try {
+    const { sent, failed } = await call("weekly_report");
+    if (sent || failed) {
+      console.log(`${stamp()} weekly reports: ${sent} sent, ${failed} failed`);
+    }
+  } catch (error) {
+    console.error(`${stamp()} ${error.message}`);
+  }
+};
+
 const purge = async () => {
   try {
     const { removed, orphans } = await call("documents_purge");
@@ -136,6 +148,8 @@ setInterval(remind, REMINDERS_EVERY_MS);
 automate();
 setInterval(automate, REMINDERS_EVERY_MS);
 publishPosts();
+report();
+setInterval(report, REMINDERS_EVERY_MS);
 setInterval(publishPosts, REMINDERS_EVERY_MS);
 purge();
 setInterval(purge, PURGE_EVERY_MS);
