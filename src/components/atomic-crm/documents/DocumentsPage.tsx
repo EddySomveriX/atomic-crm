@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { DocumentRows } from "./DocumentRows";
 import { DocumentUploadDialog } from "./DocumentUploadDialog";
 import { DOCUMENT_KINDS, type CrmDocument, type DocumentKind } from "./types";
+import { LoadingRows } from "../misc/PageStates";
 
 const PAGE_SIZE = 50;
 
@@ -106,7 +107,9 @@ export const DocumentsPage = () => {
         </p>
       ) : null}
 
-      {isPending ? null : documents.length === 0 ? (
+      {isPending ? (
+        <LoadingRows />
+      ) : documents.length === 0 ? (
         <div className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
           {translate(
             inTrash

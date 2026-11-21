@@ -20,6 +20,7 @@ import { useConfigurationContext } from "../root/ConfigurationContext";
 import { MyTelegram } from "./MyTelegram";
 import { TEAM_PERIODS, periodDays, type TeamPeriod } from "./period";
 import { parsePercent, type TeamReportRow } from "./types";
+import { LoadingRows } from "../misc/PageStates";
 
 /**
  * The team: each member links their Telegram for messages about their
@@ -73,7 +74,9 @@ export const TeamPage = () => {
         ))}
       </div>
 
-      {isPending ? null : (
+      {isPending ? (
+        <LoadingRows />
+      ) : (
         <TeamReport
           rows={report}
           linked={linked}

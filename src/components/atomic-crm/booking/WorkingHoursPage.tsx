@@ -17,6 +17,7 @@ import { timeOfMinutes, minutesOf } from "./bookingTime";
 import { specialistName, type Specialist, type WorkingHours } from "./types";
 import { useSpecialists } from "./useBookingData";
 import { useUndoableDelete } from "../misc/useUndoableDelete";
+import { LoadingRows } from "../misc/PageStates";
 
 const WEEKDAYS = [1, 2, 3, 4, 5, 6, 7];
 /** A Monday, to name the weekdays in the interface language */
@@ -47,7 +48,7 @@ export const WorkingHoursPage = () => {
   // from a specialist, so the database refuses a specialist with a message
   const canEdit = permissions !== "accountant";
 
-  if (isPending) return null;
+  if (isPending) return <LoadingRows />;
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 pb-28 pt-4 md:px-0">

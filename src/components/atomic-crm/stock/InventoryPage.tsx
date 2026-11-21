@@ -32,6 +32,7 @@ import {
   removeCount,
   type CountedLine,
 } from "./inventoryCounts";
+import { LoadingRows } from "../misc/PageStates";
 
 /**
  * Inventory from a phone (TZ section 5.6): pick a warehouse, find each product
@@ -44,7 +45,7 @@ export const InventoryPage = () => {
   const [warehouseId, setWarehouseId] = useState<Identifier | null>(null);
   const current = warehouseId ?? choices[0]?.id ?? null;
 
-  if (isPending) return null;
+  if (isPending) return <LoadingRows />;
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-4 px-4 py-4 md:px-0">

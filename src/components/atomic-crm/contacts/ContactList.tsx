@@ -34,6 +34,7 @@ import { TopToolbar } from "../layout/TopToolbar";
 import { InfinitePagination } from "../misc/InfinitePagination";
 import MobileHeader from "../layout/MobileHeader";
 import { MobileContent } from "../layout/MobileContent";
+import { LoadingRows } from "../misc/PageStates";
 
 export const ContactList = () => {
   const { identity } = useGetIdentity();
@@ -58,7 +59,7 @@ const ContactListLayoutDesktop = () => {
 
   const hasFilters = filterValues && Object.keys(filterValues).length > 0;
 
-  if (isPending) return null;
+  if (isPending) return <LoadingRows />;
 
   if (!data?.length && !hasFilters) return <ContactEmpty />;
 

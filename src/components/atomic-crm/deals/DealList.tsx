@@ -28,6 +28,7 @@ import { DealEmpty } from "./DealEmpty";
 import { DealListContent } from "./DealListContent";
 import { DealShow } from "./DealShow";
 import { OnlyMineInput } from "./OnlyMineInput";
+import { LoadingRows } from "../misc/PageStates";
 
 const DealList = () => {
   const { identity } = useGetIdentity();
@@ -104,7 +105,7 @@ const DealLayout = () => {
   const { data, isPending, filterValues } = useListContext();
   const hasFilters = filterValues && Object.keys(filterValues).length > 0;
 
-  if (isPending) return null;
+  if (isPending) return <LoadingRows />;
   if (!data?.length && !hasFilters)
     return (
       <>

@@ -10,6 +10,7 @@ import { TopToolbar } from "../layout/TopToolbar";
 import { CompanyEmpty } from "./CompanyEmpty";
 import { CompanyListFilter } from "./CompanyListFilter";
 import { CounterpartyRows } from "./CounterpartyRows";
+import { LoadingRows } from "../misc/PageStates";
 
 export const CompanyList = () => {
   const { identity } = useGetIdentity();
@@ -30,7 +31,7 @@ const CompanyListLayout = () => {
   const { data, isPending, filterValues } = useListContext();
   const hasFilters = filterValues && Object.keys(filterValues).length > 0;
 
-  if (isPending) return null;
+  if (isPending) return <LoadingRows />;
   if (!data?.length && !hasFilters) return <CompanyEmpty />;
 
   return (

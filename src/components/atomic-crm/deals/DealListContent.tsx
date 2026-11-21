@@ -8,6 +8,7 @@ import type { Deal } from "../types";
 import { DealColumn } from "./DealColumn";
 import type { DealsByStage } from "./stages";
 import { getDealsByStage } from "./stages";
+import { LoadingRows } from "../misc/PageStates";
 
 export const DealListContent = () => {
   const { dealStages } = useConfigurationContext();
@@ -28,7 +29,7 @@ export const DealListContent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unorderedDeals]);
 
-  if (isPending) return null;
+  if (isPending) return <LoadingRows />;
 
   const onDragEnd: OnDragEndResponder = (result) => {
     const { destination, source } = result;

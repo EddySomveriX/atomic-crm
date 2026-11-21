@@ -11,6 +11,7 @@ import { PostList } from "./PostList";
 import { FreeSlotsButton } from "./FreeSlotsButton";
 import { OfferPostEditor } from "./OfferPostEditor";
 import type { MarketingAccount } from "./types";
+import { LoadingRows } from "../misc/PageStates";
 
 const TABS = ["posts", "accounts"] as const;
 type Tab = (typeof TABS)[number];
@@ -80,7 +81,9 @@ export const MarketingPage = () => {
 
       {tab === "accounts" ? (
         <AccountsCard accounts={accounts} />
-      ) : isPending ? null : active.length === 0 ? (
+      ) : isPending ? (
+        <LoadingRows />
+      ) : active.length === 0 ? (
         <div className="flex flex-col items-start gap-3 rounded-lg border bg-card p-4">
           <p className="text-sm">{translate("crm.marketing.no_accounts")}</p>
           <Button onClick={() => setSearchParams({ tab: "accounts" })}>

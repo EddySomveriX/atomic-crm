@@ -5,6 +5,7 @@ import { CostSettingsCard } from "./CostSettingsCard";
 import { CostTable } from "./CostTable";
 import { OverheadCard } from "./OverheadCard";
 import { useCostData } from "./useCostData";
+import { LoadingRows } from "../misc/PageStates";
 
 /**
  * The "Собівартість" tab of the price list: how costs are counted, the
@@ -30,7 +31,7 @@ export const CostsTab = () => {
       </p>
     );
   }
-  if (isPending || !inputs) return null;
+  if (isPending || !inputs) return <LoadingRows />;
 
   return (
     <div className="flex flex-col gap-4">

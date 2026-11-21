@@ -30,6 +30,7 @@ import { TodaySummary } from "./TodaySummary";
 import { CloseDayCard } from "../team/CloseDay";
 import type { Contact, Deal, Task } from "../types";
 import { formatBusinessDate, getBusinessDay } from "./businessDay";
+import { LoadingRows } from "../misc/PageStates";
 
 const CLOSED_STAGES = ["won", "lost"];
 
@@ -373,7 +374,9 @@ const OpenDeals = () => {
           {translate("crm.today.pipeline")}
         </Link>
       </h2>
-      {isPending ? null : deals.length === 0 ? (
+      {isPending ? (
+        <LoadingRows rows={2} />
+      ) : deals.length === 0 ? (
         <p className="text-muted-foreground">
           {translate("crm.today.pipeline_empty")}
         </p>

@@ -18,6 +18,7 @@ import { useConfigurationContext } from "../root/ConfigurationContext";
 import { BulkPriceChange } from "./BulkPriceChange";
 import { PriceExtras } from "./PriceExtras";
 import { groupByCategory, parsePrice } from "./priceList";
+import { LoadingRows } from "../misc/PageStates";
 
 /**
  * The price list (the "Ціни" tab): services and goods by category. A click
@@ -36,7 +37,7 @@ export const PriceListTab = () => {
   });
   const groups = groupByCategory(products);
 
-  if (isPending) return null;
+  if (isPending) return <LoadingRows />;
 
   return (
     <div className="flex flex-col gap-6">
