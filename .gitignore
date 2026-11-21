@@ -60,3 +60,6 @@ node_modules/
  
 # Vitest browser failure screenshots
 .vitest/
+
+# Local test account of the developer machine (never committed)
+test-data/*.local.*

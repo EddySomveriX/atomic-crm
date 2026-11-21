@@ -13,6 +13,8 @@ import {
 } from "ra-core";
 import { Link } from "react-router";
 import { WelcomeTour } from "./WelcomeTour";
+import { NotificationsBell } from "../layout/NotificationsBell";
+import { GlobalSearchButton } from "../search/GlobalSearchButton";
 
 import { formatMoney } from "../money/money";
 import type { CrmDataProvider } from "../providers/types";
@@ -96,6 +98,11 @@ export const TodayPage = () => {
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 pb-28 pt-6 sm:px-0 sm:pt-8">
+      {/* A phone has no menu at the top: the bell and the search live here */}
+      <div className="-mb-6 flex justify-end gap-1 md:hidden">
+        <NotificationsBell />
+        <GlobalSearchButton variant="icon" />
+      </div>
       <WelcomeTour />
       <TodaySummary
         weekday={weekday}
