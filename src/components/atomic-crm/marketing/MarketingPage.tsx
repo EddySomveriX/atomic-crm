@@ -1,7 +1,7 @@
 import { useCanAccess, useGetList, useTranslate } from "ra-core";
 import { useState } from "react";
 import { useSearchParams } from "react-router";
-import { Plus } from "lucide-react";
+import { Megaphone, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -11,7 +11,7 @@ import { PostList } from "./PostList";
 import { FreeSlotsButton } from "./FreeSlotsButton";
 import { OfferPostEditor } from "./OfferPostEditor";
 import type { MarketingAccount } from "./types";
-import { LoadingRows } from "../misc/PageStates";
+import { EmptyState, LoadingRows } from "../misc/PageStates";
 
 const TABS = ["posts", "accounts"] as const;
 type Tab = (typeof TABS)[number];
@@ -84,12 +84,15 @@ export const MarketingPage = () => {
       ) : isPending ? (
         <LoadingRows />
       ) : active.length === 0 ? (
-        <div className="flex flex-col items-start gap-3 rounded-lg border bg-card p-4">
-          <p className="text-sm">{translate("crm.marketing.no_accounts")}</p>
-          <Button onClick={() => setSearchParams({ tab: "accounts" })}>
-            {translate("crm.marketing.connect_first")}
-          </Button>
-        </div>
+        <EmptyState
+          icon={Megaphone}
+          title={translate("crm.marketing.no_accounts")}
+          action={
+            <Button onClick={() => setSearchParams({ tab: "accounts" })}>
+              {translate("crm.marketing.connect_first")}
+            </Button>
+          }
+        />
       ) : (
         <PostList
           accounts={accounts}

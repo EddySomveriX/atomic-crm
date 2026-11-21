@@ -5,7 +5,7 @@ import { CostSettingsCard } from "./CostSettingsCard";
 import { CostTable } from "./CostTable";
 import { OverheadCard } from "./OverheadCard";
 import { useCostData } from "./useCostData";
-import { LoadingRows } from "../misc/PageStates";
+import { ErrorState, LoadingRows } from "../misc/PageStates";
 
 /**
  * The "Собівартість" tab of the price list: how costs are counted, the
@@ -25,11 +25,7 @@ export const CostsTab = () => {
     );
   }
   if (error) {
-    return (
-      <p className="text-sm text-destructive">
-        {translate("crm.costing.failed")}
-      </p>
-    );
+    return <ErrorState message={translate("crm.costing.failed")} />;
   }
   if (isPending || !inputs) return <LoadingRows />;
 
