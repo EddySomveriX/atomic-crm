@@ -543,6 +543,7 @@ export const englishCrmMessages = {
       move_failed: "Could not post the move",
     },
     booking: {
+      no_hours_title: "Set the working hours first",
       calendar: "Calendar",
       today: "Today",
       previous_day: "Previous day",
@@ -898,6 +899,9 @@ export const englishCrmMessages = {
       rules_failed: "The booking rules could not be saved",
     },
     pricing: {
+      empty_title: "The price list is empty",
+      no_packages_title: "No packages yet",
+      no_certificates_title: "No gift certificates yet",
       tabs: {
         prices: "Prices",
         offers: "Offers",
@@ -1373,6 +1377,9 @@ export const englishCrmMessages = {
     },
     signup_link: "No account yet? Create one",
     documents: {
+      empty_title: "No documents yet",
+      trash_empty_title: "The trash is empty",
+      nothing_found_title: "Nothing found",
       title: "Documents",
       add: "Add document",
       take_photo: "Take a photo",

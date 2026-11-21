@@ -10,6 +10,8 @@ import { DocumentRows } from "./DocumentRows";
 import { DocumentUploadDialog } from "./DocumentUploadDialog";
 import { DOCUMENT_KINDS, type CrmDocument, type DocumentKind } from "./types";
 import { LoadingRows } from "../misc/PageStates";
+import { FileText } from "lucide-react";
+import { EmptyState } from "../misc/PageStates";
 
 const PAGE_SIZE = 50;
 
@@ -110,15 +112,23 @@ export const DocumentsPage = () => {
       {isPending ? (
         <LoadingRows />
       ) : documents.length === 0 ? (
-        <div className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
-          {translate(
+        <EmptyState
+          icon={FileText}
+          title={translate(
+            inTrash
+              ? "crm.documents.trash_empty_title"
+              : query || kind
+                ? "crm.documents.nothing_found_title"
+                : "crm.documents.empty_title",
+          )}
+          text={translate(
             inTrash
               ? "crm.documents.trash_empty"
               : query || kind
                 ? "crm.documents.nothing_found"
                 : "crm.documents.empty",
           )}
-        </div>
+        />
       ) : (
         <div className="rounded-lg border bg-card px-3">
           <DocumentRows documents={documents} inTrash={inTrash} />

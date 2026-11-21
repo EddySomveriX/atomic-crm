@@ -35,6 +35,7 @@ import { useConfigurationContext } from "../root/ConfigurationContext";
 import { drawCertificate } from "./certificateImage";
 import { PaymentMethodInput } from "./PackagesTab";
 import type { GiftCertificate } from "./types";
+import { EmptyState } from "../misc/PageStates";
 
 const MONTH_MS = 30 * 86_400_000;
 
@@ -79,9 +80,11 @@ export const CertificatesTab = () => {
         ) : null}
       </div>
       {certificates.length === 0 ? (
-        <p className="text-muted-foreground">
-          {translate("crm.pricing.no_certificates")}
-        </p>
+        <EmptyState
+          icon={Gift}
+          title={translate("crm.pricing.no_certificates_title")}
+          text={translate("crm.pricing.no_certificates")}
+        />
       ) : (
         <ul className="flex flex-col divide-y rounded-xl border bg-card">
           {certificates.map((item) => (

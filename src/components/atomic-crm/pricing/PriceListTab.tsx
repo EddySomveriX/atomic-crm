@@ -19,6 +19,8 @@ import { BulkPriceChange } from "./BulkPriceChange";
 import { PriceExtras } from "./PriceExtras";
 import { groupByCategory, parsePrice } from "./priceList";
 import { LoadingRows } from "../misc/PageStates";
+import { Tag } from "lucide-react";
+import { EmptyState } from "../misc/PageStates";
 
 /**
  * The price list (the "Ціни" tab): services and goods by category. A click
@@ -52,9 +54,11 @@ export const PriceListTab = () => {
         </Link>
       </div>
       {groups.length === 0 ? (
-        <p className="text-muted-foreground">
-          {translate("crm.pricing.empty")}
-        </p>
+        <EmptyState
+          icon={Tag}
+          title={translate("crm.pricing.empty_title")}
+          text={translate("crm.pricing.empty")}
+        />
       ) : null}
       {groups.map((group) => (
         <section key={group.category ?? ""} className="flex flex-col gap-2">

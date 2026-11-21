@@ -545,6 +545,7 @@ export const ukrainianCrmMessages = {
       move_failed: "Не вдалося провести рух",
     },
     booking: {
+      no_hours_title: "Спершу графік роботи",
       calendar: "Календар",
       today: "Сьогодні",
       previous_day: "Попередній день",
@@ -905,6 +906,9 @@ export const ukrainianCrmMessages = {
       rules_failed: "Не вдалося зберегти правила запису",
     },
     pricing: {
+      empty_title: "Прайс поки порожній",
+      no_packages_title: "Пакетів ще немає",
+      no_certificates_title: "Сертифікатів ще немає",
       tabs: {
         prices: "Ціни",
         offers: "Акції",
@@ -1375,6 +1379,9 @@ export const ukrainianCrmMessages = {
     },
     signup_link: "Ще немає акаунта? Створіть його",
     documents: {
+      empty_title: "Документів ще немає",
+      trash_empty_title: "Кошик порожній",
+      nothing_found_title: "Нічого не знайдено",
       title: "Документи",
       add: "Додати документ",
       take_photo: "Сфотографувати",

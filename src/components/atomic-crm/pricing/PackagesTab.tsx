@@ -33,6 +33,8 @@ import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { Company } from "../types";
 import { parsePrice } from "./priceList";
 import type { ClientPackage, Package } from "./types";
+import { Package as PackageIcon } from "lucide-react";
+import { EmptyState } from "../misc/PageStates";
 
 const DAY_MS = 86_400_000;
 
@@ -130,9 +132,11 @@ export const PackagesTab = () => {
           })}
         </ul>
       ) : (
-        <p className="text-muted-foreground">
-          {translate("crm.pricing.no_packages")}
-        </p>
+        <EmptyState
+          icon={PackageIcon}
+          title={translate("crm.pricing.no_packages_title")}
+          text={translate("crm.pricing.no_packages")}
+        />
       )}
 
       {sold.length > 0 ? (

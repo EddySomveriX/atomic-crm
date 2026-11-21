@@ -47,6 +47,8 @@ import {
   type WorkingHours,
 } from "./types";
 import { useBusinessTimeZone, useSpecialists } from "./useBookingData";
+import { CalendarClock } from "lucide-react";
+import { EmptyState } from "../misc/PageStates";
 
 /** Height of one hour in the day view */
 const HOUR_HEIGHT = 64;
@@ -208,15 +210,16 @@ export const CalendarPage = () => {
       </div>
 
       {columns.length === 0 ? (
-        <div className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">
-          <p>{translate("crm.booking.no_hours")}</p>
-          <Link
-            to="/working-hours"
-            className={cn(buttonVariants({ variant: "link" }), "mt-2")}
-          >
-            {translate("crm.booking.set_schedule")}
-          </Link>
-        </div>
+        <EmptyState
+          icon={CalendarClock}
+          title={translate("crm.booking.no_hours_title")}
+          text={translate("crm.booking.no_hours")}
+          action={
+            <Link to="/working-hours" className={buttonVariants()}>
+              {translate("crm.booking.set_schedule")}
+            </Link>
+          }
+        />
       ) : (
         <>
           {columns.length > 1 ? (
