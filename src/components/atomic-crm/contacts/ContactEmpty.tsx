@@ -1,7 +1,7 @@
 import { CreateButton } from "@/components/admin/create-button";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Users } from "lucide-react";
 import { useTranslate } from "ra-core";
 
 import useAppBarHeight from "../misc/useAppBarHeight";
@@ -23,10 +23,9 @@ export const ContactEmpty = () => {
           height: `calc(100dvh - ${appbarHeight}px)`,
         }}
       >
-        <img
-          src="./img/empty.svg"
-          alt={translate("resources.contacts.empty.title")}
-        />
+        <span className="flex size-16 items-center justify-center rounded-full bg-accent text-primary">
+          <Users className="size-8" aria-hidden />
+        </span>
         <div className="flex flex-col gap-0 items-center">
           <h6 className="text-lg font-bold">
             {translate("resources.contacts.empty.title")}

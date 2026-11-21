@@ -1,3 +1,4 @@
+import { Building2 } from "lucide-react";
 import { CreateButton } from "@/components/admin/create-button";
 import { useTranslate } from "ra-core";
 
@@ -14,12 +15,9 @@ export const CompanyEmpty = () => {
         height: `calc(100dvh - ${appbarHeight}px)`,
       }}
     >
-      <img
-        src="./img/empty.svg"
-        alt={translate("resources.companies.empty.title", {
-          _: "No companies found",
-        })}
-      />
+      <span className="flex size-16 items-center justify-center rounded-full bg-accent text-primary">
+        <Building2 className="size-8" aria-hidden />
+      </span>
       <div className="flex flex-col gap-0 items-center">
         <h6 className="text-lg font-bold">
           {translate("resources.companies.empty.title", {

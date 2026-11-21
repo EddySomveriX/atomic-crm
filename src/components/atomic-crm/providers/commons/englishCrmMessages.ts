@@ -1023,6 +1023,7 @@ export const englishCrmMessages = {
       to_pay: "To pay",
     },
     inventory: {
+      empty_title: "Nothing counted yet",
       title: "Inventory",
       find: "Barcode, article or name",
       scan: "Scan with camera",

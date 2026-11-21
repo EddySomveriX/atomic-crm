@@ -1,3 +1,4 @@
+import { Handshake } from "lucide-react";
 import { useGetList, useTranslate } from "ra-core";
 import { matchPath, useLocation, Link } from "react-router";
 import type { ReactNode } from "react";
@@ -32,10 +33,9 @@ export const DealEmpty = ({ children }: { children?: ReactNode }) => {
         height: `calc(100dvh - ${appbarHeight}px)`,
       }}
     >
-      <img
-        src="./img/empty.svg"
-        alt={translate("resources.deals.empty.title")}
-      />
+      <span className="flex size-16 items-center justify-center rounded-full bg-accent text-primary">
+        <Handshake className="size-8" aria-hidden />
+      </span>
       {contacts && contacts.length > 0 ? (
         <>
           <div className="flex flex-col items-center gap-0">

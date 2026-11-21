@@ -8,7 +8,7 @@ import {
   type Identifier,
 } from "ra-core";
 import { useState, type FormEvent } from "react";
-import { Minus, Plus, Search, X } from "lucide-react";
+import { Minus, Plus, ScanBarcode, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -32,7 +32,7 @@ import {
   removeCount,
   type CountedLine,
 } from "./inventoryCounts";
-import { LoadingRows } from "../misc/PageStates";
+import { EmptyState, LoadingRows } from "../misc/PageStates";
 
 /**
  * Inventory from a phone (TZ section 5.6): pick a warehouse, find each product
@@ -176,9 +176,11 @@ const InventoryCount = ({ warehouseId }: { warehouseId: Identifier }) => {
         </Card>
       ) : null}
       {lines.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          {translate("crm.inventory.empty")}
-        </p>
+        <EmptyState
+          icon={ScanBarcode}
+          title={translate("crm.inventory.empty_title")}
+          text={translate("crm.inventory.empty")}
+        />
       ) : (
         <ul className="flex flex-col gap-2">
           {lines.map((line) => (

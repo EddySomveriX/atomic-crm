@@ -1030,6 +1030,7 @@ export const ukrainianCrmMessages = {
       to_pay: "До сплати",
     },
     inventory: {
+      empty_title: "Ще нічого не пораховано",
       title: "Інвентаризація",
       find: "Штрихкод, артикул або назва",
       scan: "Сканувати камерою",

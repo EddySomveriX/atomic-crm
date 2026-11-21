@@ -15,7 +15,8 @@ import { TextField } from "@/components/admin/text-field";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, SearchX } from "lucide-react";
+import { EmptyState } from "../misc/PageStates";
 
 import { Status } from "../misc/Status";
 import { formatRelativeDate } from "../misc/RelativeDate";
@@ -87,11 +88,11 @@ export const ContactListContent = () => {
       ))}
 
       {contacts.length === 0 && (
-        <div className="p-4">
-          <div className="text-muted-foreground">
-            {translate("resources.contacts.empty.title", {})}
-          </div>
-        </div>
+        <EmptyState
+          icon={SearchX}
+          title={translate("resources.contacts.empty.title")}
+          className="m-4"
+        />
       )}
     </div>
   );
@@ -237,11 +238,11 @@ export const ContactListContentMobile = () => {
         </RecordContextProvider>
       ))}
       {contacts.length === 0 && (
-        <div className="p-4">
-          <div className="text-muted-foreground">
-            {translate("resources.contacts.empty.title")}
-          </div>
-        </div>
+        <EmptyState
+          icon={SearchX}
+          title={translate("resources.contacts.empty.title")}
+          className="m-4"
+        />
       )}
     </div>
   );
