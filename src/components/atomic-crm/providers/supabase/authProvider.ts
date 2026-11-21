@@ -168,6 +168,10 @@ export const getAuthProvider = (): AuthProvider => {
       ) {
         return;
       }
+      // Clients on the public booking page of a business are not users
+      if (window.location.hash.startsWith("#/book/")) {
+        return;
+      }
 
       const isInitialized = await getIsInitialized();
 

@@ -40,7 +40,7 @@ export const loadBusiness = async (
 export const makeBookingDeps = (
   business: BusinessInfo,
   booking: {
-    source: "telegram" | "widget" | MessengerKind;
+    source: "telegram" | "widget" | "page" | MessengerKind;
     conversationId: number | null;
   },
 ): BotDeps => {

@@ -28,6 +28,9 @@ import { PricesPage } from "../pricing/PricesPage";
 import { DocumentsPage } from "../documents/DocumentsPage";
 import { AutomationsPage } from "../automations/AutomationsPage";
 import { MarketingPage } from "../marketing/MarketingPage";
+import { BookingPage } from "../bookingPage/BookingPage";
+import { BookingPoster } from "../bookingPage/BookingPoster";
+import { BookingPageSettingsPage } from "../bookingPage/BookingPageSettingsPage";
 import { TeamPage } from "../team/TeamPage";
 import { InventoryPage } from "../stock/InventoryPage";
 import { Layout } from "../layout/Layout";
@@ -260,6 +263,8 @@ const DesktopAdmin = (
       <CustomRoutes noLayout>
         <Route path={SignupPage.path} element={<SignupPage />} />
         <Route path={SetupPage.path} element={<SetupPage />} />
+        <Route path={BookingPoster.path} element={<BookingPoster />} />
+        <Route path={BookingPage.path} element={<BookingPage />} />
         <Route
           path={ConfirmationRequired.path}
           element={<ConfirmationRequired />}
@@ -290,6 +295,10 @@ const DesktopAdmin = (
         <Route path={DocumentsPage.path} element={<DocumentsPage />} />
         <Route path={AutomationsPage.path} element={<AutomationsPage />} />
         <Route path={MarketingPage.path} element={<MarketingPage />} />
+        <Route
+          path={BookingPageSettingsPage.path}
+          element={<BookingPageSettingsPage />}
+        />
         <Route path={TeamPage.path} element={<TeamPage />} />
       </CustomRoutes>
       <Resource name="deals" {...deals} />
@@ -376,6 +385,8 @@ const MobileAdmin = (
         <CustomRoutes noLayout>
           <Route path={SignupPage.path} element={<SignupPage />} />
           <Route path={SetupPage.path} element={<SetupPage />} />
+          <Route path={BookingPoster.path} element={<BookingPoster />} />
+          <Route path={BookingPage.path} element={<BookingPage />} />
           <Route
             path={ConfirmationRequired.path}
             element={<ConfirmationRequired />}
@@ -406,6 +417,10 @@ const MobileAdmin = (
           <Route path={DocumentsPage.path} element={<DocumentsPage />} />
           <Route path={AutomationsPage.path} element={<AutomationsPage />} />
           <Route path={MarketingPage.path} element={<MarketingPage />} />
+          <Route
+            path={BookingPageSettingsPage.path}
+            element={<BookingPageSettingsPage />}
+          />
           <Route path={TeamPage.path} element={<TeamPage />} />
         </CustomRoutes>
         <Resource

@@ -46,6 +46,11 @@ export const canAccess = <
     return role === "manager" || READ_ONLY_ACTIONS.includes(params.action);
   }
 
+  // Only an owner changes the public booking page
+  if (params.resource === "booking_pages") {
+    return READ_ONLY_ACTIONS.includes(params.action);
+  }
+
   // Owners and managers plan posts and connect accounts; others read
   if (MARKETING_RESOURCES.includes(params.resource)) {
     return role === "manager" || READ_ONLY_ACTIONS.includes(params.action);
