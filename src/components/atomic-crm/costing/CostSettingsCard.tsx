@@ -20,18 +20,13 @@ import type { CostInputs, CostSettings } from "./types";
 import { parseAmount } from "./useCostData";
 
 type PercentField =
-  | "load_percent"
-  | "tax_percent"
-  | "card_fee_percent"
-  | "card_share_percent"
-  | "target_margin_percent";
+  "load_percent" | "tax_percent" | "card_fee_percent" | "card_share_percent";
 
 const PERCENT_FIELDS: PercentField[] = [
   "load_percent",
   "tax_percent",
   "card_fee_percent",
   "card_share_percent",
-  "target_margin_percent",
 ];
 
 /** Limits of public.cost_settings */
@@ -40,15 +35,10 @@ const PERCENT_RANGE: Record<PercentField, [number, number]> = {
   tax_percent: [0, 99],
   card_fee_percent: [0, 99],
   card_share_percent: [0, 100],
-  target_margin_percent: [0, 95],
 };
-const WHOLE: PercentField[] = [
-  "load_percent",
-  "card_share_percent",
-  "target_margin_percent",
-];
+const WHOLE: PercentField[] = ["load_percent", "card_share_percent"];
 
-/** How the costs are counted: load, pay of the specialist, taxes, fees, target margin. */
+/** How the costs are counted: load, pay of the specialist, taxes and fees. */
 export const CostSettingsCard = ({ inputs }: { inputs: CostInputs }) => {
   const translate = useTranslate();
   const notify = useNotify();
@@ -209,7 +199,6 @@ export const CostSettingsCard = ({ inputs }: { inputs: CostInputs }) => {
           {field("tax_percent", "%")}
           {field("card_fee_percent", "%")}
           {field("card_share_percent", "%")}
-          {field("target_margin_percent", "%")}
         </div>
         {inputs.income_taxes.length > 0 ? (
           <p className="text-xs text-muted-foreground">

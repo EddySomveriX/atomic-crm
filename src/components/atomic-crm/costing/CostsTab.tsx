@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router";
 
 import { CostSettingsCard } from "./CostSettingsCard";
 import { CostTable } from "./CostTable";
+import { PriceRulesCard } from "./PriceRulesCard";
 import { OverheadCard } from "./OverheadCard";
 import { useCostData } from "./useCostData";
 import { ErrorState, LoadingRows } from "../misc/PageStates";
@@ -14,8 +15,16 @@ import { ErrorState, LoadingRows } from "../misc/PageStates";
 export const CostsTab = () => {
   const translate = useTranslate();
   const [searchParams] = useSearchParams();
-  const { canRead, inputs, products, materials, items, isPending, error } =
-    useCostData();
+  const {
+    canRead,
+    inputs,
+    products,
+    materials,
+    items,
+    rules,
+    isPending,
+    error,
+  } = useCostData();
 
   if (!canRead) {
     return (
@@ -34,11 +43,16 @@ export const CostsTab = () => {
       <p className="text-sm text-muted-foreground">
         {translate("crm.costing.intro")}
       </p>
+      <PriceRulesCard
+        data={{ inputs, products, materials, items, rules }}
+        key={`rules-${JSON.stringify(inputs.settings)}`}
+      />
       <CostTable
         inputs={inputs}
         products={products}
         materials={materials}
         items={items}
+        rules={rules}
         openId={searchParams.get("product")}
       />
       <OverheadCard monthly={inputs.overhead_monthly} />

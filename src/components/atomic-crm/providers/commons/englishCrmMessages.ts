@@ -909,6 +909,12 @@ export const englishCrmMessages = {
         certificates: "Gift certificates",
         costs: "Cost",
       },
+      calc: {
+        calculate: "Calculate price",
+        from_calculation: "Price from the calculation",
+        new_price: "The calculation now gives %{price}",
+        update: "Update",
+      },
       list_hint:
         "Click a price to change it. The bot, the website and the calendar use the new price at once; bookings already made keep theirs.",
       new_item: "Service or product",
@@ -1632,8 +1638,67 @@ export const englishCrmMessages = {
       margin: "Margin",
       markup: "Markup",
       break_even_price: "Break-even price",
-      recommended_price: "Price for a %{percent}% margin",
       break_even_visits: "Visits a month to cover the expenses",
+      calculator: {
+        title: "Price calculator",
+        hint: "A price from the cost: choose the method and the rounding, the price updates at once.",
+        method: "Method",
+        business_rule: "Business rule: %{rule}",
+        methods: {
+          margin: "Margin",
+          markup: "Markup",
+          profit: "Profit amount",
+        },
+        value: "Value",
+        rounding: "Rounding",
+        rounding_business: "Business rule: %{rounding}",
+        result: "Calculated price",
+        explain: "Cost %{cost}, profit %{profit} (%{margin} of the price)",
+        impossible:
+          "Percent costs take the whole price: lower the margin or the percents.",
+        current: "In the price list now: %{price}",
+        apply: "Put in the price list",
+        applied: "Price put in the price list",
+        unlink: "Unlink from the calculation",
+      },
+      rules: {
+        title: "How prices are calculated",
+        hint: "A rule for services and one for goods. Any item can have its own in its calculator.",
+        service: "Services",
+        goods: "Goods",
+        explain: {
+          margin:
+            "the share of the price you keep. 30%: a 1000 price leaves 300.",
+          markup:
+            "how much to add to the cost. 50%: a cost of 600 makes a profit of 300.",
+          profit: "the same profit amount from every sale.",
+        },
+        save: "Save rules",
+        invalid:
+          "Check the values: margin 0 to 95%, markup 0 to 1000%, profit not below zero.",
+      },
+      roundings: {
+        none: "No rounding",
+        "1": "Up to 1",
+        "10": "Up to 10",
+        "50": "Up to 50",
+        "100": "Up to 100",
+        "9": "Ending in 9 (449)",
+        "99": "Ending in 99 (499)",
+      },
+      rule_text: {
+        margin: "margin %{value}",
+        markup: "markup %{value}",
+        profit: "profit %{value}",
+      },
+      bulk: {
+        open: "Recalculate all prices",
+        title: "New prices from the calculation",
+        hint: "Ticked prices change in the price list. Untick the ones to keep.",
+        nothing: "All prices already match the calculation.",
+        apply: "Change prices: %{smart_count}",
+        applied: "Prices changed: %{smart_count}",
+      },
       try_price: "Try a price",
       edit_materials: "Change the materials of the service",
       own: {
@@ -1673,7 +1738,6 @@ export const englishCrmMessages = {
         tax_percent: "Tax on the price",
         card_fee_percent: "Bank fee per card payment",
         card_share_percent: "Share of card payments",
-        target_margin_percent: "Target margin",
         tax_hint: "Hint:",
         material_price: "Price of materials and goods",
         material_prices: {

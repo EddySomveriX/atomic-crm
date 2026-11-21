@@ -17,24 +17,29 @@ import type { ServiceMaterial } from "../products/materialCost";
 import type { Product } from "../products/types";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { parsePercent } from "../team/types";
+import type { CostData } from "./calculatedPrice";
 import { computeCost, type CostLine } from "./costCalc";
+import { PriceCalculator } from "./PriceCalculator";
 import type { CostInputs, ProductCostItem } from "./types";
 import { formatPercent, parseAmount } from "./useCostData";
 import { useUndoableDelete } from "../misc/useUndoableDelete";
 
-/** The lines of the cost of one product, a price to try and lines of its own. */
+/** The lines of the cost of one product, its price calculator, a price to try and lines of its own. */
 export const CostBreakdown = ({
   product,
   inputs,
   materials,
   stock,
   items,
+  data,
 }: {
   product: Product;
   inputs: CostInputs;
   materials: ServiceMaterial[];
   stock: Product[];
   items: ProductCostItem[];
+  /** Everything the cost page loaded, for the price calculator */
+  data: CostData;
 }) => {
   const translate = useTranslate();
   const [locale = "uk"] = useLocaleState();
@@ -106,19 +111,14 @@ export const CostBreakdown = ({
         <Figure label={translate("crm.costing.break_even_price")}>
           {money(result.breakEvenPrice)}
         </Figure>
-        <Figure
-          label={translate("crm.costing.recommended_price", {
-            percent: inputs.settings.target_margin_percent,
-          })}
-        >
-          {money(result.recommendedPrice)}
-        </Figure>
         {isService ? (
           <Figure label={translate("crm.costing.break_even_visits")}>
             {result.breakEvenVisits ?? "—"}
           </Figure>
         ) : null}
       </div>
+
+      <PriceCalculator product={product} data={data} money={money} />
 
       <label className="flex flex-wrap items-center gap-2">
         <span>{translate("crm.costing.try_price")}</span>

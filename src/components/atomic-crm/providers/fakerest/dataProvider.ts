@@ -410,7 +410,13 @@ export const createDataProvider = ({
     > => [],
     getCostInputs: async (): Promise<CostInputs> =>
       Promise.reject(new Error("Costs are not available in the demo")),
-    saveCostSettings: async (_settings: CostSettings): Promise<void> => {},
+    saveCostSettings: async (
+      _settings: Partial<CostSettings>,
+    ): Promise<void> => {},
+    applyCalculatedPrices: async (): Promise<number> =>
+      Promise.reject(
+        new Error("Prices from the cost are not available in the demo"),
+      ),
     getAnalytics: async (_from: Date, _to: Date) =>
       Promise.reject(new Error("Analytics are not available in the demo")),
     isInitialized: async (): Promise<boolean> => {

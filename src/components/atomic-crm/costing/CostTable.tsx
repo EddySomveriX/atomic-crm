@@ -9,6 +9,7 @@ import type { Product } from "../products/types";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { CostBreakdown } from "./CostBreakdown";
 import { computeCost, type CostResult } from "./costCalc";
+import type { ProductPriceRule } from "./pricing";
 import type { CostInputs, ProductCostItem } from "./types";
 import { formatPercent } from "./useCostData";
 
@@ -26,12 +27,14 @@ export const CostTable = ({
   products,
   materials,
   items,
+  rules,
   openId,
 }: {
   inputs: CostInputs;
   products: Product[];
   materials: ServiceMaterial[];
   items: ProductCostItem[];
+  rules: ProductPriceRule[];
   /** A product to open from a link */
   openId?: string | null;
 }) => {
@@ -156,6 +159,7 @@ export const CostTable = ({
                     items={items.filter(
                       (item) => item.product_id === product.id,
                     )}
+                    data={{ inputs, products, materials, items, rules }}
                   />
                 ) : null}
               </li>

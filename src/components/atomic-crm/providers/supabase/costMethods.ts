@@ -1,4 +1,4 @@
-import { HttpError } from "ra-core";
+import { HttpError, type Identifier } from "ra-core";
 
 import type { CostInputs, CostSettings } from "../../costing/types";
 import { getSupabaseClient } from "./supabase";
@@ -16,10 +16,25 @@ export const costMethods = {
   },
 
   /** Saves the settings of the current business (one row per business). */
-  async saveCostSettings(settings: CostSettings): Promise<void> {
+  async saveCostSettings(settings: Partial<CostSettings>): Promise<void> {
     const { error } = await getSupabaseClient()
       .from("cost_settings")
       .upsert(settings, { onConflict: "business_id" });
     if (error) fail("Failed to save the settings", error);
+  },
+
+  /**
+   * Sets calculated prices a person confirmed and marks those products as
+   * priced from the calculation. Returns how many prices were set.
+   */
+  async applyCalculatedPrices(
+    prices: { id: Identifier; price: number }[],
+  ): Promise<number> {
+    const { data, error } = await getSupabaseClient().rpc(
+      "apply_calculated_prices",
+      { p_items: prices },
+    );
+    if (error) fail("Failed to set the prices", error);
+    return data as number;
   },
 };

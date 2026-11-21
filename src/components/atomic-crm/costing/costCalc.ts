@@ -34,8 +34,10 @@ export interface CostResult {
   profitPerHour: number | null;
   /** Lowest price that covers the cost */
   breakEvenPrice: number | null;
-  /** Price that leaves the target margin */
-  recommendedPrice: number | null;
+  /** Parts of the cost that do not depend on the price */
+  fixedTotal: number;
+  /** Parts of the cost that are a percent of the price, summed */
+  variablePercent: number;
   /** Visits a month that pay the expenses of the month (services) */
   breakEvenVisits: number | null;
 }
@@ -204,9 +206,8 @@ export const computeCost = ({
         ? Math.round((profit * 60) / minutes)
         : null,
     breakEvenPrice: priceFor(variablePercent),
-    recommendedPrice: priceFor(
-      variablePercent + Number(settings.target_margin_percent),
-    ),
+    fixedTotal,
+    variablePercent,
     breakEvenVisits:
       isService && contribution != null && contribution > 0
         ? Math.ceil(inputs.overhead_monthly / contribution)

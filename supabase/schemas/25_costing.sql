@@ -23,7 +23,16 @@ create table public.cost_settings (
     card_fee_percent numeric(5,2) not null default 0,
     -- Share of payments made by card
     card_share_percent smallint not null default 0,
-    target_margin_percent smallint not null default 30,
+    -- How a price is formed from the cost, for services and for goods:
+    -- margin (percent of the price), markup (percent of the cost) or profit
+    -- (minor units on every sale); see 30_price_rules.sql
+    service_price_method text not null default 'margin',
+    service_price_value numeric(12,2) not null default 30,
+    goods_price_method text not null default 'markup',
+    goods_price_value numeric(12,2) not null default 50,
+    -- Rounding of a calculated price: up to 1, 10, 50 or 100 currency
+    -- units, or up to a price ending in 9 or 99
+    price_rounding text not null default 'none',
     -- Materials and goods at the average purchase cost or the last one
     material_price text not null default 'average',
     constraint cost_settings_load check (load_percent between 1 and 100),
@@ -32,7 +41,17 @@ create table public.cost_settings (
     constraint cost_settings_tax check (tax_percent between 0 and 99),
     constraint cost_settings_card_fee check (card_fee_percent between 0 and 99),
     constraint cost_settings_card_share check (card_share_percent between 0 and 100),
-    constraint cost_settings_target_margin check (target_margin_percent between 0 and 95),
+    constraint cost_settings_service_price check (
+        (service_price_method = 'margin' and service_price_value between 0 and 95)
+        or (service_price_method = 'markup' and service_price_value between 0 and 1000)
+        or (service_price_method = 'profit' and service_price_value >= 0)
+    ),
+    constraint cost_settings_goods_price check (
+        (goods_price_method = 'margin' and goods_price_value between 0 and 95)
+        or (goods_price_method = 'markup' and goods_price_value between 0 and 1000)
+        or (goods_price_method = 'profit' and goods_price_value >= 0)
+    ),
+    constraint cost_settings_price_rounding check (price_rounding in ('none', '1', '10', '50', '100', '9', '99')),
     constraint cost_settings_material_price check (material_price in ('average', 'last'))
 );
 
@@ -120,7 +139,11 @@ begin
     settings.tax_percent := 0;
     settings.card_fee_percent := 0;
     settings.card_share_percent := 0;
-    settings.target_margin_percent := 30;
+    settings.service_price_method := 'margin';
+    settings.service_price_value := 30;
+    settings.goods_price_method := 'markup';
+    settings.goods_price_value := 50;
+    settings.price_rounding := 'none';
     settings.material_price := 'average';
   end if;
 

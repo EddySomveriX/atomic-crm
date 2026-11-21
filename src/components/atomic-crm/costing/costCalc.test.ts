@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { computeCost, minuteCost, unitCost } from "./costCalc";
+import { suggestedPrice } from "./pricing";
 import type { CostInputs, ProductCostItem } from "./types";
 import { parseAmount } from "./useCostData";
 
@@ -14,7 +15,11 @@ const inputs = (
     tax_percent: 5,
     card_fee_percent: 1.5,
     card_share_percent: 60,
-    target_margin_percent: 30,
+    service_price_method: "margin",
+    service_price_value: 30,
+    goods_price_method: "markup",
+    goods_price_value: 50,
+    price_rounding: "none",
     material_price: "average",
     ...overrides,
   },
@@ -75,7 +80,13 @@ describe("computeCost for a service", () => {
 
   it("finds the break-even price, the price for the target margin and the visits a month", () => {
     expect(result.breakEvenPrice).toBe(53645);
-    expect(result.recommendedPrice).toBe(120422);
+    expect(
+      suggestedPrice(
+        result,
+        { rule: { method: "margin", value: 30 }, rounding: "none" },
+        100,
+      ),
+    ).toBe(120422);
     expect(result.breakEvenVisits).toBe(11);
   });
 

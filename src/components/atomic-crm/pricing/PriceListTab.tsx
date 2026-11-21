@@ -21,6 +21,9 @@ import { groupByCategory, parsePrice } from "./priceList";
 import { LoadingRows } from "../misc/PageStates";
 import { Tag } from "lucide-react";
 import { EmptyState } from "../misc/PageStates";
+import type { CostData } from "../costing/calculatedPrice";
+import { PriceListCalc } from "../costing/PriceListCalc";
+import { usePriceListCosts } from "../costing/usePriceListCosts";
 
 /**
  * The price list (the "Ціни" tab): services and goods by category. A click
@@ -38,6 +41,7 @@ export const PriceListTab = () => {
     filter: { archived: false },
   });
   const groups = groupByCategory(products);
+  const costs = usePriceListCosts();
 
   if (isPending) return <LoadingRows />;
 
@@ -71,6 +75,7 @@ export const PriceListTab = () => {
                 key={String(product.id)}
                 product={product}
                 canEdit={canEdit}
+                costs={costs}
               />
             ))}
           </ul>
@@ -83,9 +88,12 @@ export const PriceListTab = () => {
 const PriceRow = ({
   product,
   canEdit,
+  costs,
 }: {
   product: Product;
   canEdit: boolean;
+  /** Cost data for those who may see costs: the calculated price */
+  costs: CostData | null;
 }) => {
   const translate = useTranslate();
   const notify = useNotify();
@@ -182,6 +190,7 @@ const PriceRow = ({
         </span>
       </label>
       <PriceExtras product={product} canEdit={canEdit} />
+      {costs ? <PriceListCalc product={product} data={costs} /> : null}
     </li>
   );
 };

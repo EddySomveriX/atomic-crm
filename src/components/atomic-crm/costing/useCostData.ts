@@ -4,6 +4,7 @@ import { useCanAccess, useDataProvider, useGetList } from "ra-core";
 import type { ServiceMaterial } from "../products/materialCost";
 import type { Product } from "../products/types";
 import type { CrmDataProvider } from "../providers/types";
+import type { ProductPriceRule } from "./pricing";
 import type { ProductCostItem } from "./types";
 
 const ALL = { page: 1, perPage: 1000 } as const;
@@ -42,18 +43,26 @@ export const useCostData = ({ enabled = true }: { enabled?: boolean } = {}) => {
     { enabled: isOn },
   );
 
+  const rules = useGetList<ProductPriceRule>(
+    "product_price_rules",
+    { pagination: ALL, sort: { field: "id", order: "ASC" } },
+    { enabled: isOn },
+  );
+
   return {
     canRead: canRead === true,
     inputs: inputs.data,
     products: products.data ?? [],
     materials: materials.data ?? [],
     items: items.data ?? [],
+    rules: rules.data ?? [],
     isPending:
       isOn &&
       (inputs.isPending ||
         products.isPending ||
         materials.isPending ||
-        items.isPending),
+        items.isPending ||
+        rules.isPending),
     error: inputs.error,
   };
 };

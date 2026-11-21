@@ -1,3 +1,4 @@
+import type { PriceMethod, Rounding } from "./pricing";
 import type { Identifier, RaRecord } from "ra-core";
 
 /** public.cost_settings, percents as numbers, money in minor units. */
@@ -8,7 +9,11 @@ export interface CostSettings {
   tax_percent: number;
   card_fee_percent: number;
   card_share_percent: number;
-  target_margin_percent: number;
+  service_price_method: PriceMethod;
+  service_price_value: number;
+  goods_price_method: PriceMethod;
+  goods_price_value: number;
+  price_rounding: Rounding;
   material_price: "average" | "last";
 }
 
