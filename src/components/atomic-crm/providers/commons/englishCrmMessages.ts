@@ -1527,6 +1527,115 @@ export const englishCrmMessages = {
       title: "Calm mode",
       hint: "No game parts: levels, animations. Only the facts. Applies on this device.",
     },
+    subscription: {
+      title: "Plan and billing",
+      trial_title: "Trial",
+      plan_title: "%{plan} plan",
+      status: {
+        trial:
+          "Everything is open for %{smart_count} more day. |||| Everything is open for %{smart_count} more days.",
+        active: "Paid through %{date}.",
+        read_only:
+          "The plan is not paid. You can view and export the data but not change it until the plan is paid.",
+      },
+      team_of: "People on the team: %{count} of %{max}",
+      team_unlimited: "People on the team: %{smart_count}",
+      how_to_pay:
+        "To pay for or change the plan, write to us: we turn it on once it is paid.",
+      contact: "Write about payment",
+      plans_title: "Plans",
+      current: "Your plan",
+      per_month: "per month",
+      members_unlimited: "Any number of people",
+      members_up_to: "%{smart_count} person |||| Up to %{smart_count} people",
+      plans: {
+        start: {
+          name: "Start",
+          text: "Clients, bookings, sales, stock and tasks for one person.",
+        },
+        business: {
+          name: "Business",
+          text: "For a team: messengers, booking page, automations and marketing.",
+        },
+        pro: {
+          name: "Pro",
+          text: "No limits: costs and prices, weekly report, business map and AI.",
+        },
+      },
+      feature_names: {
+        messengers: "Messengers and site chat",
+        booking_page: "Online booking page",
+        automations: "Automations",
+        marketing: "Marketing and posts",
+        costing: "Costs and price calculation",
+        weekly_report: "Weekly report in Telegram",
+        business_map: "Business map",
+        ai: "AI assistant",
+      },
+      features: {
+        messengers:
+          "Chats with clients in Telegram, Instagram and on your site, in one place.",
+        booking_page: "Your own page where clients book a time themselves.",
+        automations: "Reminders and messages to clients go out on their own.",
+        marketing: "Social posts from one place, on a schedule.",
+        costing: "What each service and product costs and which price to set.",
+        weekly_report:
+          "Every Monday the bot sends the week's results and what to do next.",
+        business_map: "The whole business on one game board.",
+        ai: "The assistant drafts replies and documents.",
+      },
+      locked: {
+        title: "Available on the %{plan} plan",
+        action: "See plans",
+      },
+      banner: {
+        read_only: "The plan is not paid: you can only view the data for now.",
+        trial_ending:
+          "The trial ends in %{smart_count} day. |||| The trial ends in %{smart_count} days.",
+        paid_ending:
+          "The paid period ends in %{smart_count} day. |||| The paid period ends in %{smart_count} days.",
+        action: "Plans",
+      },
+      errors: {
+        read_only:
+          "The plan is not paid, so the change was not saved. Pay for the plan to keep working.",
+        feature: "This section is not part of your plan.",
+        member_limit:
+          "The plan has no room for more people. Choose a larger plan.",
+      },
+      export: {
+        title: "Export all data",
+        text: "One ZIP archive: an Excel table for every section (clients, bookings, sales, stock, money and more) and a full copy to move to another system. Uploaded files are not included.",
+        action: "Export data",
+        working: "Preparing the archive…",
+        done: "Archive downloaded",
+        error: "Could not export the data. Try again.",
+      },
+    },
+    platform: {
+      title: "Platform",
+      only_admins: "This page is for the platform owner only.",
+      empty: "No businesses yet.",
+      people: "%{smart_count} person |||| %{smart_count} people",
+      status: {
+        trial: "Trial",
+        read_only: "Not paid",
+      },
+      until: "until %{date}",
+      change: "Change plan",
+      set_plan_title: "Plan for %{name}",
+      plan: "Plan",
+      paid_until: "Paid through (inclusive)",
+      amount: "Received, %{currency}",
+      note: "Note: how and from whom",
+      turn_on: "Turn the plan on",
+      saved: "Saved",
+      save_error: "Could not save. Try again.",
+      prices_title: "Plan prices and limits",
+      price: "Price per month, %{currency}",
+      max_members: "People at most",
+      no_limit: "no limit",
+    },
     weekly_report: {
       title: "Weekly report in Telegram",
       hint: "The bot sends the week's revenue, visits, new and lost clients, the busiest specialists and popular services, and what to do next.",

@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/tooltip";
 import { AccentPicker } from "../appearance/AccentPicker";
 import { CalmModeSwitch } from "../appearance/CalmModeSwitch";
+import { SUBSCRIPTION_PATH } from "../subscription/FeatureGate";
 import { MobileBusinessSection } from "../business/MobileBusinessSection";
 import { MobileStockSection } from "../stock/MobileStockSection";
 
@@ -596,6 +597,20 @@ const AboutSection = () => {
     <div>
       <SectionLabel>{translate("crm.settings.about")}</SectionLabel>
       <SettingsGroup>
+        <Item
+          size="sm"
+          className="cursor-pointer"
+          render={<Link to={SUBSCRIPTION_PATH} />}
+        >
+          <ItemContent>
+            <ItemTitle className="font-normal">
+              {translate("crm.subscription.title")}
+            </ItemTitle>
+          </ItemContent>
+          <ItemActions>
+            <ChevronRight className="size-4 text-muted-foreground" />
+          </ItemActions>
+        </Item>
         <Item
           size="sm"
           className="cursor-pointer"

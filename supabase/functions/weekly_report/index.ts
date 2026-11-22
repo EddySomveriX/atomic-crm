@@ -3,6 +3,7 @@ import type { User } from "jsr:@supabase/supabase-js@2";
 import { supabaseAdmin } from "../_shared/supabaseAdmin.ts";
 import { OptionsMiddleware } from "../_shared/cors.ts";
 import { createErrorResponse } from "../_shared/utils.ts";
+import { hasFeature } from "../_shared/subscription.ts";
 import { AuthMiddleware, UserMiddleware } from "../_shared/authentication.ts";
 import { getBusinessContext } from "../_shared/businessContext.ts";
 import { isServiceRequest, jsonResponse } from "../_shared/channels/http.ts";
@@ -147,6 +148,8 @@ const sendDue = async () => {
     if (!settings.businesses || settings.recipients.length === 0) continue;
     const period = duePeriod(now, settings, settings.businesses.timezone);
     if (!period) continue;
+    // The report is part of the Pro plan (and of the trial)
+    if (!(await hasFeature(settings.business_id, "weekly_report"))) continue;
     try {
       const text = await reportFor(settings, period);
       const delivery = await deliver(
@@ -172,6 +175,9 @@ const sendDue = async () => {
 const sendNow = async (user: User) => {
   const context = await getBusinessContext(user.id);
   if (context?.role !== "owner") return createErrorResponse(403, "Forbidden");
+  if (!(await hasFeature(context.business_id, "weekly_report"))) {
+    return createErrorResponse(403, "crm.subscription.errors.feature");
+  }
   const { data } = await supabaseAdmin
     .from("weekly_reports")
     .select(SETTINGS_COLUMNS)

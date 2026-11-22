@@ -20,6 +20,7 @@ import {
   sendSms,
 } from "../../../connectors/sms/index.ts";
 import { publicLimitResponse } from "../_shared/rateLimit.ts";
+import { hasFeature } from "../_shared/subscription.ts";
 
 /**
  * The public booking page of a business (/book/<slug>). No sign-in: the page
@@ -291,6 +292,10 @@ async function verifyCode(page: PageRow, payload: Payload) {
 async function handle(payload: Payload): Promise<Response> {
   const page = await findPage(payload.slug);
   if (!page) return createErrorResponse(404, "not_found");
+  // The page is part of the Business and Pro plans; an unpaid business has none
+  if (!(await hasFeature(page.business_id, "booking_page"))) {
+    return createErrorResponse(404, "not_found");
+  }
   const business = await loadBusiness(page.business_id);
   const deps = makeBookingDeps(business, {
     source: "page",

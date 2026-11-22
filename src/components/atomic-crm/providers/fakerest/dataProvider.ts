@@ -49,6 +49,14 @@ import { mergeContacts } from "../commons/mergeContacts";
 import { getSearchResults } from "./search";
 import type { CrmDataProvider } from "../types";
 import type {
+  BusinessExport,
+  Plan,
+  PlanCode,
+  PlatformBusiness,
+  Subscription,
+  SubscriptionChange,
+} from "../../subscription/types";
+import type {
   CompanyDuplicate,
   VatCheckResult,
 } from "../../counterparties/types";
@@ -382,6 +390,37 @@ export const createDataProvider = ({
       _from: string,
       _to: string,
     ): Promise<TeamReportRow[]> => [],
+    // The demo runs with everything open and no platform admin
+    getSubscription: async (): Promise<Subscription> => ({
+      plan: "pro",
+      status: "active",
+      ends_at: null,
+      features: [
+        "messengers",
+        "automations",
+        "marketing",
+        "booking_page",
+        "weekly_report",
+        "costing",
+        "business_map",
+        "ai",
+      ],
+      max_members: null,
+      members: 1,
+    }),
+    getPlans: async (): Promise<Plan[]> => [],
+    exportBusinessData: async (): Promise<BusinessExport> =>
+      Promise.reject(new Error("The export is not available in the demo")),
+    isPlatformAdmin: async (): Promise<boolean> => false,
+    getPlatformBusinesses: async (): Promise<PlatformBusiness[]> => [],
+    setBusinessSubscription: async (
+      _change: SubscriptionChange,
+    ): Promise<void> => {},
+    updatePlan: async (
+      _code: PlanCode,
+      _priceMinor: number,
+      _maxMembers: number | null,
+    ): Promise<void> => {},
     getWeeklyReport: async () => null,
     saveWeeklyReport: async (): Promise<void> => {},
     sendWeeklyReportNow: async () =>

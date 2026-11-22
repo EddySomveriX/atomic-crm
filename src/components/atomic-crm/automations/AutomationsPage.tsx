@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import type { Company } from "../types";
 import { AutomationCard, type AutomationChange } from "./AutomationCard";
 import { WeeklyReportCard } from "./WeeklyReportCard";
+import { FeatureGate } from "../subscription/FeatureGate";
 import {
   AUTOMATION_KINDS,
   type Automation,
@@ -80,7 +81,9 @@ export const AutomationsPage = () => {
           />
         ))}
       </ul>
-      <WeeklyReportCard />
+      <FeatureGate feature="weekly_report">
+        <WeeklyReportCard />
+      </FeatureGate>
       <RecentSends />
     </div>
   );

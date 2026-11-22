@@ -31,6 +31,7 @@ import { analyticsMethods } from "./analyticsMethods";
 import { pricingMethods } from "./pricingMethods";
 import { documentMethods } from "./documentMethods";
 import { teamMethods } from "./teamMethods";
+import { subscriptionMethods } from "./subscriptionMethods";
 import { costMethods } from "./costMethods";
 import { marketingMethods } from "./marketingMethods";
 import { channelMethods } from "./channelMethods";
@@ -412,6 +413,7 @@ const getDataProviderWithCustomMethods = () => {
     ...teamMethods,
     ...costMethods,
     ...marketingMethods,
+    ...subscriptionMethods,
   } satisfies DataProvider;
 };
 

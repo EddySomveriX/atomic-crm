@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router";
 import { cn } from "@/lib/utils";
 
 import { CostsTab } from "../costing/CostsTab";
+import { FeatureGate } from "../subscription/FeatureGate";
 import { CertificatesTab } from "./CertificatesTab";
 import { OffersTab } from "./OffersTab";
 import { PackagesTab } from "./PackagesTab";
@@ -60,7 +61,11 @@ export const PricesPage = () => {
       {tab === "offers" ? <OffersTab /> : null}
       {tab === "packages" ? <PackagesTab /> : null}
       {tab === "certificates" ? <CertificatesTab /> : null}
-      {tab === "costs" ? <CostsTab /> : null}
+      {tab === "costs" ? (
+        <FeatureGate feature="costing">
+          <CostsTab />
+        </FeatureGate>
+      ) : null}
     </div>
   );
 };

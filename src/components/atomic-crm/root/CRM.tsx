@@ -33,6 +33,9 @@ import { BookingPage } from "../bookingPage/BookingPage";
 import { BookingPoster } from "../bookingPage/BookingPoster";
 import { BookingPageSettingsPage } from "../bookingPage/BookingPageSettingsPage";
 import { TeamPage } from "../team/TeamPage";
+import { FeatureGate } from "../subscription/FeatureGate";
+import { SubscriptionPage } from "../subscription/SubscriptionPage";
+import { PlatformPage } from "../platform/PlatformPage";
 import { InventoryPage } from "../stock/InventoryPage";
 import { Layout } from "../layout/Layout";
 import { SetupPage } from "../business/SetupPage";
@@ -290,18 +293,52 @@ const DesktopAdmin = (
         <Route path={InventoryPage.path} element={<InventoryPage />} />
         <Route path={CalendarPage.path} element={<CalendarPage />} />
         <Route path={WorkingHoursPage.path} element={<WorkingHoursPage />} />
-        <Route path={ChatsPage.path} element={<ChatsPage />} />
+        <Route
+          path={ChatsPage.path}
+          element={
+            <FeatureGate feature="messengers">
+              <ChatsPage />
+            </FeatureGate>
+          }
+        />
         <Route path={AnalyticsPage.path} element={<AnalyticsPage />} />
-        <Route path={BusinessMapPage.path} element={<BusinessMapPage />} />
+        <Route
+          path={BusinessMapPage.path}
+          element={
+            <FeatureGate feature="business_map">
+              <BusinessMapPage />
+            </FeatureGate>
+          }
+        />
         <Route path={PricesPage.path} element={<PricesPage />} />
         <Route path={DocumentsPage.path} element={<DocumentsPage />} />
-        <Route path={AutomationsPage.path} element={<AutomationsPage />} />
-        <Route path={MarketingPage.path} element={<MarketingPage />} />
+        <Route
+          path={AutomationsPage.path}
+          element={
+            <FeatureGate feature="automations">
+              <AutomationsPage />
+            </FeatureGate>
+          }
+        />
+        <Route
+          path={MarketingPage.path}
+          element={
+            <FeatureGate feature="marketing">
+              <MarketingPage />
+            </FeatureGate>
+          }
+        />
         <Route
           path={BookingPageSettingsPage.path}
-          element={<BookingPageSettingsPage />}
+          element={
+            <FeatureGate feature="booking_page">
+              <BookingPageSettingsPage />
+            </FeatureGate>
+          }
         />
         <Route path={TeamPage.path} element={<TeamPage />} />
+        <Route path={SubscriptionPage.path} element={<SubscriptionPage />} />
+        <Route path={PlatformPage.path} element={<PlatformPage />} />
       </CustomRoutes>
       <Resource name="deals" {...deals} />
       <Resource name="contacts" {...contacts} />
@@ -413,18 +450,52 @@ const MobileAdmin = (
           <Route path={InventoryPage.path} element={<InventoryPage />} />
           <Route path={CalendarPage.path} element={<CalendarPage />} />
           <Route path={WorkingHoursPage.path} element={<WorkingHoursPage />} />
-          <Route path={ChatsPage.path} element={<ChatsPage />} />
+          <Route
+            path={ChatsPage.path}
+            element={
+              <FeatureGate feature="messengers">
+                <ChatsPage />
+              </FeatureGate>
+            }
+          />
           <Route path={AnalyticsPage.path} element={<AnalyticsPage />} />
-          <Route path={BusinessMapPage.path} element={<BusinessMapPage />} />
+          <Route
+            path={BusinessMapPage.path}
+            element={
+              <FeatureGate feature="business_map">
+                <BusinessMapPage />
+              </FeatureGate>
+            }
+          />
           <Route path={PricesPage.path} element={<PricesPage />} />
           <Route path={DocumentsPage.path} element={<DocumentsPage />} />
-          <Route path={AutomationsPage.path} element={<AutomationsPage />} />
-          <Route path={MarketingPage.path} element={<MarketingPage />} />
+          <Route
+            path={AutomationsPage.path}
+            element={
+              <FeatureGate feature="automations">
+                <AutomationsPage />
+              </FeatureGate>
+            }
+          />
+          <Route
+            path={MarketingPage.path}
+            element={
+              <FeatureGate feature="marketing">
+                <MarketingPage />
+              </FeatureGate>
+            }
+          />
           <Route
             path={BookingPageSettingsPage.path}
-            element={<BookingPageSettingsPage />}
+            element={
+              <FeatureGate feature="booking_page">
+                <BookingPageSettingsPage />
+              </FeatureGate>
+            }
           />
           <Route path={TeamPage.path} element={<TeamPage />} />
+          <Route path={SubscriptionPage.path} element={<SubscriptionPage />} />
+          <Route path={PlatformPage.path} element={<PlatformPage />} />
         </CustomRoutes>
         <Resource
           name="contacts"

@@ -1,5 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { Building2, Check, Plus, SlidersHorizontal } from "lucide-react";
+import {
+  Building2,
+  Check,
+  CreditCard,
+  Plus,
+  ShieldCheck,
+  SlidersHorizontal,
+} from "lucide-react";
 import {
   CanAccess,
   useDataProvider,
@@ -22,6 +29,9 @@ import { SetupPage } from "../business/SetupPage";
 import { reloadApp } from "../business/reloadApp";
 import type { CrmDataProvider } from "../providers/types";
 import { CONFIGURATION_STORE_KEY } from "../root/ConfigurationContext";
+import { PlatformPage } from "../platform/PlatformPage";
+import { SUBSCRIPTION_PATH } from "../subscription/FeatureGate";
+import { useIsPlatformAdmin } from "../subscription/useSubscription";
 
 /**
  * Lists the businesses of the current user in the user menu and switches
@@ -34,6 +44,7 @@ export const BusinessMenu = () => {
   const store = useStoreContext();
   const userMenuContext = useUserMenu();
   const dataProvider = useDataProvider<CrmDataProvider>();
+  const isPlatformAdmin = useIsPlatformAdmin();
 
   const { data } = useQuery({
     queryKey: ["businesses", "mine"],
@@ -102,6 +113,29 @@ export const BusinessMenu = () => {
             {translate("crm.business_settings.title", { _: "Business" })}
           </DropdownMenuItem>
         </CanAccess>
+        <DropdownMenuItem
+          onClick={userMenuContext?.onClose}
+          render={
+            <Link to={SUBSCRIPTION_PATH} className="flex items-center gap-2" />
+          }
+        >
+          <CreditCard />
+          {translate("crm.subscription.title")}
+        </DropdownMenuItem>
+        {isPlatformAdmin ? (
+          <DropdownMenuItem
+            onClick={userMenuContext?.onClose}
+            render={
+              <Link
+                to={PlatformPage.path}
+                className="flex items-center gap-2"
+              />
+            }
+          >
+            <ShieldCheck />
+            {translate("crm.platform.title")}
+          </DropdownMenuItem>
+        ) : null}
         <DropdownMenuItem
           onClick={userMenuContext?.onClose}
           render={

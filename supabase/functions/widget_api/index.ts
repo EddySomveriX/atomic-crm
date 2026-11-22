@@ -17,6 +17,7 @@ import {
 } from "../_shared/bot/bookingFlow.ts";
 import { botText, formatWhen } from "../_shared/bot/botTexts.ts";
 import { publicLimitResponse } from "../_shared/rateLimit.ts";
+import { hasFeature } from "../_shared/subscription.ts";
 
 /**
  * The public API of the website widget (TZ section 5.2): a visitor of the
@@ -104,6 +105,10 @@ async function visitorConversation(
 async function handle(payload: Payload): Promise<Response> {
   const channel = await findChannel(payload.key);
   if (!channel) return createErrorResponse(404, "Unknown widget");
+  // The site chat is a messenger: part of the Business and Pro plans
+  if (!(await hasFeature(channel.business_id, "messengers"))) {
+    return createErrorResponse(404, "Unknown widget");
+  }
   const visitor = typeof payload.visitor === "string" ? payload.visitor : "";
   if (!UUID.test(visitor))
     return createErrorResponse(400, "visitor is required");

@@ -7,6 +7,7 @@ import { ScrollRestoration } from "react-router";
 
 import { DataImportProvider } from "../dataImport/DataImportProvider";
 import { RequireBusiness } from "../business/RequireBusiness";
+import { SubscriptionBanner } from "../subscription/SubscriptionBanner";
 import { useApplyAppearance } from "../appearance/useAppearance";
 import { useConfigurationLoader } from "../root/useConfigurationLoader";
 import { MobileNavigation } from "./MobileNavigation";
@@ -21,7 +22,10 @@ export const MobileLayout = ({ children }: { children: ReactNode }) => {
       <PullToRefresh />
       <ErrorBoundary FallbackComponent={Error}>
         <Suspense fallback={<Skeleton className="h-12 w-12 rounded-full" />}>
-          <RequireBusiness>{children}</RequireBusiness>
+          <RequireBusiness>
+            <SubscriptionBanner floating />
+            {children}
+          </RequireBusiness>
         </Suspense>
       </ErrorBoundary>
       <MobileNavigation />

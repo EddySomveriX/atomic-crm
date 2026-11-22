@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useApplyAppearance } from "../appearance/useAppearance";
 import { DataImportProvider } from "../dataImport/DataImportProvider";
 import { RequireBusiness } from "../business/RequireBusiness";
+import { SubscriptionBanner } from "../subscription/SubscriptionBanner";
 import { useConfigurationLoader } from "../root/useConfigurationLoader";
 import { Sidebar } from "./Sidebar";
 
@@ -23,7 +24,10 @@ export const Layout = ({ children }: { children: ReactNode }) => {
               <Suspense
                 fallback={<Skeleton className="h-12 w-12 rounded-full" />}
               >
-                <RequireBusiness>{children}</RequireBusiness>
+                <RequireBusiness>
+                  <SubscriptionBanner />
+                  {children}
+                </RequireBusiness>
               </Suspense>
             </ErrorBoundary>
           </div>

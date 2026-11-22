@@ -9,5 +9,6 @@
 -- top level: their links keep working (the bucket serves files by an
 -- unguessable public link), but nobody lists or removes them any more.
 create policy "Attachments read" on storage.objects for select to authenticated using (bucket_id = 'attachments' and (storage.foldername(name))[1] = (select public.current_business_id())::text);
-create policy "Attachments upload" on storage.objects for insert to authenticated with check (bucket_id = 'attachments' and (storage.foldername(name))[1] = (select public.current_business_id())::text);
+-- A read-only business (unpaid plan, 32_subscriptions.sql) uploads nothing
+create policy "Attachments upload" on storage.objects for insert to authenticated with check (bucket_id = 'attachments' and (storage.foldername(name))[1] = (select public.current_business_id())::text and (select public.business_is_writable(public.current_business_id())));
 create policy "Attachments delete" on storage.objects for delete to authenticated using (bucket_id = 'attachments' and (storage.foldername(name))[1] = (select public.current_business_id())::text);
