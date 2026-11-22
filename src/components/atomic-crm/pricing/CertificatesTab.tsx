@@ -26,7 +26,8 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
-import { MENU_COLORS, FONTS } from "../appearance/appearance";
+import { FONTS } from "../appearance/appearance";
+import { brandColors } from "../appearance/theme";
 import { useAppearance } from "../appearance/useAppearance";
 import { useBookableServices } from "../booking/useBookingData";
 import { formatMoney } from "../money/money";
@@ -335,7 +336,7 @@ const CertificatePicture = ({
   const [uiLocale = "uk"] = useLocaleState();
   const { title, currency, locale } = useConfigurationContext();
   const appearance = useAppearance();
-  const colors = MENU_COLORS[appearance.menuColor];
+  const colors = brandColors(appearance.theme);
   const picture = drawCertificate({
     business: title,
     title: translate("crm.pricing.certificate_title"),

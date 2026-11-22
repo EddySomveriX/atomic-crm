@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils";
 
 import type { Conversation } from "../channels/types";
 import { useAppearance } from "../appearance/useAppearance";
+import { menuOf } from "../appearance/theme";
 import { ChangelogPage } from "../misc/ChangelogPage";
 import { ImportPage } from "../misc/ImportPage";
 import {
@@ -50,7 +51,9 @@ export const Sidebar = () => {
   const translate = useTranslate();
   const { darkModeLogo, lightModeLogo, title } = useConfigurationContext();
   const { modules, isOn } = useModules();
-  const { menuStyle } = useAppearance();
+  const { theme } = useAppearance();
+  // The dark theme always has a dark menu; the light one may have either
+  const isLightMenuDark = menuOf("light", theme.light).isDark;
   const { pathname } = useLocation();
   const [collapsed, setCollapsed] = useStore<boolean>(
     "sidebar.collapsed",
@@ -83,7 +86,7 @@ export const Sidebar = () => {
         to="/"
         className="flex h-9 items-center gap-2 px-2 text-sidebar-foreground no-underline"
       >
-        {menuStyle === "dark" ? (
+        {isLightMenuDark ? (
           <img
             className="h-7 max-w-24 object-contain"
             src={darkModeLogo}

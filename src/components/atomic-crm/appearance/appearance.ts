@@ -1,21 +1,16 @@
 /**
- * Appearance of a business: the color and style of the left menu and the
- * font of the interface, kept in its configuration. Colors are presets
- * checked for contrast (WCAG AA for the menu text), so any choice stays
- * readable. A user may pick a personal accent instead (accent.ts).
+ * Appearance of a business, kept in its configuration: the colors of the
+ * light and the dark theme (theme.ts, chosen from checked presets in
+ * themePresets.ts) and the font of the interface. Only the owner changes
+ * it, for the whole team.
  */
-
-export const MENU_COLORS = {
-  forest: { background: "#143528", hover: "#1f4a39", mark: "#7fd9ae" },
-  graphite: { background: "#1c1f23", hover: "#2c3137", mark: "#e2e8f0" },
-  navy: { background: "#12284a", hover: "#1d3b68", mark: "#8ec5ff" },
-  teal: { background: "#0f3b40", hover: "#195259", mark: "#7fe0dc" },
-  plum: { background: "#3a1838", hover: "#552552", mark: "#f2b0e8" },
-  wine: { background: "#4a1620", hover: "#65212e", mark: "#ffb7c3" },
-} as const;
-export type MenuColor = keyof typeof MENU_COLORS;
-
-export type MenuStyle = "dark" | "light";
+import {
+  themeOf,
+  type LegacyAppearance,
+  type StoredTheme,
+  type ThemeColors,
+  type ThemeMode,
+} from "./theme";
 
 export const FONTS = {
   inter: "Inter Variable",
@@ -27,61 +22,35 @@ export const FONTS = {
 } as const;
 export type FontKey = keyof typeof FONTS;
 
-export interface Appearance {
-  menuColor: MenuColor;
-  menuStyle: MenuStyle;
-  font: FontKey;
+/** What the configuration stores. */
+export interface Appearance extends StoredTheme, LegacyAppearance {
+  font?: FontKey;
 }
 
-export const DEFAULT_APPEARANCE: Appearance = {
-  menuColor: "forest",
-  menuStyle: "dark",
-  font: "inter",
-};
+/** The appearance with every value filled in. */
+export interface ResolvedAppearance {
+  font: FontKey;
+  theme: Record<ThemeMode, ThemeColors>;
+}
+
+export const DEFAULT_FONT: FontKey = "inter";
 
 /** A stored appearance with unknown or missing values replaced by defaults. */
-export const appearanceOf = (value: Partial<Appearance> | undefined) =>
-  ({
-    menuColor:
-      value?.menuColor && value.menuColor in MENU_COLORS
-        ? value.menuColor
-        : DEFAULT_APPEARANCE.menuColor,
-    menuStyle: value?.menuStyle === "light" ? "light" : "dark",
-    font:
-      value?.font && value.font in FONTS ? value.font : DEFAULT_APPEARANCE.font,
-  }) as Appearance;
+export const appearanceOf = (
+  value: Partial<Appearance> | undefined,
+): ResolvedAppearance => ({
+  font: value?.font && value.font in FONTS ? value.font : DEFAULT_FONT,
+  theme: themeOf(value),
+});
 
-/**
- * CSS variables of the menu for an appearance. A light menu keeps the chosen
- * color for the mark of the active section and its icons.
- */
-export const menuVariables = (
-  appearance: Appearance,
-): Record<string, string> => {
-  const color = MENU_COLORS[appearance.menuColor];
-  if (appearance.menuStyle === "light") {
-    return {
-      "--sidebar": "var(--card)",
-      "--sidebar-foreground": "var(--foreground)",
-      "--sidebar-accent": "var(--muted)",
-      "--sidebar-accent-foreground": "var(--foreground)",
-      "--sidebar-primary": color.background,
-      "--sidebar-primary-foreground": "#ffffff",
-      "--sidebar-border": "var(--border)",
-      "--sidebar-ring": color.background,
-    };
-  }
-  return {
-    "--sidebar": color.background,
-    "--sidebar-foreground": "#eef3f0",
-    "--sidebar-accent": color.hover,
-    "--sidebar-accent-foreground": "#ffffff",
-    "--sidebar-primary": color.mark,
-    "--sidebar-primary-foreground": color.background,
-    "--sidebar-border": "rgb(255 255 255 / 10%)",
-    "--sidebar-ring": color.mark,
-  };
-};
+/** What to store: the resolved values, without the settings of old versions. */
+export const storedAppearance = (
+  appearance: ResolvedAppearance,
+): Appearance => ({
+  font: appearance.font,
+  light: appearance.theme.light,
+  dark: appearance.theme.dark,
+});
 
 /** Loads the files of a font only when a business picks it. */
 export const loadFont = (font: FontKey): Promise<unknown> => {

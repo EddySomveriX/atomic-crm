@@ -1,50 +1,45 @@
-import { useStore } from "ra-core";
 import { useEffect } from "react";
-
-import { ACCENT_STORE_KEY, accentVariables, isAccentKey } from "./accent";
 
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import {
   FONTS,
   appearanceOf,
   loadFont,
-  menuVariables,
-  type Appearance,
+  type ResolvedAppearance,
 } from "./appearance";
+import { themeCss } from "./theme";
 
 /** The appearance of the current business. */
-export const useAppearance = (): Appearance => {
+export const useAppearance = (): ResolvedAppearance => {
   const { appearance } = useConfigurationContext();
   return appearanceOf(appearance);
 };
 
 /**
- * Applies the appearance of the current business to the page: the menu
- * colors as CSS variables (or the user's personal accent) and the font.
+ * Applies the appearance of the current business to the page: the colors of
+ * both themes as a style sheet (the light/dark switch picks one) and the
+ * font.
  */
 export const useApplyAppearance = () => {
-  const appearance = useAppearance();
-  const { menuColor, menuStyle, font } = appearance;
-  const [accent] = useStore<string | null>(ACCENT_STORE_KEY, null);
+  const { font, theme } = useAppearance();
+  const css = themeCss(theme);
   useEffect(() => {
-    const appearance = { menuColor, menuStyle, font };
+    const style = document.createElement("style");
+    style.dataset.businessTheme = "";
+    style.textContent = css;
+    document.head.appendChild(style);
+    return () => style.remove();
+  }, [css]);
+  useEffect(() => {
     const root = document.documentElement;
-    // A personal accent of the user wins over the colors of the business
-    const variables = isAccentKey(accent)
-      ? accentVariables(accent)
-      : menuVariables(appearance);
-    Object.entries(variables).forEach(([name, value]) =>
-      root.style.setProperty(name, value),
-    );
-    loadFont(appearance.font).then(() =>
+    loadFont(font).then(() =>
       root.style.setProperty(
         "--app-font",
-        `"${FONTS[appearance.font]}", ui-sans-serif, system-ui, sans-serif`,
+        `"${FONTS[font]}", ui-sans-serif, system-ui, sans-serif`,
       ),
     );
     return () => {
-      Object.keys(variables).forEach((name) => root.style.removeProperty(name));
       root.style.removeProperty("--app-font");
     };
-  }, [menuColor, menuStyle, font, accent]);
+  }, [font]);
 };

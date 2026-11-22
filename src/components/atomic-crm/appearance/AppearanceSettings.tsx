@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useDataProvider, useNotify, useStore, useTranslate } from "ra-core";
 import { useRef, type ChangeEvent } from "react";
-import { Check, ImageUp, Trash2 } from "lucide-react";
+import { ImageUp, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -17,20 +17,21 @@ import {
 } from "../root/defaultConfiguration";
 import {
   FONTS,
-  MENU_COLORS,
   appearanceOf,
   loadFont,
-  type Appearance,
+  storedAppearance,
   type FontKey,
-  type MenuColor,
-  type MenuStyle,
+  type ResolvedAppearance,
 } from "./appearance";
 import { logoFromFile } from "./logoFromFile";
+import { menuOf } from "./theme";
+import { ThemeEditor } from "./ThemeEditor";
 
 /**
  * The look of the business (owner only): the logo shown in the menu and on
- * the documents of the future, the color and style of the menu, the font.
- * Every choice applies at once and is saved for the whole business.
+ * the documents of the future, the colors of every main part of the light
+ * and the dark theme, the font. Every choice applies at once and is saved
+ * for the whole team.
  */
 export const AppearanceSettings = () => {
   const translate = useTranslate();
@@ -63,8 +64,8 @@ export const AppearanceSettings = () => {
     setConfig({ ...config, ...next } as ConfigurationContextValue);
     save.mutate(next);
   };
-  const setAppearance = (next: Partial<Appearance>) =>
-    change({ appearance: { ...appearance, ...next } });
+  const setAppearance = (next: Partial<ResolvedAppearance>) =>
+    change({ appearance: storedAppearance({ ...appearance, ...next }) });
 
   return (
     <section id="appearance" className="flex flex-col gap-8">
@@ -80,63 +81,16 @@ export const AppearanceSettings = () => {
       <LogoField
         logo={shown.lightModeLogo}
         darkLogo={shown.darkModeLogo}
-        menuStyle={appearance.menuStyle}
+        isMenuDark={menuOf("light", appearance.theme.light).isDark}
         onChange={(light, dark) =>
           change({ lightModeLogo: light, darkModeLogo: dark })
         }
       />
 
-      <fieldset className="flex flex-col gap-3">
-        <legend className="mb-2 font-medium">
-          {translate("crm.appearance.menu_style")}
-        </legend>
-        <div className="flex gap-2" role="radiogroup">
-          {(["dark", "light"] as MenuStyle[]).map((style) => (
-            <Choice
-              key={style}
-              selected={appearance.menuStyle === style}
-              onSelect={() => setAppearance({ menuStyle: style })}
-            >
-              {translate(`crm.appearance.styles.${style}`)}
-            </Choice>
-          ))}
-        </div>
-      </fieldset>
-
-      <fieldset className="flex flex-col gap-3">
-        <legend className="mb-2 font-medium">
-          {translate("crm.appearance.menu_color")}
-        </legend>
-        <div className="flex flex-wrap gap-3" role="radiogroup">
-          {(Object.keys(MENU_COLORS) as MenuColor[]).map((key) => {
-            const selected = appearance.menuColor === key;
-            const label = translate(`crm.appearance.colors.${key}`);
-            return (
-              <button
-                key={key}
-                type="button"
-                role="radio"
-                aria-checked={selected}
-                aria-label={label}
-                title={label}
-                onClick={() => setAppearance({ menuColor: key })}
-                className={cn(
-                  "flex size-11 items-center justify-center rounded-full ring-offset-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  selected && "ring-2 ring-foreground",
-                )}
-                style={{ background: MENU_COLORS[key].background }}
-              >
-                {selected ? (
-                  <Check
-                    className="size-5"
-                    style={{ color: MENU_COLORS[key].mark }}
-                  />
-                ) : null}
-              </button>
-            );
-          })}
-        </div>
-      </fieldset>
+      <ThemeEditor
+        theme={appearance.theme}
+        onChange={(theme) => setAppearance({ theme })}
+      />
 
       <fieldset className="flex flex-col gap-3">
         <legend className="mb-2 font-medium">
@@ -156,29 +110,6 @@ export const AppearanceSettings = () => {
     </section>
   );
 };
-
-const Choice = ({
-  selected,
-  onSelect,
-  children,
-}: {
-  selected: boolean;
-  onSelect: () => void;
-  children: React.ReactNode;
-}) => (
-  <button
-    type="button"
-    role="radio"
-    aria-checked={selected}
-    onClick={onSelect}
-    className={cn(
-      "rounded-md border px-4 py-2 text-sm",
-      selected ? "border-primary bg-accent font-medium" : "hover:bg-muted/60",
-    )}
-  >
-    {children}
-  </button>
-);
 
 /** A font, written in itself. */
 const FontChoice = ({
@@ -221,12 +152,12 @@ const FontChoice = ({
 const LogoField = ({
   logo,
   darkLogo,
-  menuStyle,
+  isMenuDark,
   onChange,
 }: {
   logo: string | undefined;
   darkLogo: string | undefined;
-  menuStyle: MenuStyle;
+  isMenuDark: boolean;
   onChange: (light: string, dark: string) => void;
 }) => {
   const translate = useTranslate();
@@ -234,7 +165,7 @@ const LogoField = ({
   const input = useRef<HTMLInputElement>(null);
   const darkInput = useRef<HTMLInputElement>(null);
   const isCustom = logo != null && logo !== defaultLightModeLogo;
-  const menuLogo = menuStyle === "dark" ? (darkLogo ?? logo) : logo;
+  const menuLogo = isMenuDark ? (darkLogo ?? logo) : logo;
 
   const read =
     (apply: (dataUrl: string) => void) =>

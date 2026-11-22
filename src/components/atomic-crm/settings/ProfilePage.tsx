@@ -1,4 +1,3 @@
-import { AccentPicker } from "../appearance/AccentPicker";
 import { CalmModeSwitch } from "../appearance/CalmModeSwitch";
 import { useMutation } from "@tanstack/react-query";
 import { Check, CircleX, Copy, Pencil, Save } from "lucide-react";
@@ -238,7 +237,6 @@ const ProfileForm = ({
           </div>
         </CardContent>
       </Card>
-      <AccentPicker />
       <CalmModeSwitch />
       {import.meta.env.VITE_INBOUND_EMAIL && (
         <Card>
